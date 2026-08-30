@@ -31,7 +31,6 @@ import {
   TrendingUp,
   UsersRound,
   WashingMachine,
-  Wrench,
   X,
   Zap,
 } from "lucide-react";
@@ -383,26 +382,13 @@ function ProductMockup() {
       transition={{ duration: 0.8, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
     >
       <Image
-        src="/images/hero-services-marketing-v2.webp"
-        width={1536}
-        height={1024}
+        src="/images/hero-botpager-image.png"
+        width={1672}
+        height={941}
         alt="BotPager booking calendar with customer conversations, new bookings, revenue, and sales results"
         sizes="(max-width: 820px) 100vw, 57vw"
         preload
       />
-      <div className="heroLocalSignal">
-        <span><CalendarCheck2 /></span>
-        <div><small>New local job booked</small><b>AC tune-up</b><p><MapPin /> 2.4 miles away</p></div>
-      </div>
-      <div className="heroLocalServices">
-        <div className="heroLocalServicesTitle"><MapPin /><span><small>Built for</small><b>Local service businesses</b></span></div>
-        <div className="heroServiceChips" aria-label="Local service industries">
-          <span><Wrench /> Plumbing</span>
-          <span><Gauge /> HVAC</span>
-          <span><Sparkles /> Cleaning</span>
-          <span><House /> Home services</span>
-        </div>
-      </div>
     </motion.div>
   );
 }
