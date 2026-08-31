@@ -5,7 +5,11 @@ import { usePathname } from "next/navigation";
 
 export function LeadConnectorWidget() {
   const pathname = usePathname();
-  if (pathname.startsWith("/audit") || pathname.startsWith("/admin")) return null;
+  if (pathname.startsWith("/admin")) return null;
+
+  const widgetId = pathname.startsWith("/terms")
+    ? "6a93574c9f17bc64b324038c"
+    : "6a935fe3731304959723e37d";
 
   return (
     <Script
@@ -13,7 +17,7 @@ export function LeadConnectorWidget() {
       src="https://widgets.leadconnectorhq.com/loader.js"
       strategy="afterInteractive"
       data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
-      data-widget-id="6a93574c9f17bc64b324038c"
+      data-widget-id={widgetId}
     />
   );
 }
