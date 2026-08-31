@@ -408,7 +408,7 @@ export function AuditExperience() {
                     <span><Check /> Automated follow-up</span>
                   </div>
                 </div>
-                <a className="auditPrimaryButton" href={`mailto:hello@botpager.com?subject=${encodeURIComponent(`Questions about ${contact.businessName}'s audit`)}`}>Ask BotPager a question <ArrowRight /></a>
+                <a className="auditPrimaryButton" href={`mailto:info@botpager.com?subject=${encodeURIComponent(`Questions about ${contact.businessName}'s audit`)}`}>Ask BotPager a question <ArrowRight /></a>
               </section>
 
               <div className="auditReportFooter"><Brand /><span>Built to help local service businesses grow with confidence.</span></div>

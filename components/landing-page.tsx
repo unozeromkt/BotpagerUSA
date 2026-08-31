@@ -297,16 +297,16 @@ const plans = [
 ];
 
 const nav = [
-  ["Solutions", "#solutions"],
-  ["How It Works", "#how-it-works"],
-  ["Pricing", "#pricing"],
-  ["About", "#about"],
-  ["Resources", "#faq"],
+  ["Solutions", "/#solutions"],
+  ["How It Works", "/#how-it-works"],
+  ["Pricing", "/#pricing"],
+  ["About", "/#about"],
+  ["Resources", "/#faq"],
 ];
 
 function Logo({ light = false }: { light?: boolean }) {
   return (
-    <a className={`logo ${light ? "logoLight" : ""}`} href="#top" aria-label="BotPager home">
+    <a className={`logo ${light ? "logoLight" : ""}`} href="/#top" aria-label="BotPager home">
       <Image className="logoMark" src="/images/botpager-isotype.png" width={604} height={603} alt="" aria-hidden="true" />
       <span>Bot<span>Pager</span></span>
     </a>
@@ -346,7 +346,7 @@ function SectionCTA({ children, light = false, className = "" }: { children: Rea
   return <Reveal className={`sectionCta ${className}`}><PrimaryButton light={light}>{children}</PrimaryButton></Reveal>;
 }
 
-function Header() {
+export function Header() {
   const [open, setOpen] = useState(false);
   return (
     <header className="siteHeader">
@@ -953,25 +953,37 @@ function FinalCTA({ variant = "default" }: { variant?: LandingVariant }) {
         <div className="container finalCtaInner">
           <div className="ctaBot"><Image src="/images/botpager-isotype.png" width={604} height={603} alt="" aria-hidden="true" /></div>
           <div><h2 id="final-cta-title">{isConversion ? <>Ready to get<br />more customers?</> : <>Ready to grow<br />without losing leads?</>}</h2><p>{isConversion ? "Get a free 10-minute audit and see where your business can attract, respond to, and convert more customers." : "Get a free 10-minute audit and see how BotPager can help your business get more booked jobs."}</p></div>
-          <div className="ctaAction"><PrimaryButton light>Get Your Free Growth Audit</PrimaryButton><span><Globe2 /> botpager.com &nbsp;&nbsp; <Phone /> +1 (437) 444 5678</span></div>
+          <div className="ctaAction"><PrimaryButton light>Get Your Free Growth Audit</PrimaryButton><span><Globe2 /> botpager.com &nbsp;&nbsp; <Phone /> 239-251-0184</span></div>
         </div>
       </section>
     </>
   );
 }
 
-function SiteFooter({ variant = "default" }: { variant?: LandingVariant }) {
+function InstagramMark() {
+  return <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true"><rect x="3.5" y="3.5" width="17" height="17" rx="5" /><circle cx="12" cy="12" r="4" /><circle cx="17.5" cy="6.7" r=".8" fill="currentColor" stroke="none" /></svg>;
+}
+
+function TikTokMark() {
+  return <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M14.4 3h3.1c.3 1.8 1.3 3 3.5 3.3v3.1a8.4 8.4 0 0 1-3.5-1v6.8a5.8 5.8 0 1 1-5.8-5.8c.4 0 .8 0 1.2.1v3.2a2.8 2.8 0 1 0 1.5 2.5V3Z" /></svg>;
+}
+
+function LinkedInMark() {
+  return <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M5.1 8.3H2.4V21h2.7V8.3ZM3.8 3A1.6 1.6 0 1 0 3.8 6.2 1.6 1.6 0 0 0 3.8 3ZM21.6 13.7c0-3.8-2-5.6-4.7-5.6-2.2 0-3.1 1.2-3.7 2v-1.8h-2.7V21h2.7v-6.3c0-1.7.3-3.3 2.4-3.3 2.1 0 2.1 1.9 2.1 3.4V21h2.8v-7.3Z" /></svg>;
+}
+
+export function SiteFooter({ variant = "default" }: { variant?: LandingVariant }) {
   const isConversion = variant === "conversion";
 
   return (
     <footer className="footer">
       <div className="container footerGrid">
-        <div><Logo light /><p>{isConversion ? "Websites and automated follow-up that help local service businesses get more customers." : "AI-powered websites, chatbots, and automations that turn more leads into booked jobs."}</p><div className="socials"><a href="#" aria-label="Facebook">f</a><a href="#" aria-label="Instagram">ig</a><a href="#" aria-label="YouTube">▶</a><a href="#" aria-label="LinkedIn">in</a></div></div>
-        <div><h3>Solutions</h3><a href="#solutions">AI Website</a><a href="#solutions">Chatbot</a><a href="#how-it-works">Automations</a><a href="#pricing">Pricing</a></div>
-        <div><h3>Company</h3><a href="#about">About Us</a><a href="#how-it-works">How It Works</a><a href="#faq">Resources</a><a href="mailto:hello@botpager.com">Contact</a></div>
-        <div><h3>Get in touch</h3><a href="https://botpager.com"><Globe2 /> botpager.com</a><a href="tel:+14374445678"><Phone /> +1 (437) 444 5678</a><a href="mailto:hello@botpager.com"><Mail /> hello@botpager.com</a></div>
+        <div><Logo light /><p>{isConversion ? "Websites and automated follow-up that help local service businesses get more customers." : "AI-powered websites, chatbots, and automations that turn more leads into booked jobs."}</p><div className="socials"><a href="#" aria-label="Instagram"><InstagramMark /></a><a href="#" aria-label="TikTok"><TikTokMark /></a><a href="#" aria-label="LinkedIn"><LinkedInMark /></a></div></div>
+        <div><h3>Solutions</h3><a href="/#solutions">AI Website</a><a href="/#solutions">Chatbot</a><a href="/#how-it-works">Automations</a><a href="/#pricing">Pricing</a></div>
+        <div><h3>Company</h3><a href="/#about">About Us</a><a href="/#how-it-works">How It Works</a><a href="/#faq">Resources</a><a href="mailto:info@botpager.com">Contact</a></div>
+        <div><h3>Get in touch</h3><a href="https://botpager.com"><Globe2 /> botpager.com</a><a href="tel:+12392510184"><Phone /> 239-251-0184</a><a href="mailto:info@botpager.com"><Mail /> info@botpager.com</a></div>
       </div>
-      <div className="container footerBottom"><span>© 2026 BotPager. All rights reserved.</span><span><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></span></div>
+      <div className="container footerBottom"><span>© 2026 BotPager. All rights reserved.</span><span><a href="#">Privacy Policy</a><a href="/terms">Terms of Service</a></span></div>
     </footer>
   );
 }
