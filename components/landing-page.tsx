@@ -382,6 +382,7 @@ function ProductMockup() {
       transition={{ duration: 0.8, delay: 0.18, ease: [0.22, 1, 0.36, 1] }}
     >
       <Image
+        className="heroProductImage"
         src="/images/hero-botpager-image.png"
         width={1672}
         height={941}
@@ -389,6 +390,15 @@ function ProductMockup() {
         sizes="(max-width: 820px) 100vw, 57vw"
         preload
       />
+      <video
+        className="heroMobileVideo"
+        controls
+        preload="none"
+        poster="/images/hero-botpager-image.png"
+        aria-label="BotPager overview video placeholder"
+      >
+        Your browser does not support HTML video.
+      </video>
     </motion.div>
   );
 }
@@ -418,7 +428,7 @@ function Hero({ variant = "default" }: { variant?: LandingVariant }) {
             )}
             <div className="heroActions">
               <PrimaryButton>Get Your Free Growth Audit</PrimaryButton>
-              <a className="button buttonSecondary" href="#how-it-works">See How It Works <Play size={15} fill="currentColor" /></a>
+              <a className="button buttonSecondary heroSecondaryAction" href="#how-it-works">See How It Works <Play size={15} fill="currentColor" /></a>
             </div>
           </motion.div>
           <ProductMockup />
