@@ -13,7 +13,7 @@ export function LeadConnectorWidget() {
       src="https://widgets.leadconnectorhq.com/loader.js"
       strategy="afterInteractive"
       data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
-      data-widget-id="6a935fe3731304959723e37d"
+      data-widget-id="6a93574c9f17bc64b324038c"
     />
   );
 }
