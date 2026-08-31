@@ -35,6 +35,22 @@ const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
     {
+      "@type": "Organization",
+      "@id": "https://botpager.com/#organization",
+      name: "BotPager",
+      url: "https://botpager.com",
+      logo: "https://botpager.com/images/botpager-isotype.png",
+      description: "AI-powered websites, chatbots, and follow-up systems for local service businesses.",
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://botpager.com/#website",
+      url: "https://botpager.com",
+      name: "BotPager",
+      publisher: { "@id": "https://botpager.com/#organization" },
+      inLanguage: "en-US",
+    },
+    {
       "@type": "Service",
       "@id": "https://botpager.com/#service",
       name: "Customer Growth System for Local Service Businesses",
@@ -42,8 +58,6 @@ const structuredData = {
       provider: {
         "@type": "Organization",
         "@id": "https://botpager.com/#organization",
-        name: "BotPager",
-        url: "https://botpager.com",
       },
       areaServed: "North America",
       serviceType: "Customer acquisition, 24/7 response, and automatic follow-up",
@@ -63,7 +77,7 @@ const structuredData = {
 export default function Home() {
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
       <LandingPage faqData={faqData} variant="conversion" />
     </>
   );

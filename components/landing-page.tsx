@@ -332,11 +332,11 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
   );
 }
 
-function SectionHeading({ eyebrow, title, text, light = false }: { eyebrow?: string; title: React.ReactNode; text?: string; light?: boolean }) {
+function SectionHeading({ eyebrow, title, text, light = false, headingId }: { eyebrow?: string; title: React.ReactNode; text?: string; light?: boolean; headingId?: string }) {
   return (
     <div className={`sectionHeading ${light ? "sectionHeadingLight" : ""}`}>
       {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-      <h2>{title}</h2>
+      <h2 id={headingId}>{title}</h2>
       {text && <p>{text}</p>}
     </div>
   );
@@ -408,8 +408,8 @@ function Hero({ variant = "default" }: { variant?: LandingVariant }) {
   const railItems = isConversion ? conversionProcess : systemFeatures;
 
   return (
-    <main id="main-content">
-      <section className={`hero ${isConversion ? "heroConversion" : ""}`} id="top">
+    <>
+      <section className={`hero ${isConversion ? "heroConversion" : ""}`} id="top" aria-labelledby="hero-title">
         <div className="heroScribble heroScribbleOne" aria-hidden="true" />
         <div className="dots dotsOne" aria-hidden="true" />
         <div className="container heroGrid">
@@ -417,12 +417,12 @@ function Hero({ variant = "default" }: { variant?: LandingVariant }) {
             <p className="eyebrow"><Sparkles size={14} /> Built for local service businesses</p>
             {isConversion ? (
               <>
-                <h1>We help you get <span>more customers</span> for your business</h1>
+                <h1 id="hero-title">We help you get <span>more customers</span> for your business</h1>
                 <p className="heroLead"><strong>How do we do it?</strong> We attract new customers to your business, engage with them 24/7, follow up automatically, and turn more inquiries into real customers.</p>
               </>
             ) : (
               <>
-                <h1>Turn more leads into <span>booked jobs</span></h1>
+                <h1 id="hero-title">Turn more leads into <span>booked jobs</span></h1>
                 <p className="heroLead">BotPager installs AI-powered websites, chatbots, automated follow-up systems, dashboards, and digital growth strategies to help local service businesses capture, respond to, and convert more customers.</p>
               </>
             )}
@@ -451,7 +451,7 @@ function Hero({ variant = "default" }: { variant?: LandingVariant }) {
           </motion.div>
         ))}
       </section>
-    </main>
+    </>
   );
 }
 
@@ -460,9 +460,9 @@ function ResultsSection({ variant = "default" }: { variant?: LandingVariant }) {
   const solutions = isConversion ? conversionPainSolutions : painSolutions;
 
   return (
-    <section className="section results" id="solutions">
+    <section className="section results" id="solutions" aria-labelledby="solutions-title">
       <div className="container">
-        <Reveal><SectionHeading eyebrow={isConversion ? "Stop letting opportunities slip away" : "Stop losing good leads"} title={isConversion ? <>More customers + sales<br /><span>Fewer missed opportunities.</span></> : "No more lost leads"} text={isConversion ? "BotPager helps you respond faster, keep conversations going, and turn more interested people into real customers." : "Missed calls, slow responses, and poor follow-up are costing you jobs."} /></Reveal>
+        <Reveal><SectionHeading headingId="solutions-title" eyebrow={isConversion ? "Stop letting opportunities slip away" : "Stop losing good leads"} title={isConversion ? <>More customers + sales<br /><span>Fewer missed opportunities.</span></> : "No more lost leads"} text={isConversion ? "BotPager helps you respond faster, keep conversations going, and turn more interested people into real customers." : "Missed calls, slow responses, and poor follow-up are costing you jobs."} /></Reveal>
         <div className="cardGrid sixCards">
           {solutions.map(({ icon: Icon, title, text }, index) => (
             <Reveal className="solutionCard" delay={index * 0.05} key={title}>
@@ -728,9 +728,9 @@ function HowItWorks({ variant = "default" }: { variant?: LandingVariant }) {
     { title: "Track Everything", text: "See leads, jobs, and revenue in your live dashboard.", benefit: "", benefitIcon: TrendingUp, visual: <div className="metricsDemo"><span>New Leads <b>128</b></span><span>Booked Jobs <b>36</b></span><strong>$24,780</strong><TrendingUp /></div> },
   ];
   return (
-    <section className={`section howSection ${isConversion ? "conversionHowSection" : ""}`} id="how-it-works">
+    <section className={`section howSection ${isConversion ? "conversionHowSection" : ""}`} id="how-it-works" aria-labelledby="how-it-works-title">
       <div className="container">
-        <Reveal><SectionHeading title={isConversion ? <>From first visit to new customer in <span>4 simple steps</span></> : <>Done for your business in <span>4 simple steps</span></>} text={isConversion ? "BotPager works 24/7 to attract, engage, follow up, and turn more interest into paying customers." : undefined} /></Reveal>
+        <Reveal><SectionHeading headingId="how-it-works-title" title={isConversion ? <>From first visit to new customer in <span>4 simple steps</span></> : <>Done for your business in <span>4 simple steps</span></>} text={isConversion ? "BotPager works 24/7 to attract, engage, follow up, and turn more interest into paying customers." : undefined} /></Reveal>
         <div className={`stepsGrid ${isConversion ? "conversionStepsGrid" : ""}`}>
           {steps.map((step, index) => {
             const BenefitIcon = step.benefitIcon;
@@ -762,9 +762,9 @@ function BenefitBand({ variant = "default" }: { variant?: LandingVariant }) {
   const benefitItems = isConversion ? conversionBenefits : benefits;
 
   return (
-    <section className="benefitBand">
+    <section className="benefitBand" aria-labelledby="benefits-title">
       <div className="container">
-        <Reveal><SectionHeading light title={isConversion ? "A simpler way to get and keep more customers" : "Why local service businesses choose BotPager"} /></Reveal>
+        <Reveal><SectionHeading headingId="benefits-title" light title={isConversion ? "A simpler way to get and keep more customers" : "Why local service businesses choose BotPager"} /></Reveal>
         <div className="benefitGrid">
           {benefitItems.map(({ icon: Icon, title, text }) => <div key={title}><Icon /><h3>{title}</h3><p>{text}</p></div>)}
         </div>
@@ -887,9 +887,9 @@ function Industries({ variant = "default" }: { variant?: LandingVariant }) {
   if (variant === "conversion") return <ServiceIndustriesCarousel />;
 
   return (
-    <section className="section industrySection">
+    <section className="section industrySection" aria-labelledby="industries-title">
       <div className="container">
-        <Reveal><SectionHeading title="Who it’s for" /></Reveal>
+        <Reveal><SectionHeading headingId="industries-title" title="Who it’s for" /></Reveal>
         <div className="industryGrid">
           {industries.map(({ icon: Icon, title, text, color }) => <Reveal key={title} className={`industryCard ${color}`}><Icon /><h3>{title}</h3><p>{text}</p></Reveal>)}
         </div>
@@ -901,9 +901,9 @@ function Industries({ variant = "default" }: { variant?: LandingVariant }) {
 
 function Pricing() {
   return (
-    <section className="section pricingSection" id="pricing">
+    <section className="section pricingSection" id="pricing" aria-labelledby="pricing-title">
       <div className="container narrow">
-        <Reveal><SectionHeading title="Choose the plan that grows with you" text="Simple plans built around the systems your business needs to capture and convert more opportunities." /></Reveal>
+        <Reveal><SectionHeading headingId="pricing-title" title="Choose the plan that grows with you" text="Simple plans built around the systems your business needs to capture and convert more opportunities." /></Reveal>
         <div className="pricingGrid">
           {plans.map((plan) => (
             <Reveal className={`priceCard ${plan.popular ? "popular" : ""}`} key={plan.name}>
@@ -923,9 +923,9 @@ function Pricing() {
 function FAQSection({ faqData }: { faqData: FAQ[] }) {
   const [open, setOpen] = useState<number | null>(0);
   return (
-    <section className="section faqSection" id="faq">
+    <section className="section faqSection" id="faq" aria-labelledby="faq-title">
       <div className="container narrow">
-        <Reveal><SectionHeading title="Frequently asked questions" /></Reveal>
+        <Reveal><SectionHeading headingId="faq-title" title="Frequently asked questions" /></Reveal>
         <div className="faqGrid">
           {faqData.map(([question, answer], index) => (
             <div className={`faqItem ${open === index ? "faqOpen" : ""}`} key={question}>
@@ -949,23 +949,30 @@ function FinalCTA({ variant = "default" }: { variant?: LandingVariant }) {
 
   return (
     <>
-      <section className="finalCta" id="audit">
+      <section className="finalCta" id="audit" aria-labelledby="final-cta-title">
         <div className="container finalCtaInner">
           <div className="ctaBot"><Image src="/images/botpager-isotype.png" width={604} height={603} alt="" aria-hidden="true" /></div>
-          <div><h2>{isConversion ? <>Ready to get<br />more customers?</> : <>Ready to grow<br />without losing leads?</>}</h2><p>{isConversion ? "Get a free 10-minute audit and see where your business can attract, respond to, and convert more customers." : "Get a free 10-minute audit and see how BotPager can help your business get more booked jobs."}</p></div>
+          <div><h2 id="final-cta-title">{isConversion ? <>Ready to get<br />more customers?</> : <>Ready to grow<br />without losing leads?</>}</h2><p>{isConversion ? "Get a free 10-minute audit and see where your business can attract, respond to, and convert more customers." : "Get a free 10-minute audit and see how BotPager can help your business get more booked jobs."}</p></div>
           <div className="ctaAction"><PrimaryButton light>Get Your Free Growth Audit</PrimaryButton><span><Globe2 /> botpager.com &nbsp;&nbsp; <Phone /> +1 (437) 444 5678</span></div>
         </div>
       </section>
-      <footer className="footer">
-        <div className="container footerGrid">
-          <div><Logo light /><p>{isConversion ? "Websites and automated follow-up that help local service businesses get more customers." : "AI-powered websites, chatbots, and automations that turn more leads into booked jobs."}</p><div className="socials"><a href="#" aria-label="Facebook">f</a><a href="#" aria-label="Instagram">ig</a><a href="#" aria-label="YouTube">▶</a><a href="#" aria-label="LinkedIn">in</a></div></div>
-          <div><h3>Solutions</h3><a href="#solutions">AI Website</a><a href="#solutions">Chatbot</a><a href="#how-it-works">Automations</a><a href="#pricing">Pricing</a></div>
-          <div><h3>Company</h3><a href="#about">About Us</a><a href="#how-it-works">How It Works</a><a href="#faq">Resources</a><a href="mailto:hello@botpager.com">Contact</a></div>
-          <div><h3>Get in touch</h3><a href="https://botpager.com"><Globe2 /> botpager.com</a><a href="tel:+14374445678"><Phone /> +1 (437) 444 5678</a><a href="mailto:hello@botpager.com"><Mail /> hello@botpager.com</a></div>
-        </div>
-        <div className="container footerBottom"><span>© 2026 BotPager. All rights reserved.</span><span><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></span></div>
-      </footer>
     </>
+  );
+}
+
+function SiteFooter({ variant = "default" }: { variant?: LandingVariant }) {
+  const isConversion = variant === "conversion";
+
+  return (
+    <footer className="footer">
+      <div className="container footerGrid">
+        <div><Logo light /><p>{isConversion ? "Websites and automated follow-up that help local service businesses get more customers." : "AI-powered websites, chatbots, and automations that turn more leads into booked jobs."}</p><div className="socials"><a href="#" aria-label="Facebook">f</a><a href="#" aria-label="Instagram">ig</a><a href="#" aria-label="YouTube">▶</a><a href="#" aria-label="LinkedIn">in</a></div></div>
+        <div><h3>Solutions</h3><a href="#solutions">AI Website</a><a href="#solutions">Chatbot</a><a href="#how-it-works">Automations</a><a href="#pricing">Pricing</a></div>
+        <div><h3>Company</h3><a href="#about">About Us</a><a href="#how-it-works">How It Works</a><a href="#faq">Resources</a><a href="mailto:hello@botpager.com">Contact</a></div>
+        <div><h3>Get in touch</h3><a href="https://botpager.com"><Globe2 /> botpager.com</a><a href="tel:+14374445678"><Phone /> +1 (437) 444 5678</a><a href="mailto:hello@botpager.com"><Mail /> hello@botpager.com</a></div>
+      </div>
+      <div className="container footerBottom"><span>© 2026 BotPager. All rights reserved.</span><span><a href="#">Privacy Policy</a><a href="#">Terms of Service</a></span></div>
+    </footer>
   );
 }
 
@@ -974,17 +981,20 @@ export function LandingPage({ faqData, variant = "default" }: { faqData: FAQ[]; 
     <>
       <a className="skipLink" href="#main-content">Skip to main content</a>
       <Header />
-      <Hero variant={variant} />
-      <ResultsSection variant={variant} />
-      <Industries variant={variant} />
-      <GoogleVisibilitySection />
-      <PortfolioShowcaseSection />
-      <HowItWorks variant={variant} />
-      <AuditCTA variant={variant} />
-      {variant !== "conversion" && <BenefitBand variant={variant} />}
-      <Pricing />
-      <FAQSection faqData={faqData} />
-      <FinalCTA variant={variant} />
+      <main id="main-content">
+        <Hero variant={variant} />
+        <ResultsSection variant={variant} />
+        <Industries variant={variant} />
+        <GoogleVisibilitySection />
+        <PortfolioShowcaseSection />
+        <HowItWorks variant={variant} />
+        <AuditCTA variant={variant} />
+        {variant !== "conversion" && <BenefitBand variant={variant} />}
+        <Pricing />
+        <FAQSection faqData={faqData} />
+        <FinalCTA variant={variant} />
+      </main>
+      <SiteFooter variant={variant} />
     </>
   );
 }
