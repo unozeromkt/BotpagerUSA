@@ -5,6 +5,7 @@ import type { AuditReport, AuditSubmission } from "@/lib/audit/types";
 
 const HIGHLEVEL_BASE_URL = "https://services.leadconnectorhq.com";
 const AUDIT_CUSTOM_FIELD_COUNT = 6;
+const AUDIT_SUBMITTED_TAG = "botpager-audit-submitted";
 
 type HighLevelContact = {
   id: string;
@@ -143,6 +144,21 @@ export async function upsertAuditContact(submission: AuditSubmission): Promise<H
   });
 
   if (!payload.contact?.id) throw new Error("HighLevel did not return a contact id.");
+
+  // Mark the contact as soon as the audit form has been submitted. This tag is
+  // intentionally separate from the workflow trigger added after report fields
+  // are saved, so every completed form can be filtered in HighLevel.
+  try {
+    await highLevelRequest(config, `/contacts/${payload.contact.id}/tags`, {
+      method: "POST",
+      body: JSON.stringify({ tags: [AUDIT_SUBMITTED_TAG] }),
+    });
+  } catch {
+    // Keep the audit flowing if tagging is temporarily unavailable; the contact
+    // upsert succeeded and the failure is visible in server logs.
+    console.warn("[BotPager Audit] Submitted-form tag could not be added.");
+  }
+
   return payload.contact;
 }
 
