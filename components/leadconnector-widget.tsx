@@ -5,7 +5,9 @@ import { usePathname } from "next/navigation";
 
 export function LeadConnectorWidget() {
   const pathname = usePathname();
-  if (pathname.startsWith("/admin")) return null;
+  // The audit page has its own explicit SMS consent form. GHL requires the
+  // chat widget to be the only SMS opt-in method on pages where it appears.
+  if (pathname.startsWith("/admin") || pathname.startsWith("/audit")) return null;
 
   const complianceWidgetId = "6a93574c9f17bc64b324038c";
   const defaultWidgetId = "6a935fe3731304959723e37d";
