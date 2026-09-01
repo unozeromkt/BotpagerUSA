@@ -69,12 +69,21 @@ function parseContact(value: unknown): ContactDetails {
   const consent = record.consent === true;
   if (!consent) throw new AuditValidationError("Consent is required to send the audit.");
 
+  const phone = cleanString(record.phone, "Phone", 40, false);
+  const smsNonMarketingConsent = record.smsNonMarketingConsent === true;
+  const smsMarketingConsent = record.smsMarketingConsent === true;
+  if ((smsNonMarketingConsent || smsMarketingConsent) && !phone) {
+    throw new AuditValidationError("Enter a phone number when selecting SMS consent.");
+  }
+
   return {
     firstName: cleanString(record.firstName, "First name", 80),
     email,
-    phone: cleanString(record.phone, "Phone", 40, false),
+    phone,
     businessName: cleanString(record.businessName, "Business name", 120),
     consent,
+    smsNonMarketingConsent,
+    smsMarketingConsent,
     websiteTrap: cleanString(record.websiteTrap, "Website confirmation", 160, false),
   };
 }

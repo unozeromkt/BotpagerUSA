@@ -45,6 +45,8 @@ const emptyContact: ContactDetails = {
   phone: "",
   businessName: "",
   consent: false,
+  smsNonMarketingConsent: false,
+  smsMarketingConsent: false,
   websiteTrap: "",
 };
 
@@ -172,6 +174,10 @@ export function AuditExperience() {
     }
     if (!contact.consent) {
       setError("Please confirm that we can prepare and email your audit.");
+      return;
+    }
+    if ((contact.smsNonMarketingConsent || contact.smsMarketingConsent) && !contact.phone.trim()) {
+      setError("Enter a phone number when selecting SMS consent, or leave both SMS options unchecked.");
       return;
     }
 
@@ -325,12 +331,21 @@ export function AuditExperience() {
                     <label><span>Business name</span><input autoComplete="organization" value={contact.businessName} onChange={(event) => setContact({ ...contact, businessName: event.target.value })} placeholder="John's Plumbing" required /></label>
                   </div>
                   <label><span>Email</span><input type="email" autoComplete="email" value={contact.email} onChange={(event) => setContact({ ...contact, email: event.target.value })} placeholder="john@yourbusiness.com" required /></label>
-                  <label><span>Phone <small>Optional</small></span><input type="tel" autoComplete="tel" value={contact.phone} onChange={(event) => setContact({ ...contact, phone: event.target.value })} placeholder="(555) 123-4567" /></label>
+                  <label><span>Phone <small>Optional unless you choose SMS</small></span><input type="tel" autoComplete="tel" value={contact.phone} onChange={(event) => setContact({ ...contact, phone: event.target.value })} placeholder="(555) 123-4567" /></label>
                   <label className="auditHoneypot" aria-hidden="true"><span>Leave this field empty</span><input tabIndex={-1} autoComplete="off" value={contact.websiteTrap} onChange={(event) => setContact({ ...contact, websiteTrap: event.target.value })} /></label>
                   <label className="auditConsent">
                     <input type="checkbox" checked={contact.consent} onChange={(event) => setContact({ ...contact, consent: event.target.checked })} />
-                    <span>I agree that BotPager may use this information to prepare and email my audit. I can unsubscribe at any time.</span>
+                    <span>I agree that BotPager may use this information to prepare and email my audit. I can unsubscribe from marketing emails at any time.</span>
                   </label>
+                  <label className="auditConsent">
+                    <input type="checkbox" checked={contact.smsNonMarketingConsent} onChange={(event) => setContact({ ...contact, smsNonMarketingConsent: event.target.checked })} />
+                    <span>I consent to receive non-marketing text messages from BotPager (operated by UnoZero Marketing LLC) about my Growth Audit, appointment reminders, and follow-up related to my request. Message frequency may vary. Message and data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+                  </label>
+                  <label className="auditConsent">
+                    <input type="checkbox" checked={contact.smsMarketingConsent} onChange={(event) => setContact({ ...contact, smsMarketingConsent: event.target.checked })} />
+                    <span>I consent to receive marketing text messages from BotPager (operated by UnoZero Marketing LLC) about special offers, discounts, and service updates. Message frequency may vary. Message and data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+                  </label>
+                  <p className="auditLegalLinks">SMS consent is optional and is not required to submit this form. Review our <Link href="/privacy">Privacy Policy</Link> and <Link href="/terms">Terms &amp; Conditions</Link>.</p>
                   {error && <p className="auditError" role="alert">{error}</p>}
                   <button className="auditPrimaryButton" type="submit">Prepare my report <ArrowRight /></button>
                   <p className="auditMicrocopy"><ShieldCheck /> Your information is kept private and never sold.</p>

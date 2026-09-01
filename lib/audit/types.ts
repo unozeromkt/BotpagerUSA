@@ -20,6 +20,8 @@ export type ContactDetails = {
   phone: string;
   businessName: string;
   consent: boolean;
+  smsNonMarketingConsent: boolean;
+  smsMarketingConsent: boolean;
   websiteTrap?: string;
 };
 

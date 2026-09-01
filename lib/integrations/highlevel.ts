@@ -6,6 +6,8 @@ import type { AuditReport, AuditSubmission } from "@/lib/audit/types";
 const HIGHLEVEL_BASE_URL = "https://services.leadconnectorhq.com";
 const AUDIT_CUSTOM_FIELD_COUNT = 6;
 const AUDIT_SUBMITTED_TAG = "botpager-audit-submitted";
+const AUDIT_SMS_NON_MARKETING_TAG = "botpager-sms-nonmarketing-optin";
+const AUDIT_SMS_MARKETING_TAG = "botpager-sms-marketing-optin";
 
 type HighLevelContact = {
   id: string;
@@ -101,6 +103,12 @@ function buildNote(submission: AuditSubmission, report: AuditReport) {
     ...answerLines,
     ...(trackingLines.length ? ["", "ATTRIBUTION", ...trackingLines] : []),
     "",
+    "COMMUNICATION CONSENT",
+    `Email audit consent: ${submission.contact.consent ? "Yes" : "No"}`,
+    `SMS non-marketing consent: ${submission.contact.smsNonMarketingConsent ? "Yes" : "No"}`,
+    `SMS marketing consent: ${submission.contact.smsMarketingConsent ? "Yes" : "No"}`,
+    `Consent captured at: ${new Date().toISOString()}`,
+    "",
     "AUDIT SUMMARY",
     report.businessSummary,
     "",
@@ -149,9 +157,14 @@ export async function upsertAuditContact(submission: AuditSubmission): Promise<H
   // intentionally separate from the workflow trigger added after report fields
   // are saved, so every completed form can be filtered in HighLevel.
   try {
+    const tags = [
+      AUDIT_SUBMITTED_TAG,
+      ...(submission.contact.smsNonMarketingConsent ? [AUDIT_SMS_NON_MARKETING_TAG] : []),
+      ...(submission.contact.smsMarketingConsent ? [AUDIT_SMS_MARKETING_TAG] : []),
+    ];
     await highLevelRequest(config, `/contacts/${payload.contact.id}/tags`, {
       method: "POST",
-      body: JSON.stringify({ tags: [AUDIT_SUBMITTED_TAG] }),
+      body: JSON.stringify({ tags }),
     });
   } catch {
     // Keep the audit flowing if tagging is temporarily unavailable; the contact

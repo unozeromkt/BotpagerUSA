@@ -514,7 +514,10 @@
 .auditContactProof svg { width: 17px; height: 17px; color: #2fa463; }
 .auditConsent { margin: 2px 0 15px !important; display: grid !important; grid-template-columns: 17px 1fr; align-items: start; gap: 8px !important; }
 .auditConsent input { width: 16px; height: 16px; margin: 1px 0 0; accent-color: var(--purple); }
-.auditConsent span { color: #65708a !important; font-size: 8px !important; font-weight: 500 !important; line-height: 1.45; }
+.auditConsent span { color: #53627d !important; font-size: 10px !important; font-weight: 500 !important; line-height: 1.55; }
+.auditLegalLinks { margin: -2px 0 15px; color: #65708a; font-size: 10px; line-height: 1.5; }
+.auditLegalLinks a { color: var(--purple); font-weight: 700; text-decoration: underline; text-underline-offset: 2px; }
+.auditLegalLinks a:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
 .auditHoneypot { position: absolute !important; left: -10000px; width: 1px; height: 1px; overflow: hidden; }
 
 .auditLoadingPanel { width: min(720px, 100%); margin: 0 auto; padding: 68px 50px; text-align: center; }
@@ -711,6 +714,8 @@
   .auditBenefits span { min-height: 31px; padding: 0 8px; font-size: 7px; }
   .auditContextForm,
   .auditLeadForm { padding: 20px 16px; }
+  .auditConsent span,
+  .auditLegalLinks { font-size: 10px !important; }
   .auditFieldRow,
   .auditOptions,
   .auditOpportunityColumns { grid-template-columns: 1fr; gap: 10px; }
