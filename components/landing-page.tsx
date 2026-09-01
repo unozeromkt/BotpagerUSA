@@ -1093,7 +1093,7 @@ export function SiteFooter({ variant = "default" }: { variant?: LandingVariant }
         <div><h3>Company</h3><a href="/#about">About Us</a><a href="/#how-it-works">How It Works</a><a href="/#faq">Resources</a><a href="mailto:info@botpager.com">Contact</a></div>
         <div><h3>Get in touch</h3><a href="https://botpager.com"><Globe2 /> botpager.com</a><a href="tel:+12392510184"><Phone /> 239-251-0184</a><a href="mailto:info@botpager.com"><Mail /> info@botpager.com</a></div>
       </div>
-      <div className="container footerBottom"><span>© 2026 BotPager. All rights reserved.</span><span><a href="#">Privacy Policy</a><a href="/terms">Terms of Service</a></span></div>
+      <div className="container footerBottom"><span>© 2026 BotPager. All rights reserved.</span><span><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Service</a></span></div>
     </footer>
   );
 }
