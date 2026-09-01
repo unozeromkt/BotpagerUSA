@@ -85,10 +85,10 @@ function TermsDocument() {
       <div className="termsIntro">{renderBody(introBody, "intro")}</div>
       <section className="termsSection termsSmsSection" aria-labelledby="terms-sms-title">
         <h2 id="terms-sms-title">SMS Messaging Program</h2>
-        <p>BotPager, operated by <strong>UnoZero Marketing LLC</strong>, may send text messages to people who have expressly opted in through a BotPager form, chat, booking flow, or another documented consent method.</p>
+        <p>BotPager, operated by <strong>Uno Zero Marketing LLC</strong>, may send text messages to people who have expressly opted in through a BotPager form, chat, booking flow, or another documented consent method.</p>
         <p>Messages may include responses to inquiries, Growth Audit follow-up, appointment reminders, service updates, and marketing offers when the applicable marketing consent has been provided. <strong>Message frequency may vary. Message and data rates may apply.</strong></p>
         <p>Consent is not a condition of purchasing any goods or services. You can opt out at any time by replying <strong>STOP</strong>. Reply <strong>HELP</strong> for assistance or contact <a href="mailto:legal@botpager.com">legal@botpager.com</a> or <a href="tel:+12392510184">239-251-0184</a>. After you opt out, you will receive no further SMS messages unless you opt in again.</p>
-        <p>SMS opt-in information and mobile phone numbers are not sold or shared with third parties or affiliates for their own marketing or promotional purposes. See our <Link href="/privacy">Privacy Policy</Link> for additional details.</p>
+        <p>SMS opt-in information and mobile phone numbers are not sold or shared with third parties for their own marketing or promotional purposes. See our <Link href="/privacy">Privacy Policy</Link> for additional details.</p>
       </section>
       {blocks.map((block, index) => {
         const lines = block.trim().split("\n");
@@ -112,7 +112,7 @@ export default function TermsPage() {
         <div className="container termsIntroHero">
           <p className="eyebrow">Legal</p>
           <h1>Terms of Service</h1>
-          <p>These terms explain the relationship between BotPager and the local service businesses we serve.</p>
+          <p>These terms explain the relationship between BotPager, operated by Uno Zero Marketing LLC, and the local service businesses we serve.</p>
         </div>
         <div className="container termsDocumentWrap">
           <TermsDocument />

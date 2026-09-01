@@ -339,11 +339,11 @@ export function AuditExperience() {
                   </label>
                   <label className="auditConsent">
                     <input type="checkbox" checked={contact.smsNonMarketingConsent} onChange={(event) => setContact({ ...contact, smsNonMarketingConsent: event.target.checked })} />
-                    <span>I consent to receive non-marketing text messages from BotPager (operated by UnoZero Marketing LLC) about my Growth Audit, appointment reminders, and follow-up related to my request. Message frequency may vary. Message and data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+                    <span>I consent to receive non-marketing text messages from BotPager, operated by Uno Zero Marketing LLC, about my Growth Audit, appointment reminders, and follow-up related to my request. Message frequency may vary. Message and data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
                   </label>
                   <label className="auditConsent">
                     <input type="checkbox" checked={contact.smsMarketingConsent} onChange={(event) => setContact({ ...contact, smsMarketingConsent: event.target.checked })} />
-                    <span>I consent to receive marketing text messages from BotPager (operated by UnoZero Marketing LLC) about special offers, discounts, and service updates. Message frequency may vary. Message and data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+                    <span>I consent to receive promotional and marketing SMS messages from BotPager, operated by Uno Zero Marketing LLC, about special offers, discounts, and service updates. Message frequency varies. Message and data rates may apply. Reply STOP to opt out or HELP for help. Consent is not a condition of purchase.</span>
                   </label>
                   <p className="auditLegalLinks">SMS consent is optional and is not required to submit this form. Review our <Link href="/privacy">Privacy Policy</Link> and <Link href="/terms">Terms &amp; Conditions</Link>.</p>
                   {error && <p className="auditError" role="alert">{error}</p>}

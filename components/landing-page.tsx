@@ -1088,10 +1088,10 @@ export function SiteFooter({ variant = "default" }: { variant?: LandingVariant }
   return (
     <footer className="footer">
       <div className="container footerGrid">
-        <div><Logo light /><p>{isConversion ? "Websites and automated follow-up that help local service businesses get more customers." : "AI-powered websites, chatbots, and automations that turn more leads into booked jobs."}</p><div className="socials"><a href="#" aria-label="Instagram"><InstagramMark /></a><a href="#" aria-label="TikTok"><TikTokMark /></a><a href="#" aria-label="LinkedIn"><LinkedInMark /></a></div></div>
+        <div><Logo light /><p>{isConversion ? "Websites and automated follow-up that help local service businesses get more customers." : "AI-powered websites, chatbots, and automations that turn more leads into booked jobs."}</p><p className="footerLegalIdentity">BotPager is operated by Uno Zero Marketing LLC.<br />23945 SAN GIOVANNI DR<br />LAND O LAKES FL 34639</p><div className="socials"><a href="#" aria-label="Instagram"><InstagramMark /></a><a href="#" aria-label="TikTok"><TikTokMark /></a><a href="#" aria-label="LinkedIn"><LinkedInMark /></a></div></div>
         <div><h3>Solutions</h3><a href="/#solutions">AI Website</a><a href="/#solutions">Chatbot</a><a href="/#how-it-works">Automations</a><a href="/#pricing">Pricing</a></div>
         <div><h3>Company</h3><a href="/#about">About Us</a><a href="/#how-it-works">How It Works</a><a href="/#faq">Resources</a><a href="mailto:info@botpager.com">Contact</a></div>
-        <div><h3>Get in touch</h3><a href="https://botpager.com"><Globe2 /> botpager.com</a><a href="tel:+12392510184"><Phone /> 239-251-0184</a><a href="mailto:info@botpager.com"><Mail /> info@botpager.com</a></div>
+        <div><h3>Get in touch</h3><a href="https://botpager.com"><Globe2 /> botpager.com</a><a href="tel:+12392510184"><Phone /> 239-251-0184</a><a href="mailto:info@botpager.com"><Mail /> info@botpager.com</a><a href="mailto:legal@botpager.com"><Mail /> legal@botpager.com</a></div>
       </div>
       <div className="container footerBottom"><span>© 2026 BotPager. All rights reserved.</span><span><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Service</a></span></div>
     </footer>

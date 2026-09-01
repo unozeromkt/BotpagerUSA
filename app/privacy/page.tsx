@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Header, SiteFooter } from "@/components/landing-page";
-import { privacyContent } from "./privacy-content";
+import { privacyContent } from "./privacy-content-normalized";
 import "../terms/terms.css";
 
 export const metadata: Metadata = {
