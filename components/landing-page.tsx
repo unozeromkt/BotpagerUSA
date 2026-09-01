@@ -283,16 +283,81 @@ const serviceIndustries = [
 const plans = [
   {
     name: "Starter",
-    eyebrow: "Capture Leads Fast",
+    number: "01",
+    tagline: "Capture Leads Fast",
     price: "$497",
-    features: ["High-converting website or landing page", "AI chatbot for lead capture", "Basic CRM & lead pipeline", "Email & SMS follow-up sequences", "Live dashboard & reporting", "Priority support"],
+    setup: "$997 one-time setup",
+    bestFor: "Local service businesses that need a better website, faster lead capture, basic CRM organization, and automated follow-up without adding a full growth stack yet.",
+    highlights: ["Conversion-focused website", "AI chatbot", "CRM & lead pipeline", "Automated follow-up"],
+    recommendedAddOn: "Paid Ads Management — starting at $350/mo",
+    detailGroups: [
+      {
+        title: "Everything included",
+        items: ["Conversion-focused website or landing page", "AI chatbot for lead capture", "Missed-call text-back workflow", "Basic CRM and lead pipeline", "Email and SMS follow-up sequences", "Lead notification setup", "Basic tracking setup", "Live dashboard and reporting", "Priority support"],
+      },
+      {
+        title: "Not included",
+        muted: true,
+        items: ["Ad spend", "Full AI voice agent", "Ongoing SEO strategy", "Monthly content production", "Advanced integrations", "Multi-location setup"],
+      },
+    ],
+    note: "Setup fee applies. SMS, phone, email, and AI usage may be billed separately.",
   },
   {
     name: "Growth",
-    eyebrow: "Scale With Automation & Ads",
-    price: "$997",
+    number: "02",
+    tagline: "Scale With Automation, SEO & AI Voice",
+    price: "$1,497",
+    setup: "$1,997–$2,997 one-time setup",
+    bestFor: "Local service businesses ready to capture more demand, respond faster, follow up automatically, and turn more inquiries into booked jobs.",
+    highlights: ["Ads management", "Local SEO strategy", "AI voice agent", "Advanced automations"],
     popular: true,
-    features: ["Everything in Starter, plus:", "Meta & Google Ads management", "Advanced automations & workflows", "Call tracking & form tracking", "Advanced dashboard & insights", "Dedicated success manager"],
+    detailGroups: [
+      {
+        title: "Everything in Starter, plus",
+        items: ["Meta and Google Ads management", "Local SEO strategy and monthly visibility priorities", "AI voice agent for inbound lead handling", "Advanced CRM workflows and automations", "Call tracking and form tracking", "Advanced dashboard and insights", "Appointment / quote follow-up automation", "Monthly performance review", "Dedicated success manager"],
+      },
+      {
+        title: "AI Voice fair-use scope",
+        items: ["One business location", "One main inbound call flow", "Approved FAQ and lead intake script", "Human handoff rules", "Basic appointment or quote-request routing"],
+      },
+      {
+        title: "SEO strategy scope",
+        items: ["Google Business Profile priorities", "Local service page recommendations", "Basic on-page SEO recommendations", "Local visibility tracking priorities", "Monthly SEO action plan"],
+      },
+      {
+        title: "Not included",
+        muted: true,
+        items: ["Ad spend", "Full SEO campaign with blog/content production", "Link building", "Full reputation management", "Multi-location SEO", "Outbound voice campaigns", "Complex custom integrations", "Production of video/photo creatives"],
+      },
+    ],
+    note: "Setup fee, ad spend, and usage limits apply. Phone, SMS, email, and AI usage may be billed separately.",
+  },
+];
+
+const optionalAddOns = [
+  {
+    name: "AI Voice Agent",
+    tagline: "For missed calls and after-hours lead handling.",
+    price: "$297–$497/mo + usage",
+    icon: Phone,
+    includes: ["Inbound call answering flow", "Lead qualification questions", "FAQ-based responses", "Human handoff", "Call summary / CRM notes", "Basic routing rules"],
+  },
+  {
+    name: "Local SEO Growth",
+    tagline: "Ongoing local SEO execution beyond strategy.",
+    price: "$750–$1,500/mo",
+    icon: Search,
+    includes: ["Monthly SEO execution plan", "Service page optimization", "Local content recommendations or production scope", "Google Business Profile optimization", "Local ranking visibility review", "Technical/on-page SEO fixes based on scope"],
+    exclusions: ["Aggressive link building", "Multi-location SEO", "Large content production"],
+  },
+  {
+    name: "Paid Ads Management",
+    tagline: "Qualified local demand through Google Ads and Meta Ads.",
+    price: "$350/mo",
+    icon: MousePointerClick,
+    meta: ["Ad spend paid separately", "Recommended starting ad spend: $500–$2,500/mo"],
+    includes: ["Campaign strategy for Google Ads and Meta Ads", "Initial offer and funnel recommendation", "Campaign setup or optimization", "Google Search campaigns for high-intent local searches", "Meta lead generation or retargeting campaigns", "Location and service-area targeting", "Keyword research for Google Ads", "Negative keyword setup and cleanup", "Basic ad copywriting", "Conversion tracking setup/review", "Call tracking and form tracking alignment", "CRM/pipeline connection when available", "Weekly campaign monitoring", "Monthly performance summary", "Budget allocation recommendations", "Basic landing page recommendations"],
   },
 ];
 
@@ -902,19 +967,64 @@ function Industries({ variant = "default" }: { variant?: LandingVariant }) {
 function Pricing() {
   return (
     <section className="section pricingSection" id="pricing" aria-labelledby="pricing-title">
-      <div className="container narrow">
-        <Reveal><SectionHeading headingId="pricing-title" title="Choose the plan that grows with you" text="Simple plans built around the systems your business needs to capture and convert more opportunities." /></Reveal>
+      <div className="container pricingContainer">
+        <Reveal><SectionHeading headingId="pricing-title" eyebrow="Simple, scalable plans" title="Choose the growth system that fits today" text="Start with the essentials or add the automation, visibility, and AI your business needs to scale." /></Reveal>
         <div className="pricingGrid">
           {plans.map((plan) => (
             <Reveal className={`priceCard ${plan.popular ? "popular" : ""}`} key={plan.name}>
-              {plan.popular && <span className="popularLabel">Most popular</span>}
-              <div className="priceHead"><div><h3>{plan.name}</h3><p>{plan.eyebrow}</p></div><div className="price">{plan.price}<small>/mo</small></div></div>
-              <ul>{plan.features.map((feature) => <li key={feature}><Check />{feature}</li>)}</ul>
-              <a className="button priceButton" href="/audit">Get Started <ArrowRight size={16} /></a>
+              {plan.popular && <span className="popularLabel">Recommended</span>}
+              <div className="priceHead">
+                <div className="priceIdentity"><span>Plan {plan.number}</span><h3>{plan.name}</h3><p>{plan.tagline}</p></div>
+                <div className="price"><small>Starting at</small><strong>{plan.price}<span>/mo</span></strong></div>
+              </div>
+              <p className="priceSetup"><b>Setup</b>{plan.setup}</p>
+              <div className="priceFit"><span>Best for</span><p>{plan.bestFor}</p></div>
+              <ul className="priceHighlights">{plan.highlights.map((feature) => <li key={feature}><Check />{feature}</li>)}</ul>
+              {plan.recommendedAddOn && <p className="priceUpsell"><Sparkles /> <span><b>Recommended add-on</b>{plan.recommendedAddOn}</span></p>}
+              <details className="priceDisclosure">
+                <summary><span>View full plan details</span><ChevronDown /></summary>
+                <div className="priceDisclosureContent">
+                  {plan.detailGroups.map((group) => (
+                    <div className={group.muted ? "priceDetailGroup priceDetailMuted" : "priceDetailGroup"} key={group.title}>
+                      <h4>{group.title}</h4>
+                      <ul>{group.items.map((item) => <li key={item}>{group.muted ? <span aria-hidden="true">—</span> : <Check />}{item}</li>)}</ul>
+                    </div>
+                  ))}
+                </div>
+              </details>
+              <a className="button priceButton" href="/audit">Book a Strategy Call <ArrowRight size={16} /></a>
+              <p className="priceFinePrint">{plan.note}</p>
             </Reveal>
           ))}
         </div>
-        <p className="priceNote">Ad spend and applicable setup costs are discussed during your free audit.</p>
+
+        <div className="addOnsSection" aria-labelledby="add-ons-title">
+          <Reveal className="addOnsHeading">
+            <div><p className="eyebrow">Build your own stack</p><h3 id="add-ons-title">Optional add-ons</h3></div>
+            <p>Add focused capabilities when the timing is right—without moving to a larger plan too early.</p>
+          </Reveal>
+          <div className="addOnsGrid">
+            {optionalAddOns.map((addOn, index) => {
+              const AddOnIcon = addOn.icon;
+              return (
+                <Reveal className="addOnCard" delay={index * 0.05} key={addOn.name}>
+                  <div className="addOnTop"><span><AddOnIcon /></span><small>Add-on</small></div>
+                  <h4>{addOn.name}</h4>
+                  <p className="addOnTagline">{addOn.tagline}</p>
+                  <p className="addOnPrice"><small>Starting at</small>{addOn.price}</p>
+                  {addOn.meta && <div className="addOnMeta">{addOn.meta.map((item) => <span key={item}>{item}</span>)}</div>}
+                  <details className="addOnDisclosure">
+                    <summary><span>See what’s included</span><ChevronDown /></summary>
+                    <div>
+                      <ul>{addOn.includes.map((item) => <li key={item}><Check />{item}</li>)}</ul>
+                      {addOn.exclusions && <><h5>Not included by default</h5><ul className="addOnExclusions">{addOn.exclusions.map((item) => <li key={item}><span aria-hidden="true">—</span>{item}</li>)}</ul></>}
+                    </div>
+                  </details>
+                </Reveal>
+              );
+            })}
+          </div>
+        </div>
       </div>
     </section>
   );
