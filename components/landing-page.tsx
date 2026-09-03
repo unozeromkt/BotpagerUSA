@@ -559,12 +559,9 @@ function Hero({ variant = "default" }: { variant?: LandingVariant }) {
   );
 }
 
-function ResultsSection({ variant = "default" }: { variant?: LandingVariant }) {
-  const isConversion = variant === "conversion";
-
-  if (!isConversion) {
-    return (
-      <section className="section pillarSolutions" id="solutions" aria-labelledby="solutions-title">
+function PillarSolutionsSection() {
+  return (
+    <section className="section pillarSolutions" id="solutions" aria-labelledby="solutions-title">
         <div className="pillarSolutionsGlow pillarSolutionsGlowOne" aria-hidden="true" />
         <div className="pillarSolutionsGlow pillarSolutionsGlowTwo" aria-hidden="true" />
         <div className="container pillarSolutionsInner">
@@ -612,14 +609,19 @@ function ResultsSection({ variant = "default" }: { variant?: LandingVariant }) {
 
           <SectionCTA>Build My Growth System</SectionCTA>
         </div>
-      </section>
-    );
-  }
+    </section>
+  );
+}
+
+function ResultsSection({ variant = "default" }: { variant?: LandingVariant }) {
+  const isConversion = variant === "conversion";
+
+  if (!isConversion) return <PillarSolutionsSection />;
 
   return (
-    <section className="section results" id="solutions" aria-labelledby="solutions-title">
+    <section className="section results" id="solutions-overview" aria-labelledby="solutions-overview-title">
       <div className="container">
-        <Reveal><SectionHeading headingId="solutions-title" eyebrow="Stop letting opportunities slip away" title={<>More customers + sales<br /><span>Fewer missed opportunities.</span></>} text="BotPager helps you respond faster, keep conversations going, and turn more interested people into real customers." /></Reveal>
+        <Reveal><SectionHeading headingId="solutions-overview-title" eyebrow="Stop letting opportunities slip away" title={<>More customers + sales<br /><span>Fewer missed opportunities.</span></>} text="BotPager helps you respond faster, keep conversations going, and turn more interested people into real customers." /></Reveal>
         <div className="cardGrid sixCards">
           {conversionPainSolutions.map(({ icon: Icon, title, text }, index) => (
             <Reveal className="solutionCard" delay={index * 0.05} key={title}>
@@ -1199,6 +1201,7 @@ export function LandingPage({ faqData, variant = "default" }: { faqData: FAQ[]; 
       <main id="main-content">
         <Hero variant={variant} />
         <ResultsSection variant={variant} />
+        {variant === "conversion" && <PillarSolutionsSection />}
         <Industries variant={variant} />
         <GoogleVisibilitySection />
         <PortfolioShowcaseSection />
