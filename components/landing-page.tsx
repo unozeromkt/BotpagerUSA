@@ -289,6 +289,7 @@ const plans = [
     setup: "$997 one-time setup",
     bestFor: "Local service businesses that need a better website, faster lead capture, basic CRM organization, and automated follow-up without adding a full growth stack yet.",
     highlights: ["Conversion-focused website", "AI chatbot", "CRM & lead pipeline", "Automated follow-up"],
+    strategyCallout: null,
     recommendedAddOn: "Paid Ads Management — starting at $350/mo",
     detailGroups: [
       {
@@ -306,16 +307,20 @@ const plans = [
   {
     name: "Growth",
     number: "02",
-    tagline: "Scale With Automation, SEO & AI Voice",
+    tagline: "Scale With Automation, SEO & Marketing Strategy",
     price: "$1,497",
     setup: "$1,997–$2,997 one-time setup",
-    bestFor: "Local service businesses ready to capture more demand, respond faster, follow up automatically, and turn more inquiries into booked jobs.",
-    highlights: ["Ads management", "Local SEO strategy", "AI voice agent", "Advanced automations"],
+    bestFor: "Local service businesses ready to partner with a digital growth team that captures more demand, responds faster, and turns more inquiries into booked jobs.",
+    highlights: ["Digital growth team", "Ads management", "Local SEO strategy", "AI voice agent"],
+    strategyCallout: {
+      label: "Your digital growth team",
+      text: "Strategy, optimization, and accountability across your marketing system.",
+    },
     popular: true,
     detailGroups: [
       {
         title: "Everything in Starter, plus",
-        items: ["Meta and Google Ads management", "Local SEO strategy and monthly visibility priorities", "AI voice agent for inbound lead handling", "Advanced CRM workflows and automations", "Call tracking and form tracking", "Advanced dashboard and insights", "Appointment / quote follow-up automation", "Monthly performance review", "Dedicated success manager"],
+        items: ["Meta and Google Ads management", "Digital marketing strategy and monthly growth priorities", "Local SEO strategy and monthly visibility priorities", "AI voice agent for inbound lead handling", "Advanced CRM workflows and automations", "Call tracking and form tracking", "Advanced dashboard and insights", "Appointment / quote follow-up automation", "Monthly performance review", "Dedicated success manager"],
       },
       {
         title: "AI Voice fair-use scope",
@@ -979,6 +984,7 @@ function Pricing() {
               </div>
               <p className="priceSetup"><b>Setup</b>{plan.setup}</p>
               <div className="priceFit"><span>Best for</span><p>{plan.bestFor}</p></div>
+              {plan.strategyCallout && <div className="priceStrategyCallout"><span><Sparkles /></span><p><b>{plan.strategyCallout.label}</b><small>{plan.strategyCallout.text}</small></p></div>}
               <ul className="priceHighlights">{plan.highlights.map((feature) => <li key={feature}><Check />{feature}</li>)}</ul>
               {plan.recommendedAddOn && <p className="priceUpsell"><Sparkles /> <span><b>Recommended add-on</b>{plan.recommendedAddOn}</span></p>}
               <details className="priceDisclosure">

@@ -410,6 +410,13 @@ h1, h2, .finalCta h2 { font-family: "Oswald", Impact, sans-serif; text-transform
 .priceFit { margin: 12px 0 14px; padding: 14px; background: linear-gradient(145deg, #f7f8ff, #fff); border: 1px solid #e8eaf5; border-radius: 14px; }
 .priceFit > span { display: block; margin-bottom: 5px; color: var(--ink); font-size: 11px; font-weight: 900; letter-spacing: .08em; text-transform: uppercase; }
 .priceFit p { margin: 0; color: #505d77; font-size: 13px; line-height: 1.5; }
+.priceStrategyCallout { margin: 0 0 15px; padding: 12px 13px; display: flex; align-items: center; gap: 10px; color: #273762; background: linear-gradient(135deg, #eef6ff 0%, #f4efff 100%); border: 1px solid #cfdcff; border-radius: 13px; box-shadow: 0 8px 20px rgba(70, 74, 180, .08); }
+.priceStrategyCallout > span { width: 31px; height: 31px; display: grid; place-items: center; flex: 0 0 auto; color: white; background: linear-gradient(135deg, var(--blue), var(--purple)); border-radius: 9px; }
+.priceStrategyCallout > span svg { width: 16px; }
+.priceStrategyCallout p { margin: 0; }
+.priceStrategyCallout b, .priceStrategyCallout small { display: block; }
+.priceStrategyCallout b { color: var(--ink); font-size: 11px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; }
+.priceStrategyCallout small { margin-top: 2px; color: #5b6883; font-size: 11px; line-height: 1.35; }
 .priceHighlights { margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px 12px; list-style: none; }
 .priceHighlights li { min-width: 0; display: flex; align-items: center; gap: 8px; color: #293652; font-size: 12px; font-weight: 700; line-height: 1.4; }
 .priceHighlights li svg { width: 17px; height: 17px; flex: 0 0 auto; padding: 3px; color: white; background: var(--purple); border-radius: 50%; stroke-width: 4; }
