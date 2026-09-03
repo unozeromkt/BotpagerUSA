@@ -42,41 +42,57 @@ const servicePillars = [
   {
     icon: Globe2,
     number: "01",
+    slug: "smart-websites",
     title: "Smart Websites",
     tagline: "From online brochure to growth engine",
     text: "Traditional websites mostly present information. A BotPager Smart Website is designed to capture intent, answer questions, track actions, and move every visitor toward a call, quote, or booking.",
     difference: "Connected to your AI agent, CRM, tracking, and follow-up—not just a collection of pages.",
     benefits: ["Conversion-first structure", "Connected lead capture", "Built for tracking and automation"],
+    features: ["Mobile-first conversion design", "Service and location pages", "Calls, forms, and booking paths", "Analytics and CRM connections"],
+    outcome: "A clear, credible customer journey that turns more visits into qualified conversations.",
+    cta: "Plan My Smart Website",
     tone: "purple",
   },
   {
     icon: MessageCircleMore,
     number: "02",
+    slug: "multichannel-ai-agent",
     title: "Multichannel AI Agent",
     tagline: "Respond while customer interest is high",
     text: "When a customer has to wait, they often keep looking. Your AI agent responds around the clock, qualifies the opportunity, and keeps the conversation moving across web chat, SMS, and connected messaging channels.",
     difference: "One consistent assistant across channels, with clear rules for a seamless human handoff.",
     benefits: ["Immediate 24/7 response", "Multichannel conversations", "Qualification and human handoff"],
+    features: ["Web chat and SMS conversations", "Approved business answers", "Lead qualification workflows", "Seamless human handoff rules"],
+    outcome: "Every new inquiry receives a helpful response while the customer is still ready to act.",
+    cta: "Add 24/7 Customer Response",
     tone: "blue",
   },
   {
     icon: UsersRound,
     number: "03",
+    slug: "crm-automations",
     title: "CRM & Automations",
     tagline: "Your customer communication hub",
     text: "Bring contacts, conversations, pipeline stages, notes, and next steps into one place. Your team can see the full customer journey and manage every opportunity without relying on scattered inboxes or memory.",
     difference: "Automatic follow-up, reminders, and routing help prevent qualified leads from going cold.",
     benefits: ["One organized customer record", "Centralized communications", "Automated follow-up and reminders"],
+    features: ["Visual lead pipeline", "Unified customer conversations", "Email and SMS sequences", "Team routing and reminders"],
+    outcome: "A more organized sales process where every lead has an owner, a status, and a next step.",
+    cta: "Organize My Lead Follow-Up",
     tone: "green",
   },
   {
     icon: Search,
     number: "04",
+    slug: "local-seo-geo",
     title: "Local SEO & Local GEO",
     tagline: "Be found in search and AI answers",
     text: "We strengthen the local content and business signals that help customers discover you on Google Search and Maps—and help AI-powered experiences understand your services, locations, and expertise.",
     difference: "Build visibility for traditional search and generative engines such as ChatGPT, Grok, and other AI assistants.",
     benefits: ["Google Search and Maps", "Service and location relevance", "AI-search-ready content"],
+    features: ["Google Business Profile priorities", "Local service page optimization", "Service-area content signals", "AI-readable business information"],
+    outcome: "A stronger local presence where high-intent customers are already searching for help.",
+    cta: "Improve My Local Visibility",
     tone: "orange",
   },
 ];
@@ -401,7 +417,7 @@ const optionalAddOns = [
 ];
 
 const nav = [
-  ["Solutions", "/#solutions"],
+  ["Solutions", "/services"],
   ["How It Works", "/#how-it-works"],
   ["Pricing", "/#pricing"],
   ["About", "/#about"],
@@ -446,8 +462,8 @@ function SectionHeading({ eyebrow, title, text, light = false, headingId }: { ey
   );
 }
 
-function SectionCTA({ children, light = false, className = "" }: { children: React.ReactNode; light?: boolean; className?: string }) {
-  return <Reveal className={`sectionCta ${className}`}><PrimaryButton light={light}>{children}</PrimaryButton></Reveal>;
+function SectionCTA({ children, light = false, className = "", href = "/audit" }: { children: React.ReactNode; light?: boolean; className?: string; href?: string }) {
+  return <Reveal className={`sectionCta ${className}`}><PrimaryButton light={light} href={href}>{children}</PrimaryButton></Reveal>;
 }
 
 export function Header() {
@@ -607,7 +623,7 @@ function PillarSolutionsSection() {
             </ol>
           </Reveal>
 
-          <SectionCTA>Build My Growth System</SectionCTA>
+          <SectionCTA href="/services">Explore All Services & Solutions</SectionCTA>
         </div>
     </section>
   );
@@ -1184,7 +1200,7 @@ export function SiteFooter({ variant = "default" }: { variant?: LandingVariant }
     <footer className="footer">
       <div className="container footerGrid">
         <div><Logo light /><p>{isConversion ? "Websites and automated follow-up that help local service businesses get more customers." : "AI-powered websites, chatbots, and automations that turn more leads into booked jobs."}</p><p className="footerLegalIdentity">BotPager is operated by Uno Zero Marketing LLC.<br />23945 SAN GIOVANNI DR<br />LAND O LAKES FL 34639</p><div className="socials"><a href="#" aria-label="Instagram"><InstagramMark /></a><a href="#" aria-label="TikTok"><TikTokMark /></a><a href="#" aria-label="LinkedIn"><LinkedInMark /></a></div></div>
-        <div><h3>Solutions</h3><a href="/#solutions">AI Website</a><a href="/#solutions">Chatbot</a><a href="/#how-it-works">Automations</a><a href="/#pricing">Pricing</a></div>
+        <div><h3>Solutions</h3><a href="/services#smart-websites">Smart Websites</a><a href="/services#multichannel-ai-agent">AI Agent</a><a href="/services#crm-automations">CRM & Automations</a><a href="/services#local-seo-geo">Local SEO & GEO</a></div>
         <div><h3>Company</h3><a href="/#about">About Us</a><a href="/#how-it-works">How It Works</a><a href="/#faq">Resources</a><a href="mailto:info@botpager.com">Contact</a></div>
         <div><h3>Get in touch</h3><a href="https://botpager.com"><Globe2 /> botpager.com</a><a href="tel:+12392510184"><Phone /> 239-251-0184</a><a href="mailto:info@botpager.com"><Mail /> info@botpager.com</a><a href="mailto:legal@botpager.com"><Mail /> legal@botpager.com</a></div>
       </div>
@@ -1201,8 +1217,8 @@ export function LandingPage({ faqData, variant = "default" }: { faqData: FAQ[]; 
       <main id="main-content">
         <Hero variant={variant} />
         <ResultsSection variant={variant} />
-        {variant === "conversion" && <PillarSolutionsSection />}
         <Industries variant={variant} />
+        {variant === "conversion" && <PillarSolutionsSection />}
         <GoogleVisibilitySection />
         <PortfolioShowcaseSection />
         <HowItWorks variant={variant} />
@@ -1213,6 +1229,103 @@ export function LandingPage({ faqData, variant = "default" }: { faqData: FAQ[]; 
         <FinalCTA variant={variant} />
       </main>
       <SiteFooter variant={variant} />
+    </>
+  );
+}
+
+export function ServicesPage() {
+  return (
+    <>
+      <a className="skipLink" href="#main-content">Skip to main content</a>
+      <Header />
+      <main id="main-content">
+        <section className="servicesHero" id="top" aria-labelledby="services-hero-title">
+          <div className="servicesHeroGlow servicesHeroGlowOne" aria-hidden="true" />
+          <div className="servicesHeroGlow servicesHeroGlowTwo" aria-hidden="true" />
+          <div className="container servicesHeroInner">
+            <motion.div className="servicesHeroCopy" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }}>
+              <p className="eyebrow"><Sparkles size={14} /> Services & Solutions</p>
+              <h1 id="services-hero-title">Four connected services. <span>One growth system.</span></h1>
+              <p>BotPager connects the experience your customers see with the systems your team uses—so your business can get found, respond faster, follow up consistently, and convert more opportunities.</p>
+              <div className="servicesHeroActions">
+                <PrimaryButton>Get Your Free Growth Audit</PrimaryButton>
+                <a className="button buttonSecondary" href="#services-overview">Explore the Services <ChevronDown size={17} /></a>
+              </div>
+            </motion.div>
+
+            <motion.div className="servicesSystemMap" initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7, delay: 0.12 }} aria-label="The four connected parts of the BotPager growth system">
+              <div className="servicesSystemCore"><Image src="/images/botpager-isotype.png" width={604} height={603} alt="" aria-hidden="true" /><span>One connected<br />growth system</span></div>
+              {servicePillars.map(({ icon: Icon, number, title, tone }) => (
+                <div className={`servicesSystemNode servicesSystemNode-${tone}`} key={title}>
+                  <span><Icon /></span><small>{number}</small><b>{title}</b>
+                </div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
+
+        <section className="servicesOverview" id="services-overview" aria-labelledby="services-overview-title">
+          <div className="container">
+            <Reveal>
+              <SectionHeading
+                headingId="services-overview-title"
+                eyebrow="Built to work together"
+                title={<>Choose the capabilities your business needs <span>right now.</span></>}
+                text="Start with one priority or connect all four. Each service is designed to create a better handoff to the next step in your customer journey."
+              />
+            </Reveal>
+            <div className="servicesOverviewGrid">
+              {servicePillars.map(({ icon: Icon, number, slug, title, tagline, tone }, index) => (
+                <Reveal className={`servicesOverviewCard servicesOverviewCard-${tone}`} delay={index * 0.05} key={title}>
+                  <a href={`#${slug}`}>
+                    <span className="servicesOverviewIcon"><Icon /></span>
+                    <small>{number}</small>
+                    <h2>{title}</h2>
+                    <p>{tagline}</p>
+                    <b>Explore this service <ArrowRight /></b>
+                  </a>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <div className="serviceDetails">
+          {servicePillars.map(({ icon: Icon, number, slug, title, tagline, text, difference, benefits, features, outcome, cta, tone }, index) => (
+            <section className={`serviceDetail serviceDetail-${tone}`} id={slug} aria-labelledby={`${slug}-title`} key={title}>
+              <div className="serviceDetailTexture" aria-hidden="true" />
+              <div className="container serviceDetailGrid">
+                <Reveal className="serviceDetailCopy">
+                  <div className="serviceDetailKicker"><span><Icon /></span><p><small>Service {number}</small>{tagline}</p></div>
+                  <h2 id={`${slug}-title`}>{title}</h2>
+                  <p className="serviceDetailLead">{text}</p>
+                  <div className="serviceDetailDifference"><Sparkles /><p>{difference}</p></div>
+                  <ul className="serviceFeatureList" aria-label={`What is included with ${title}`}>
+                    {features.map((feature) => <li key={feature}><Check />{feature}</li>)}
+                  </ul>
+                  <PrimaryButton>{cta}</PrimaryButton>
+                </Reveal>
+
+                <Reveal className="serviceDetailPanel" delay={0.08}>
+                  <div className="servicePanelTop"><span>{number}</span><small>Connected BotPager service</small></div>
+                  <div className="servicePanelIcon"><Icon /></div>
+                  <p className="servicePanelLabel">What this creates</p>
+                  <h3>{outcome}</h3>
+                  <div className="servicePanelBenefits">
+                    {benefits.map((benefit, benefitIndex) => (
+                      <div key={benefit}><span>{String(benefitIndex + 1).padStart(2, "0")}</span><p>{benefit}</p><Check /></div>
+                    ))}
+                  </div>
+                  <div className="servicePanelStatus"><span><i /> Connected</span><b>Website → AI → CRM → Growth</b></div>
+                </Reveal>
+              </div>
+            </section>
+          ))}
+        </div>
+
+        <FinalCTA variant="conversion" />
+      </main>
+      <SiteFooter variant="conversion" />
     </>
   );
 }
