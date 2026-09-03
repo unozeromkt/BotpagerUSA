@@ -6,7 +6,6 @@ import "@fontsource/inter/700.css";
 import "@fontsource/oswald/500.css";
 import "@fontsource/oswald/600.css";
 import "@fontsource/oswald/700.css";
-import { LeadConnectorWidget } from "@/components/leadconnector-widget";
 import "./globals.css";
 
 const siteUrl = "https://botpager.com";
@@ -63,7 +62,6 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
   return (
     <html lang="en">
       <body>{children}</body>
-      <LeadConnectorWidget />
     </html>
   );
 }
