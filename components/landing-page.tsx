@@ -38,13 +38,47 @@ import {
 type FAQ = [string, string];
 type LandingVariant = "default" | "conversion";
 
-const painSolutions = [
-  { icon: Zap, title: "Faster Response Times", text: "Respond in seconds, not hours." },
-  { icon: ClipboardList, title: "More Quote Requests", text: "Make it easy for leads to reach out." },
-  { icon: Send, title: "Automated Follow-Up", text: "Nurture leads until they’re ready." },
-  { icon: CalendarCheck2, title: "Better Booking Flow", text: "Smooth process from lead to job." },
-  { icon: PieChart, title: "Clear Lead Tracking", text: "Know where every lead stands." },
-  { icon: TrendingUp, title: "Higher Conversion Rate", text: "Turn more leads into booked jobs." },
+const servicePillars = [
+  {
+    icon: Globe2,
+    number: "01",
+    title: "Smart Websites",
+    tagline: "From online brochure to growth engine",
+    text: "Traditional websites mostly present information. A BotPager Smart Website is designed to capture intent, answer questions, track actions, and move every visitor toward a call, quote, or booking.",
+    difference: "Connected to your AI agent, CRM, tracking, and follow-up—not just a collection of pages.",
+    benefits: ["Conversion-first structure", "Connected lead capture", "Built for tracking and automation"],
+    tone: "purple",
+  },
+  {
+    icon: MessageCircleMore,
+    number: "02",
+    title: "Multichannel AI Agent",
+    tagline: "Respond while customer interest is high",
+    text: "When a customer has to wait, they often keep looking. Your AI agent responds around the clock, qualifies the opportunity, and keeps the conversation moving across web chat, SMS, and connected messaging channels.",
+    difference: "One consistent assistant across channels, with clear rules for a seamless human handoff.",
+    benefits: ["Immediate 24/7 response", "Multichannel conversations", "Qualification and human handoff"],
+    tone: "blue",
+  },
+  {
+    icon: UsersRound,
+    number: "03",
+    title: "CRM & Automations",
+    tagline: "Your customer communication hub",
+    text: "Bring contacts, conversations, pipeline stages, notes, and next steps into one place. Your team can see the full customer journey and manage every opportunity without relying on scattered inboxes or memory.",
+    difference: "Automatic follow-up, reminders, and routing help prevent qualified leads from going cold.",
+    benefits: ["One organized customer record", "Centralized communications", "Automated follow-up and reminders"],
+    tone: "green",
+  },
+  {
+    icon: Search,
+    number: "04",
+    title: "Local SEO & Local GEO",
+    tagline: "Be found in search and AI answers",
+    text: "We strengthen the local content and business signals that help customers discover you on Google Search and Maps—and help AI-powered experiences understand your services, locations, and expertise.",
+    difference: "Build visibility for traditional search and generative engines such as ChatGPT, Grok, and other AI assistants.",
+    benefits: ["Google Search and Maps", "Service and location relevance", "AI-search-ready content"],
+    tone: "orange",
+  },
 ];
 
 const conversionPainSolutions = [
@@ -527,20 +561,73 @@ function Hero({ variant = "default" }: { variant?: LandingVariant }) {
 
 function ResultsSection({ variant = "default" }: { variant?: LandingVariant }) {
   const isConversion = variant === "conversion";
-  const solutions = isConversion ? conversionPainSolutions : painSolutions;
+
+  if (!isConversion) {
+    return (
+      <section className="section pillarSolutions" id="solutions" aria-labelledby="solutions-title">
+        <div className="pillarSolutionsGlow pillarSolutionsGlowOne" aria-hidden="true" />
+        <div className="pillarSolutionsGlow pillarSolutionsGlowTwo" aria-hidden="true" />
+        <div className="container pillarSolutionsInner">
+          <Reveal>
+            <SectionHeading
+              headingId="solutions-title"
+              eyebrow="Services & Solutions"
+              title={<>Four connected pillars. <span>One growth system.</span></>}
+              text="From the first search to the final follow-up, every BotPager solution works together to help your business get found, respond faster, and turn more opportunities into customers."
+            />
+          </Reveal>
+
+          <div className="pillarGrid">
+            {servicePillars.map(({ icon: Icon, number, title, tagline, text, difference, benefits, tone }, index) => (
+              <Reveal className={`pillarCard pillarCard-${tone}`} delay={index * 0.06} key={title}>
+                <article>
+                  <div className="pillarCardHeader">
+                    <span className="pillarIcon" aria-hidden="true"><Icon /></span>
+                    <span className="pillarNumber" aria-hidden="true">{number}</span>
+                  </div>
+                  <p className="pillarTagline">{tagline}</p>
+                  <h3>{title}</h3>
+                  <p className="pillarDescription">{text}</p>
+                  <div className="pillarDifference">
+                    <Sparkles aria-hidden="true" />
+                    <p>{difference}</p>
+                  </div>
+                  <ul className="pillarBenefits" aria-label={`${title} benefits`}>
+                    {benefits.map((benefit) => <li key={benefit}><Check aria-hidden="true" />{benefit}</li>)}
+                  </ul>
+                </article>
+              </Reveal>
+            ))}
+          </div>
+
+          <Reveal className="solutionJourney" delay={0.12}>
+            <p className="solutionJourneyLabel">The BotPager growth journey</p>
+            <ol>
+              <li><span>01</span><b>Get found</b><small>Google + AI search</small></li>
+              <li><span>02</span><b>Capture intent</b><small>Smart website</small></li>
+              <li><span>03</span><b>Respond instantly</b><small>Multichannel AI</small></li>
+              <li><span>04</span><b>Follow up</b><small>CRM + automations</small></li>
+            </ol>
+          </Reveal>
+
+          <SectionCTA>Build My Growth System</SectionCTA>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className="section results" id="solutions" aria-labelledby="solutions-title">
       <div className="container">
-        <Reveal><SectionHeading headingId="solutions-title" eyebrow={isConversion ? "Stop letting opportunities slip away" : "Stop losing good leads"} title={isConversion ? <>More customers + sales<br /><span>Fewer missed opportunities.</span></> : "No more lost leads"} text={isConversion ? "BotPager helps you respond faster, keep conversations going, and turn more interested people into real customers." : "Missed calls, slow responses, and poor follow-up are costing you jobs."} /></Reveal>
+        <Reveal><SectionHeading headingId="solutions-title" eyebrow="Stop letting opportunities slip away" title={<>More customers + sales<br /><span>Fewer missed opportunities.</span></>} text="BotPager helps you respond faster, keep conversations going, and turn more interested people into real customers." /></Reveal>
         <div className="cardGrid sixCards">
-          {solutions.map(({ icon: Icon, title, text }, index) => (
+          {conversionPainSolutions.map(({ icon: Icon, title, text }, index) => (
             <Reveal className="solutionCard" delay={index * 0.05} key={title}>
               <Icon /><h3>{title}</h3><p>{text}</p>
             </Reveal>
           ))}
         </div>
-        <SectionCTA>{isConversion ? "See How BotPager Can Help" : "Stop Losing Leads"}</SectionCTA>
+        <SectionCTA>See How BotPager Can Help</SectionCTA>
       </div>
     </section>
   );
