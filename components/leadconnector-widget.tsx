@@ -7,17 +7,25 @@ import { demoConfigs } from "@/lib/demos";
 type LeadConnectorWidgetProps = {
   widgetId: string;
   hideOnDemos?: boolean;
+  hideOnPaths?: string[];
 };
 
-export function LeadConnectorWidget({ widgetId, hideOnDemos = false }: LeadConnectorWidgetProps) {
+export function LeadConnectorWidget({
+  widgetId,
+  hideOnDemos = false,
+  hideOnPaths = [],
+}: LeadConnectorWidgetProps) {
   const pathname = usePathname();
   const topLevelSlug = pathname.replace(/^\//, "").replace(/\/$/, "");
   const isDemoPage =
     pathname === "/demos" ||
     pathname.startsWith("/demos/") ||
     Object.prototype.hasOwnProperty.call(demoConfigs, topLevelSlug);
+  const isExcludedPath = hideOnPaths.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`),
+  );
 
-  if (hideOnDemos && isDemoPage) return null;
+  if ((hideOnDemos && isDemoPage) || isExcludedPath) return null;
 
   return (
     <Script

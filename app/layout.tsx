@@ -67,6 +67,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <LeadConnectorWidget
           widgetId="6a935fe3731304959723e37d"
           hideOnDemos
+          hideOnPaths={["/voxpage-widget-lab"]}
         />
       </body>
     </html>

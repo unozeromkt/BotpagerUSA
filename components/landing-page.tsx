@@ -427,7 +427,7 @@ const nav = [
 function Logo({ light = false }: { light?: boolean }) {
   return (
     <a className={`logo ${light ? "logoLight" : ""}`} href="/#top" aria-label="BotPager home">
-      <Image className="logoMark" src="/images/botpager-isotype.png" width={604} height={603} alt="" aria-hidden="true" />
+      <Image className="logoMark" src="/images/botpager-isotype.png" width={604} height={603} alt="" aria-hidden="true" loading="eager" />
       <span>Bot<span>Pager</span></span>
     </a>
   );
