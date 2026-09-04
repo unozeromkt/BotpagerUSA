@@ -4,6 +4,7 @@ export type DemoConfig = {
   pageTitle: string;
   websiteUrl: string;
   widgetId?: string;
+  widgetVariant?: "botpager" | "exotics";
 };
 
 export const demoConfigs: Record<string, DemoConfig> = {
@@ -13,6 +14,7 @@ export const demoConfigs: Record<string, DemoConfig> = {
     pageTitle: "Luxury Rental Cars & Concierge Services",
     websiteUrl: "https://www.energeticexotics.com/",
     widgetId: "6a98f5ea98f3179f2ea0a02f",
+    widgetVariant: "exotics",
   },
 };
 

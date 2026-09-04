@@ -128,6 +128,32 @@
 .avatarSmall { width: 38px; height: 38px; border-radius: 11px; }
 .avatar img, .avatarSmall img { width: 100%; height: 100%; object-fit: cover; }
 
+.avatarExotics {
+  color: #f0d18f;
+  background: linear-gradient(145deg, #28231b, #080808 68%);
+  border-color: #d0aa5e;
+  box-shadow: 0 5px 16px rgba(0, 0, 0, .35);
+}
+
+.exoticsMonogram, .exoticsLauncherMonogram {
+  font-family: "Oswald", sans-serif;
+  font-weight: 700;
+  letter-spacing: -.08em;
+}
+
+.exoticsMonogram { font-size: 14px; transform: translateX(-1px); }
+.exoticsLauncherMonogram { color: #f2d493; font-size: 21px; transform: translateX(-1px); }
+
+.themeExotics .launcher {
+  background: linear-gradient(145deg, #d1aa62, #7f5a25 58%, #18140e);
+  box-shadow: 0 14px 32px rgba(52, 39, 19, .38), 0 3px 9px rgba(0, 0, 0, .22);
+}
+
+.themeExotics .launcherPulse { border-color: rgba(202, 162, 88, .5); }
+.themeExotics .prompt { border-color: #d9c59f; }
+.themeExotics .promptMain strong { color: #17130d; }
+.themeExotics .promptMain span { color: #796b55; }
+
 .backdrop {
   position: fixed;
   z-index: 1150;
@@ -237,6 +263,23 @@
 .orbit span:nth-child(1) { top: 10px; left: 53px; }
 .orbit span:nth-child(2) { top: 95px; right: -4px; background: #c8a9ff; }
 .orbit span:nth-child(3) { bottom: 16px; left: 32px; width: 4px; height: 4px; }
+
+.themeExotics .banner {
+  background: linear-gradient(155deg, #080808 0%, #17140f 44%, #493519 78%, #987038 100%);
+}
+
+.themeExotics .banner::after {
+  background-image: radial-gradient(rgba(236, 204, 143, .24) 1px, transparent 1px);
+}
+
+.themeExotics .bannerGlowOne { background: rgba(226, 180, 91, .18); }
+.themeExotics .bannerGlowTwo { background: rgba(116, 76, 25, .42); }
+.themeExotics .eyebrow { color: #e7c985; }
+.themeExotics .trustPill { background: rgba(0, 0, 0, .28); border-color: rgba(229, 197, 133, .18); }
+.themeExotics .trustPill svg { color: #21180c; background: #e3bd70; }
+.themeExotics .orbit { border-color: rgba(233, 201, 137, .17); }
+.themeExotics .orbit::after { border-color: rgba(233, 201, 137, .11); }
+.themeExotics .orbit span { background: #f1d495; box-shadow: 0 0 16px rgba(241, 212, 149, .68); }
 
 .widgetStage { min-width: 0; min-height: 610px; background: #fff; }
 .inlineWidget { width: 100%; height: 610px; overflow: auto; }

@@ -6,10 +6,12 @@ import "@fontsource/inter/700.css";
 import "@fontsource/oswald/500.css";
 import "@fontsource/oswald/600.css";
 import "@fontsource/oswald/700.css";
-import { LeadConnectorWidget } from "@/components/leadconnector-widget";
+import { SiteChatExperience } from "@/components/site-chat-experience";
 import "./globals.css";
 
 const siteUrl = "https://botpager.com";
+const mainWidgetId =
+  process.env.NEXT_PUBLIC_GHL_VOXPAGE_INLINE_WIDGET_ID ?? "6a935fe3731304959723e37d";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -64,11 +66,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="en">
       <body>
         {children}
-        <LeadConnectorWidget
-          widgetId="6a935fe3731304959723e37d"
-          hideOnDemos
-          hideOnPaths={["/voxpage-widget-lab"]}
-        />
+        <SiteChatExperience mainWidgetId={mainWidgetId} />
       </body>
     </html>
   );

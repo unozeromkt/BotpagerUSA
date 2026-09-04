@@ -15,33 +15,74 @@ import styles from "./voxpage-popup-experience.module.css";
 
 type VoxPagePopupExperienceProps = {
   inlineWidgetId?: string;
+  variant?: "botpager" | "exotics";
 };
 
-function VoxPageAvatar({ small = false }: { small?: boolean }) {
+const experienceContent = {
+  botpager: {
+    brandName: "VoxPage",
+    status: "Online now",
+    promptTitle: "Hi there! Have a question?",
+    promptText: "Chat with VoxPage here.",
+    eyebrow: "Your AI growth assistant",
+    title: "Let’s grow your business.",
+    description: "Ask a question, explore your opportunities, or get a personalized recommendation.",
+    trustItems: ["Available 24/7", "Fast, helpful answers"],
+    previewMessage: "Hi! I’m VoxPage. Tell me what you’d like to improve, and we’ll take it from there.",
+  },
+  exotics: {
+    brandName: "Energetic Exotics",
+    status: "Concierge online",
+    promptTitle: "Planning something exceptional?",
+    promptText: "Chat with our private concierge.",
+    eyebrow: "Private luxury concierge",
+    title: "Your next experience starts here.",
+    description: "Tell us what you’re looking for—from exotic cars to yachts, jets, estates, and more.",
+    trustItems: ["White-glove guidance", "Fast, personal response"],
+    previewMessage: "Welcome to Energetic Exotics. How can our concierge help plan your next experience?",
+  },
+} as const;
+
+function VoxPageAvatar({
+  small = false,
+  variant = "botpager",
+}: {
+  small?: boolean;
+  variant?: "botpager" | "exotics";
+}) {
   return (
-    <span className={small ? styles.avatarSmall : styles.avatar} aria-hidden="true">
-      <Image
-        src="/images/botpager-isotype.png"
-        width={604}
-        height={603}
-        alt=""
-        priority
-      />
+    <span
+      className={`${small ? styles.avatarSmall : styles.avatar} ${variant === "exotics" ? styles.avatarExotics : ""}`}
+      aria-hidden="true"
+    >
+      {variant === "exotics" ? (
+        <span className={styles.exoticsMonogram}>EE</span>
+      ) : (
+        <Image
+          src="/images/botpager-isotype.png"
+          width={604}
+          height={603}
+          alt=""
+          priority
+        />
+      )}
     </span>
   );
 }
 
-function InlineWidgetPreview() {
+function InlineWidgetPreview({ variant }: { variant: "botpager" | "exotics" }) {
+  const content = experienceContent[variant];
+
   return (
     <div className={styles.preview} data-testid="inline-widget-preview">
       <div className={styles.previewScroll}>
         <div className={styles.dayMarker}><span>Today</span></div>
         <div className={styles.messageRow}>
-          <VoxPageAvatar small />
+          <VoxPageAvatar small variant={variant} />
           <div>
-            <p className={styles.agentName}>VoxPage</p>
+            <p className={styles.agentName}>{content.brandName}</p>
             <div className={styles.agentMessage}>
-              Hi! I’m VoxPage. Tell me what you’d like to improve, and we’ll take it from there.
+              {content.previewMessage}
             </div>
             <time>Just now</time>
           </div>
@@ -93,7 +134,10 @@ function LeadConnectorInlineWidget({ widgetId }: { widgetId: string }) {
   );
 }
 
-export function VoxPagePopupExperience({ inlineWidgetId }: VoxPagePopupExperienceProps) {
+export function VoxPagePopupExperience({
+  inlineWidgetId,
+  variant = "botpager",
+}: VoxPagePopupExperienceProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasOpened, setHasOpened] = useState(false);
   const [showPrompt, setShowPrompt] = useState(true);
@@ -101,6 +145,15 @@ export function VoxPagePopupExperience({ inlineWidgetId }: VoxPagePopupExperienc
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const shouldReduceMotion = useReducedMotion();
+  const content = experienceContent[variant];
+  const isExotics = variant === "exotics";
+  const themeClass = isExotics ? styles.themeExotics : "";
+  const openLabel = isExotics
+    ? "Open Energetic Exotics concierge"
+    : "Open VoxPage conversation";
+  const closeLabel = isExotics
+    ? "Close Energetic Exotics concierge"
+    : "Close VoxPage conversation";
 
   const openDialog = () => {
     setHasOpened(true);
@@ -159,7 +212,7 @@ export function VoxPagePopupExperience({ inlineWidgetId }: VoxPagePopupExperienc
 
   return (
     <>
-      <div className={`${styles.launcherDock} ${isOpen ? styles.launcherDockOpen : ""}`}>
+      <div className={`${styles.launcherDock} ${themeClass} ${isOpen ? styles.launcherDockOpen : ""}`}>
         <AnimatePresence>
           {showPrompt && !isOpen ? (
             <motion.div
@@ -169,15 +222,15 @@ export function VoxPagePopupExperience({ inlineWidgetId }: VoxPagePopupExperienc
               exit={{ opacity: 0, x: 12, scale: 0.96 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <VoxPageAvatar small />
+              <VoxPageAvatar small variant={variant} />
               <button
                 className={styles.promptMain}
                 type="button"
                 onClick={openDialog}
-                aria-label="Open VoxPage conversation"
+                aria-label={openLabel}
               >
-                <strong>Hi there! Have a question?</strong>
-                <span>Chat with VoxPage here.</span>
+                <strong>{content.promptTitle}</strong>
+                <span>{content.promptText}</span>
               </button>
               <button
                 className={styles.promptClose}
@@ -196,7 +249,7 @@ export function VoxPagePopupExperience({ inlineWidgetId }: VoxPagePopupExperienc
           ref={launcherRef}
           className={`${styles.launcher} ${isOpen ? styles.launcherOpen : ""}`}
           type="button"
-          aria-label={isOpen ? "Close VoxPage conversation" : "Open VoxPage conversation"}
+          aria-label={isOpen ? closeLabel : openLabel}
           aria-expanded={isOpen}
           aria-controls="voxpage-conversation-dialog"
           onClick={() => (isOpen ? closeDialog() : openDialog())}
@@ -211,7 +264,11 @@ export function VoxPagePopupExperience({ inlineWidgetId }: VoxPagePopupExperienc
               </motion.span>
             ) : (
               <motion.span key="avatar" initial={{ opacity: 0, rotate: 20 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0 }}>
-                <Image src="/images/botpager-isotype.png" width={604} height={603} alt="" loading="eager" />
+                {isExotics ? (
+                  <span className={styles.exoticsLauncherMonogram}>EE</span>
+                ) : (
+                  <Image src="/images/botpager-isotype.png" width={604} height={603} alt="" loading="eager" />
+                )}
               </motion.span>
             )}
           </AnimatePresence>
@@ -220,7 +277,7 @@ export function VoxPagePopupExperience({ inlineWidgetId }: VoxPagePopupExperienc
 
       {hasOpened ? (
           <motion.div
-            className={styles.backdrop}
+            className={`${styles.backdrop} ${themeClass}`}
             initial={{ opacity: 0, visibility: "hidden" }}
             animate={isOpen
               ? { opacity: 1, visibility: "visible" }
@@ -255,23 +312,22 @@ export function VoxPagePopupExperience({ inlineWidgetId }: VoxPagePopupExperienc
 
                 <div className={styles.bannerTop}>
                   <div className={styles.brand}>
-                    <VoxPageAvatar small />
-                    <div><strong>VoxPage</strong><span><i /> Online now</span></div>
+                    <VoxPageAvatar small variant={variant} />
+                    <div><strong>{content.brandName}</strong><span><i /> {content.status}</span></div>
                   </div>
-                  <button ref={closeRef} type="button" aria-label="Close VoxPage conversation" onClick={closeDialog}>
+                  <button ref={closeRef} type="button" aria-label={closeLabel} onClick={closeDialog}>
                     <X />
                   </button>
                 </div>
 
                 <div className={styles.bannerCopy}>
-                  <span className={styles.eyebrow}><Sparkles /> Your AI growth assistant</span>
-                  <h2 id="voxpage-dialog-title">Let’s grow your business.</h2>
-                  <p>Ask a question, explore your opportunities, or get a personalized recommendation.</p>
+                  <span className={styles.eyebrow}><Sparkles /> {content.eyebrow}</span>
+                  <h2 id="voxpage-dialog-title">{content.title}</h2>
+                  <p>{content.description}</p>
                 </div>
 
                 <div className={styles.trustPill}>
-                  <span><Check /> Available 24/7</span>
-                  <span><Check /> Fast, helpful answers</span>
+                  {content.trustItems.map((item) => <span key={item}><Check /> {item}</span>)}
                 </div>
               </div>
 
@@ -279,7 +335,7 @@ export function VoxPagePopupExperience({ inlineWidgetId }: VoxPagePopupExperienc
                 {inlineWidgetId ? (
                   <LeadConnectorInlineWidget widgetId={inlineWidgetId} />
                 ) : (
-                  <InlineWidgetPreview />
+                  <InlineWidgetPreview variant={variant} />
                 )}
               </div>
             </motion.div>

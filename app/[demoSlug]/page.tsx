@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { LeadConnectorWidget } from "@/components/leadconnector-widget";
 import { getDemoConfig } from "@/lib/demos";
 
 type DemoPageProps = {
@@ -45,7 +44,6 @@ export default async function DemoPage({ params }: DemoPageProps) {
         loading="eager"
         referrerPolicy="strict-origin-when-cross-origin"
       />
-      {demo.widgetId ? <LeadConnectorWidget widgetId={demo.widgetId} /> : null}
     </main>
   );
 }
