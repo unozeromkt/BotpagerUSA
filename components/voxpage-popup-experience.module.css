@@ -135,15 +135,6 @@
   box-shadow: 0 5px 16px rgba(0, 0, 0, .35);
 }
 
-.exoticsMonogram, .exoticsLauncherMonogram {
-  font-family: "Oswald", sans-serif;
-  font-weight: 700;
-  letter-spacing: -.08em;
-}
-
-.exoticsMonogram { font-size: 14px; transform: translateX(-1px); }
-.exoticsLauncherMonogram { color: #f2d493; font-size: 21px; transform: translateX(-1px); }
-
 .themeExotics .launcher {
   background: linear-gradient(145deg, #d1aa62, #7f5a25 58%, #18140e);
   box-shadow: 0 14px 32px rgba(52, 39, 19, .38), 0 3px 9px rgba(0, 0, 0, .22);

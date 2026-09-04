@@ -55,17 +55,15 @@ function VoxPageAvatar({
       className={`${small ? styles.avatarSmall : styles.avatar} ${variant === "exotics" ? styles.avatarExotics : ""}`}
       aria-hidden="true"
     >
-      {variant === "exotics" ? (
-        <span className={styles.exoticsMonogram}>EE</span>
-      ) : (
-        <Image
-          src="/images/botpager-isotype.png"
-          width={604}
-          height={603}
-          alt=""
-          priority
-        />
-      )}
+      <Image
+        src={variant === "exotics"
+          ? "/images/energetic-exotics-chat-avatar.png"
+          : "/images/botpager-isotype.png"}
+        width={variant === "exotics" ? 256 : 604}
+        height={variant === "exotics" ? 256 : 603}
+        alt=""
+        priority
+      />
     </span>
   );
 }
@@ -264,11 +262,15 @@ export function VoxPagePopupExperience({
               </motion.span>
             ) : (
               <motion.span key="avatar" initial={{ opacity: 0, rotate: 20 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0 }}>
-                {isExotics ? (
-                  <span className={styles.exoticsLauncherMonogram}>EE</span>
-                ) : (
-                  <Image src="/images/botpager-isotype.png" width={604} height={603} alt="" loading="eager" />
-                )}
+                <Image
+                  src={isExotics
+                    ? "/images/energetic-exotics-chat-avatar.png"
+                    : "/images/botpager-isotype.png"}
+                  width={isExotics ? 256 : 604}
+                  height={isExotics ? 256 : 603}
+                  alt=""
+                  loading="eager"
+                />
               </motion.span>
             )}
           </AnimatePresence>
