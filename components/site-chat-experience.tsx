@@ -22,7 +22,7 @@ export function SiteChatExperience({ mainWidgetId }: SiteChatExperienceProps) {
     );
   }
 
-  if (pathname === "/demos" || pathname.startsWith("/demos/")) {
+  if (pathname === "/demos" || pathname.startsWith("/demos/") || pathname === "/growth-game") {
     return null;
   }
 

@@ -2,6 +2,8 @@ import "server-only";
 
 import { getAnswerLabel } from "@/lib/audit/questions";
 import type { AuditReport, AuditSubmission } from "@/lib/audit/types";
+import { getGrowthAnswerLabel } from "@/lib/growth-game/config";
+import type { GrowthResult, GrowthSubmission } from "@/lib/growth-game/types";
 
 const HIGHLEVEL_BASE_URL = "https://services.leadconnectorhq.com";
 const AUDIT_CUSTOM_FIELD_COUNT = 6;
@@ -128,6 +130,100 @@ function buildNote(submission: AuditSubmission, report: AuditReport) {
 
 export function isHighLevelConfigured() {
   return getConfig() !== null;
+}
+
+function buildGrowthGameNote(submission: GrowthSubmission, result: GrowthResult) {
+  const answers = Object.entries(submission.answers).map(([key, value]) =>
+    `${key.replaceAll("_", " ")}: ${getGrowthAnswerLabel(key as keyof typeof submission.answers, value)}`
+  );
+  const tracking = submission.tracking
+    ? Object.entries(submission.tracking)
+        .filter(([, value]) => value)
+        .map(([key, value]) => `${key}: ${value}`)
+    : [];
+
+  return [
+    "MASTER THE LOCAL BUSINESS GROWTH GAME",
+    `Business: ${submission.contact.businessName}`,
+    `Growth score: ${result.score}/100`,
+    `Current level: Level ${result.level.number} — ${result.level.name}`,
+    `Next level: ${result.level.nextLevel}`,
+    `Recommended package: ${result.level.package.name} — starting at $${result.level.package.price}/month`,
+    "",
+    "ANSWERS",
+    ...answers,
+    "",
+    "TOP OPPORTUNITIES",
+    ...result.opportunities.map((item, index) => `${index + 1}. ${item.title}: ${item.description}`),
+    ...(tracking.length ? ["", "ATTRIBUTION", ...tracking] : []),
+    "",
+    "COMMUNICATION CONSENT",
+    `Growth plan email consent: ${submission.contact.consent ? "Yes" : "No"}`,
+    `Consent captured at: ${new Date().toISOString()}`,
+  ].join("\n");
+}
+
+export async function saveGrowthGameLead(submission: GrowthSubmission, result: GrowthResult) {
+  const config = getConfig();
+  if (!config) return null;
+
+  const firstName = submission.contact.name.split(/\s+/)[0] || submission.contact.name;
+  const lastName = submission.contact.name.split(/\s+/).slice(1).join(" ");
+  const customFields = [
+    [process.env.GHL_FIELD_GROWTH_SCORE, String(result.score)],
+    [process.env.GHL_FIELD_GROWTH_LEVEL, result.level.name],
+    [process.env.GHL_FIELD_GROWTH_PACKAGE, `${result.level.package.name} — $${result.level.package.price}/month`],
+  ]
+    .filter((entry): entry is [string, string] => Boolean(entry[0]))
+    .map(([id, fieldValue]) => ({ id, fieldValue }));
+
+  const payload = await highLevelRequest<{ contact?: HighLevelContact }>(config, "/contacts/upsert", {
+    method: "POST",
+    body: JSON.stringify({
+      firstName,
+      lastName: lastName || undefined,
+      email: submission.contact.email,
+      phone: submission.contact.phone || undefined,
+      companyName: submission.contact.businessName,
+      country: "US",
+      source: "Master the Local Business Growth Game",
+      locationId: config.locationId,
+      customFields: customFields.length ? customFields : undefined,
+      createNewIfDuplicateAllowed: false,
+    }),
+  });
+
+  if (!payload.contact?.id) throw new Error("HighLevel did not return a contact id.");
+
+  try {
+    await highLevelRequest(config, `/contacts/${payload.contact.id}/tags`, {
+      method: "POST",
+      body: JSON.stringify({
+        tags: ["botpager-growth-game", `botpager-growth-level-${result.level.id}`],
+      }),
+    });
+  } catch {
+    console.warn("[BotPager Growth Game] Contact tags could not be added.");
+  }
+
+  if (config.userId) {
+    try {
+      await highLevelRequest(config, `/contacts/${payload.contact.id}/notes`, {
+        method: "POST",
+        body: JSON.stringify({
+          userId: config.userId,
+          title: "BotPager Growth Game Result",
+          body: buildGrowthGameNote(submission, result),
+          color: "#562ff4",
+          pinned: false,
+        }),
+      });
+    } catch {
+      console.warn("[BotPager Growth Game] Contact note could not be created.");
+    }
+  }
+
+  return payload.contact;
 }
 
 export async function upsertAuditContact(submission: AuditSubmission): Promise<HighLevelContact | null> {
