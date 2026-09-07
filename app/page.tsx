@@ -13,20 +13,20 @@ const faqData: [string, string][] = [
 ];
 
 export const metadata: Metadata = {
-  title: "Get More Customers for Your Local Service Business",
-  description: "BotPager helps local service businesses attract more customers, respond 24/7, follow up automatically, and turn more inquiries into real business.",
+  title: { absolute: "Local Business Marketing & AI Growth System | BotPager" },
+  description: "BotPager helps local service businesses get found, capture more leads, respond 24/7 with AI, automate follow-up, and turn more inquiries into customers.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     url: "/",
-    title: "Get More Customers for Your Business | BotPager",
-    description: "Attract new customers, respond 24/7, follow up automatically, and turn more inquiries into real customers.",
+    title: "Local Business Marketing & AI Growth System | BotPager",
+    description: "Get found, capture more leads, respond 24/7 with AI, automate follow-up, and turn more local inquiries into customers.",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "BotPager customer growth system" }],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Get More Customers for Your Business | BotPager",
-    description: "A simpler way for local service businesses to attract, respond to, and convert more customers.",
+    title: "Local Business Marketing & AI Growth System | BotPager",
+    description: "A connected way for local service businesses to get found, respond faster, automate follow-up, and convert more customers.",
     images: ["/opengraph-image"],
   },
 };
@@ -40,7 +40,7 @@ const structuredData = {
       name: "BotPager",
       url: "https://botpager.com",
       logo: "https://botpager.com/images/botpager-isotype.png",
-      description: "AI-powered websites, chatbots, and follow-up systems for local service businesses.",
+      description: "Local business marketing, Smart Websites, AI receptionists, CRM automation, Local SEO, and paid acquisition for local service businesses.",
     },
     {
       "@type": "WebSite",
@@ -59,8 +59,8 @@ const structuredData = {
         "@type": "Organization",
         "@id": "https://botpager.com/#organization",
       },
-      areaServed: "North America",
-      serviceType: "Customer acquisition, 24/7 response, and automatic follow-up",
+      areaServed: { "@type": "Country", name: "United States" },
+      serviceType: "Local business marketing, customer acquisition, 24/7 AI response, CRM automation, and lead follow-up",
       audience: { "@type": "BusinessAudience", audienceType: "Local service businesses" },
     },
     {

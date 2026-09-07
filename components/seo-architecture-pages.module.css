@@ -1,0 +1,450 @@
+.page {
+  min-height: 100vh;
+  color: #10162f;
+  background: #fff;
+}
+
+.hero {
+  position: relative;
+  overflow: hidden;
+  padding: 150px 0 88px;
+  background:
+    radial-gradient(circle at 80% 24%, rgba(75, 34, 244, .15), transparent 27%),
+    linear-gradient(180deg, #fff 0%, #f5f6ff 100%);
+}
+
+.hero::after {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image: radial-gradient(rgba(75, 34, 244, .14) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(90deg, transparent 20%, #000 80%, transparent);
+  opacity: .35;
+}
+
+.shell {
+  position: relative;
+  z-index: 1;
+  width: min(1120px, calc(100% - 40px));
+  margin: 0 auto;
+}
+
+.breadcrumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 25px;
+  color: #626b82;
+  font-size: 13px;
+}
+
+.breadcrumbs a {
+  color: #4b22f4;
+  font-weight: 700;
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  color: #4b22f4;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  max-width: 880px;
+  margin: 0 0 22px;
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(46px, 6vw, 78px);
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.lead {
+  max-width: 760px;
+  margin: 0;
+  color: #505b75;
+  font-size: clamp(17px, 2vw, 20px);
+  line-height: 1.65;
+}
+
+.heroActions {
+  margin-top: 30px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.secondaryButton {
+  min-height: 52px;
+  padding: 0 21px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid #7c5aff;
+  border-radius: 999px;
+  color: #10162f;
+  background: white;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.section {
+  padding: 84px 0;
+}
+
+.sectionMuted {
+  background: #f7f8fc;
+}
+
+.sectionHeading {
+  max-width: 760px;
+  margin-bottom: 35px;
+}
+
+.sectionHeading h2,
+.content h2,
+.cta h2 {
+  margin: 0 0 14px;
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(32px, 4vw, 48px);
+  line-height: 1.08;
+  text-transform: uppercase;
+}
+
+.sectionHeading p,
+.content p {
+  color: #626b82;
+  line-height: 1.7;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.card {
+  min-height: 245px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e1e4ef;
+  border-radius: 20px;
+  background: #fff;
+  box-shadow: 0 14px 34px rgba(21, 31, 77, .07);
+}
+
+a.card {
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease;
+}
+
+a.card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(75, 34, 244, .35);
+  box-shadow: 0 20px 42px rgba(21, 31, 77, .11);
+}
+
+.card small {
+  margin-bottom: 18px;
+  color: #4b22f4;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.card h2,
+.card h3 {
+  margin: 0 0 12px;
+  font-family: "Oswald", sans-serif;
+  font-size: 27px;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.card p {
+  margin: 0 0 24px;
+  color: #626b82;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.card strong {
+  margin-top: auto;
+  color: #4b22f4;
+  font-size: 13px;
+}
+
+.contentGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+.serviceIntro {
+  display: grid;
+  grid-template-columns: .85fr 1.15fr;
+  gap: 72px;
+  align-items: start;
+  margin-bottom: 42px;
+}
+
+.serviceIntro h2 {
+  margin: 0;
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(36px, 4.4vw, 54px);
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.serviceCopy {
+  display: grid;
+  gap: 18px;
+}
+
+.serviceCopy p {
+  margin: 0;
+  color: #505b75;
+  font-size: 16px;
+  line-height: 1.75;
+}
+
+.detailGrid,
+.challengeGrid,
+.processGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+
+.detailCard,
+.challengeCard,
+.processCard {
+  padding: 29px;
+  border: 1px solid #e1e4ef;
+  border-radius: 20px;
+  background: white;
+  box-shadow: 0 14px 34px rgba(21, 31, 77, .06);
+}
+
+.detailCard > span,
+.processCard > span {
+  display: block;
+  margin-bottom: 20px;
+  color: #4b22f4;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.detailCard h3,
+.processCard h3 {
+  margin: 0 0 12px;
+  font-family: "Oswald", sans-serif;
+  font-size: 26px;
+  line-height: 1.12;
+  text-transform: uppercase;
+}
+
+.detailCard p,
+.challengeCard p,
+.processCard p {
+  margin: 0;
+  color: #626b82;
+  font-size: 14px;
+  line-height: 1.65;
+}
+
+.challengeCard {
+  position: relative;
+  padding-left: 56px;
+}
+
+.challengeCard::before {
+  position: absolute;
+  left: 28px;
+  top: 35px;
+  width: 11px;
+  height: 11px;
+  border: 3px solid #d8ff42;
+  border-radius: 50%;
+  background: #4b22f4;
+  content: "";
+}
+
+.processGrid {
+  padding: 0;
+  list-style: none;
+}
+
+.faqList {
+  display: grid;
+  gap: 12px;
+}
+
+.faqList details {
+  padding: 0 24px;
+  border: 1px solid #e1e4ef;
+  border-radius: 16px;
+  background: white;
+}
+
+.faqList summary {
+  min-height: 74px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  color: #202944;
+  cursor: pointer;
+  font-weight: 800;
+  list-style: none;
+}
+
+.faqList summary::-webkit-details-marker { display: none; }
+.faqList summary b { color: #4b22f4; font-size: 24px; }
+.faqList details[open] summary b { transform: rotate(45deg); }
+
+.faqList details > p {
+  max-width: 860px;
+  margin: -3px 0 24px;
+  color: #626b82;
+  line-height: 1.7;
+}
+
+.content {
+  padding: 32px;
+  border: 1px solid #e1e4ef;
+  border-radius: 20px;
+  background: #fff;
+}
+
+.content ul {
+  margin: 22px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 15px;
+  list-style: none;
+}
+
+.content li {
+  position: relative;
+  padding-left: 28px;
+  color: #3f4964;
+  line-height: 1.55;
+}
+
+.content li::before {
+  position: absolute;
+  left: 0;
+  top: .45em;
+  width: 10px;
+  height: 10px;
+  border: 3px solid #d8ff42;
+  border-radius: 50%;
+  background: #4b22f4;
+  content: "";
+}
+
+.outcome {
+  margin-top: 24px;
+  padding: 28px 32px;
+  color: white;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #10162f, #34208b);
+}
+
+.outcome small {
+  display: block;
+  margin-bottom: 10px;
+  color: #d8ff42;
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.outcome p {
+  max-width: 850px;
+  margin: 0;
+  font-size: 20px;
+  line-height: 1.6;
+}
+
+.related {
+  margin-top: 24px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.related a,
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 46px;
+  padding: 0 19px;
+  border: 1px solid #d9dce8;
+  border-radius: 999px;
+  color: #2d3650;
+  background: white;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.button {
+  min-height: 52px;
+  border-color: #d8ff42;
+  color: #10162f;
+  background: #d8ff42;
+}
+
+.cta {
+  padding: 70px 0;
+  color: white;
+  background: #4b22f4;
+}
+
+.ctaInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+
+.cta h2 {
+  margin-bottom: 8px;
+}
+
+.cta p {
+  margin: 0;
+  color: rgba(255, 255, 255, .82);
+}
+
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .contentGrid, .serviceIntro { grid-template-columns: 1fr; }
+  .serviceIntro { gap: 24px; }
+  .detailGrid, .challengeGrid, .processGrid { grid-template-columns: 1fr; }
+  .ctaInner { align-items: flex-start; flex-direction: column; }
+}
+
+@media (max-width: 620px) {
+  .hero { padding: 118px 0 64px; }
+  .shell { width: min(100% - 28px, 1120px); }
+  .section { padding: 60px 0; }
+  .grid { grid-template-columns: 1fr; }
+  .card { min-height: 0; }
+  .content, .outcome { padding: 24px; }
+  .heroActions { flex-direction: column; }
+  .heroActions a { width: 100%; }
+  .detailCard, .challengeCard, .processCard { padding: 24px; }
+  .challengeCard { padding-left: 50px; }
+  .challengeCard::before { left: 23px; top: 30px; }
+}

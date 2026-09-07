@@ -97,6 +97,17 @@ const servicePillars = [
   },
 ];
 
+const paidAcquisitionService = {
+  icon: MousePointerClick,
+  number: "05",
+  slug: "google-ads",
+  title: "Google Ads",
+  tagline: "Capture high-intent local demand",
+  tone: "blue",
+};
+
+const serviceOverviewItems = [...servicePillars, paidAcquisitionService];
+
 const conversionPainSolutions = [
   { icon: Zap, title: "Respond Faster", text: "Interested people get a response without having to wait." },
   { icon: ClipboardList, title: "Make It Easy to Get in Touch", text: "Make it easy for people to contact your business." },
@@ -418,11 +429,20 @@ const optionalAddOns = [
 
 const nav = [
   ["Solutions", "/services"],
+  ["Industries", "/industries"],
   ["How It Works", "/#how-it-works"],
   ["Pricing", "/#pricing"],
-  ["About", "/#about"],
-  ["Resources", "/#faq"],
+  ["About", "/about"],
+  ["Resources", "/resources"],
 ];
+
+const servicePageHrefs: Record<string, string> = {
+  "smart-websites": "/services/smart-websites",
+  "multichannel-ai-agent": "/services/ai-agent",
+  "crm-automations": "/services/crm-automations",
+  "local-seo-geo": "/services/local-seo-geo",
+  "google-ads": "/services/google-ads",
+};
 
 function Logo({ light = false }: { light?: boolean }) {
   return (
@@ -433,7 +453,7 @@ function Logo({ light = false }: { light?: boolean }) {
   );
 }
 
-function PrimaryButton({ children, href = "/audit", light = false }: { children: React.ReactNode; href?: string; light?: boolean }) {
+function PrimaryButton({ children, href = "/free-growth-audit", light = false }: { children: React.ReactNode; href?: string; light?: boolean }) {
   return <a className={`button buttonPrimary ${light ? "buttonLime" : ""}`} href={href}>{children}<ArrowRight size={17} /></a>;
 }
 
@@ -462,7 +482,7 @@ function SectionHeading({ eyebrow, title, text, light = false, headingId }: { ey
   );
 }
 
-function SectionCTA({ children, light = false, className = "", href = "/audit" }: { children: React.ReactNode; light?: boolean; className?: string; href?: string }) {
+function SectionCTA({ children, light = false, className = "", href = "/free-growth-audit" }: { children: React.ReactNode; light?: boolean; className?: string; href?: string }) {
   return <Reveal className={`sectionCta ${className}`}><PrimaryButton light={light} href={href}>{children}</PrimaryButton></Reveal>;
 }
 
@@ -537,8 +557,8 @@ function Hero({ variant = "default" }: { variant?: LandingVariant }) {
             <p className="eyebrow"><Sparkles size={14} /> Built for local service businesses</p>
             {isConversion ? (
               <>
-                <h1 id="hero-title">We help you get <span>more customers</span> for your business</h1>
-                <p className="heroLead"><strong>How do we do it?</strong> We attract new customers to your business, engage with them 24/7, follow up automatically, and turn more inquiries into real customers.</p>
+                <h1 id="hero-title">Get More Customers for Your <span>Local Service Business</span></h1>
+                <p className="heroLead"><strong>How do we do it?</strong> BotPager connects local SEO, Google Search and Maps, Smart Websites, a 24/7 AI receptionist, CRM automation, lead follow-up, and optional Google Ads to turn more inquiries into booked jobs and customers.</p>
               </>
             ) : (
               <>
@@ -1103,7 +1123,7 @@ function Pricing() {
                   ))}
                 </div>
               </details>
-              <a className="button priceButton" href="/audit">Book a Strategy Call <ArrowRight size={16} /></a>
+              <a className="button priceButton" href="/free-growth-audit">Book a Strategy Call <ArrowRight size={16} /></a>
               <p className="priceFinePrint">{plan.note}</p>
             </Reveal>
           ))}
@@ -1200,8 +1220,8 @@ export function SiteFooter({ variant = "default" }: { variant?: LandingVariant }
     <footer className="footer">
       <div className="container footerGrid">
         <div><Logo light /><p>{isConversion ? "Websites and automated follow-up that help local service businesses get more customers." : "AI-powered websites, chatbots, and automations that turn more leads into booked jobs."}</p><p className="footerLegalIdentity">BotPager is operated by Uno Zero Marketing LLC.<br />23945 SAN GIOVANNI DR<br />LAND O LAKES FL 34639</p><div className="socials"><a href="#" aria-label="Instagram"><InstagramMark /></a><a href="#" aria-label="TikTok"><TikTokMark /></a><a href="#" aria-label="LinkedIn"><LinkedInMark /></a></div></div>
-        <div><h3>Solutions</h3><a href="/services#smart-websites">Smart Websites</a><a href="/services#multichannel-ai-agent">AI Agent</a><a href="/services#crm-automations">CRM & Automations</a><a href="/services#local-seo-geo">Local SEO & GEO</a></div>
-        <div><h3>Company</h3><a href="/#about">About Us</a><a href="/#how-it-works">How It Works</a><a href="/#faq">Resources</a><a href="mailto:info@botpager.com">Contact</a></div>
+        <div><h3>Solutions</h3><a href="/services/smart-websites">Smart Websites</a><a href="/services/ai-agent">AI Agent</a><a href="/services/crm-automations">CRM & Automations</a><a href="/services/local-seo-geo">Local SEO & GEO</a><a href="/services/google-ads">Google Ads</a></div>
+        <div><h3>Company</h3><a href="/about">About Us</a><a href="/industries">Industries</a><a href="/#how-it-works">How It Works</a><a href="/resources">Resources</a><a href="mailto:info@botpager.com">Contact</a></div>
         <div><h3>Get in touch</h3><a href="https://botpager.com"><Globe2 /> botpager.com</a><a href="tel:+12392510184"><Phone /> 239-251-0184</a><a href="mailto:info@botpager.com"><Mail /> info@botpager.com</a><a href="mailto:legal@botpager.com"><Mail /> legal@botpager.com</a></div>
       </div>
       <div className="container footerBottom"><span>© 2026 BotPager. All rights reserved.</span><span><a href="/privacy">Privacy Policy</a><a href="/terms">Terms of Service</a></span></div>
@@ -1245,7 +1265,7 @@ export function ServicesPage() {
           <div className="container servicesHeroInner">
             <motion.div className="servicesHeroCopy" initial={{ opacity: 0, y: 22 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.65 }}>
               <p className="eyebrow"><Sparkles size={14} /> Services & Solutions</p>
-              <h1 id="services-hero-title">Four connected services. <span>One growth system.</span></h1>
+              <h1 id="services-hero-title">Five growth capabilities. <span>One connected system.</span></h1>
               <p>BotPager connects the experience your customers see with the systems your team uses—so your business can get found, respond faster, follow up consistently, and convert more opportunities.</p>
               <div className="servicesHeroActions">
                 <PrimaryButton>Get Your Free Growth Audit</PrimaryButton>
@@ -1275,9 +1295,9 @@ export function ServicesPage() {
               />
             </Reveal>
             <div className="servicesOverviewGrid">
-              {servicePillars.map(({ icon: Icon, number, slug, title, tagline, tone }, index) => (
+              {serviceOverviewItems.map(({ icon: Icon, number, slug, title, tagline, tone }, index) => (
                 <Reveal className={`servicesOverviewCard servicesOverviewCard-${tone}`} delay={index * 0.05} key={title}>
-                  <a href={`#${slug}`}>
+                  <a href={servicePageHrefs[slug] ?? `/services#${slug}`}>
                     <span className="servicesOverviewIcon"><Icon /></span>
                     <small>{number}</small>
                     <h2>{title}</h2>

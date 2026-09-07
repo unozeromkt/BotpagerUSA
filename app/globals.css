@@ -208,7 +208,7 @@ h1, h2, .finalCta h2 { font-family: "Oswald", Impact, sans-serif; text-transform
 
 .servicesOverview { position: relative; padding: 96px 0 105px; background: #fff; }
 .servicesOverview .sectionHeading { max-width: 850px; }
-.servicesOverviewGrid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.servicesOverviewGrid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
 .servicesOverviewCard { --overview-accent: var(--purple); --overview-soft: #efecff; min-width: 0; }
 .servicesOverviewCard-blue { --overview-accent: #1178fa; --overview-soft: #eaf3ff; }
 .servicesOverviewCard-green { --overview-accent: #1ea766; --overview-soft: #eaf9f1; }

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { servicePages } from "@/lib/seo/site-architecture";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -13,6 +14,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: new Date(),
       changeFrequency: "monthly",
       priority: 0.9,
+    },
+    ...servicePages.map(({ href }) => ({
+      url: `https://botpager.com${href}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.85,
+    })),
+    {
+      url: "https://botpager.com/industries",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
+    {
+      url: "https://botpager.com/about",
+      lastModified: new Date(),
+      changeFrequency: "yearly",
+      priority: 0.6,
     },
     {
       url: "https://botpager.com/growth-game",
