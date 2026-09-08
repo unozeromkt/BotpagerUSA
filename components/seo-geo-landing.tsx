@@ -7,27 +7,17 @@ import {
   ArrowRight,
   BadgeCheck,
   BarChart3,
-  Bot,
   BrainCircuit,
-  BriefcaseBusiness,
   Check,
-  ChevronRight,
   CircleCheck,
-  ClipboardCheck,
   FileSearch,
-  Globe2,
   Link2,
-  Map,
   MapPin,
   Menu,
-  MessageCircleMore,
-  Network,
   Search,
   ShieldCheck,
   Sparkles,
-  Star,
   Target,
-  TrendingUp,
   Wrench,
   X,
 } from "lucide-react";
@@ -99,14 +89,6 @@ const visibilityServices = [
       "Search + AI visibility monitoring",
     ],
   },
-];
-
-const auditSignals = [
-  { label: "Search Visibility", value: 72, icon: Search },
-  { label: "Local Visibility", value: 64, icon: MapPin },
-  { label: "Online Reputation", value: 86, icon: Star },
-  { label: "AI Readiness", value: 41, icon: Sparkles },
-  { label: "Conversion Readiness", value: 78, icon: TrendingUp },
 ];
 
 const process = [
@@ -308,69 +290,16 @@ export function SeoGeoLanding({ faqs }: { faqs: FAQ[] }) {
               </div>
             </div>
 
-            <div className={styles.heroVisual} aria-label="Search journey from discovery to your business">
-              <div className={styles.visualGlow} aria-hidden="true" />
-              <div className={styles.searchCard}>
-                <div className={styles.visualTopbar}>
-                  <span>
-                    <i /> Live visibility map
-                  </span>
-                  <span className={styles.visualStatus}>Signals connected</span>
-                </div>
-                <div className={styles.searchQuery}>
-                  <Search aria-hidden="true" />
-                  <span>best local service near me</span>
-                  <kbd>↵</kbd>
-                </div>
-                <div className={styles.journey}>
-                  <div className={styles.journeyNode}>
-                    <span className={styles.googleIcon}>G</span>
-                    <small>Google</small>
-                    <b>Search</b>
-                  </div>
-                  <ChevronRight aria-hidden="true" />
-                  <div className={styles.journeyNode}>
-                    <span className={styles.mapIcon}>
-                      <MapPin />
-                    </span>
-                    <small>Google</small>
-                    <b>Maps</b>
-                  </div>
-                  <ChevronRight aria-hidden="true" />
-                  <div className={styles.journeyNode}>
-                    <span className={styles.aiIcon}>
-                      <Sparkles />
-                    </span>
-                    <small>Generative</small>
-                    <b>AI Search</b>
-                  </div>
-                </div>
-                <div className={styles.businessResult}>
-                  <div className={styles.businessIcon}>
-                    <BriefcaseBusiness aria-hidden="true" />
-                  </div>
-                  <div>
-                    <small>Recommended local result</small>
-                    <b>Your Business</b>
-                    <span>
-                      <Star fill="currentColor" /> 4.9 · Trusted local provider
-                    </span>
-                  </div>
-                  <BadgeCheck aria-hidden="true" />
-                </div>
-              </div>
-              <div className={styles.scorePill}>
-                <span>Visibility score</span>
-                <b>82</b>
-                <small>/100</small>
-              </div>
-              <div className={styles.citationPill}>
-                <Bot aria-hidden="true" />
-                <span>
-                  <small>AI readiness</small>
-                  <b>Business understood</b>
-                </span>
-              </div>
+            <div className={`${styles.artworkFrame} ${styles.heroVisual}`}>
+              <Image
+                className={styles.artworkImage}
+                src="/images/local-seo/local-seo5.png"
+                width={1536}
+                height={1024}
+                sizes="(max-width: 820px) calc(100vw - 40px), 620px"
+                alt="BotPager visibility audit showing a score and prioritized opportunities across search, reviews and AI visibility"
+                priority
+              />
             </div>
           </div>
         </section>
@@ -391,25 +320,15 @@ export function SeoGeoLanding({ faqs }: { faqs: FAQ[] }) {
               </div>
               <AuditButton secondary>See how visible my business is</AuditButton>
             </div>
-            <div className={styles.discoveryPanel}>
-              <p>Where customers discover local businesses now</p>
-              {[
-                [Search, "Google Search", "Traditional intent"],
-                [Map, "Google Maps", "Local proximity"],
-                [Sparkles, "AI Overviews", "Generated answers"],
-                [MessageCircleMore, "AI assistants", "Conversational discovery"],
-                [Star, "Reviews", "Local recommendations"],
-              ].map(([Icon, label, detail]) => {
-                const DiscoveryIcon = Icon as typeof Search;
-                return (
-                  <div className={styles.discoveryRow} key={label as string}>
-                    <span><DiscoveryIcon aria-hidden="true" /></span>
-                    <b>{label as string}</b>
-                    <small>{detail as string}</small>
-                    <Check aria-hidden="true" />
-                  </div>
-                );
-              })}
+            <div className={`${styles.artworkFrame} ${styles.landscapeArtwork}`}>
+              <Image
+                className={styles.artworkImage}
+                src="/images/local-seo/local-seo4.png"
+                width={1536}
+                height={1024}
+                sizes="(max-width: 820px) calc(100vw - 40px), 560px"
+                alt="SEO and GEO visibility dashboard connecting Google search, local results, ChatGPT and Gemini"
+              />
             </div>
           </div>
         </section>
@@ -447,18 +366,15 @@ export function SeoGeoLanding({ faqs }: { faqs: FAQ[] }) {
 
         <section className={styles.explainer} aria-labelledby="explainer-title">
           <div className={styles.explainerGrid}>
-            <div className={styles.explainerVisual} aria-hidden="true">
-              <div className={styles.vennSeo}>
-                <Search />
-                <b>SEO</b>
-                <small>Get found</small>
-              </div>
-              <div className={styles.vennGeo}>
-                <BrainCircuit />
-                <b>GEO</b>
-                <small>Get understood</small>
-              </div>
-              <span className={styles.vennCenter}>Visibility</span>
+            <div className={`${styles.artworkFrame} ${styles.explainerVisual}`}>
+              <Image
+                className={styles.artworkImage}
+                src="/images/local-seo/local-seo3.png"
+                width={1536}
+                height={1024}
+                sizes="(max-width: 820px) calc(100vw - 40px), 500px"
+                alt="Local SEO system combining Google rankings, Maps visibility, optimized content and AI search answers"
+              />
             </div>
             <div className={styles.explainerCopy}>
               <p className={styles.eyebrow}>SEO + GEO, explained simply</p>
@@ -495,28 +411,15 @@ export function SeoGeoLanding({ faqs }: { faqs: FAQ[] }) {
               <AuditButton>Get my free visibility score</AuditButton>
               <span className={styles.noTech}><CircleCheck /> No technical knowledge required.</span>
             </div>
-            <div className={styles.auditCard}>
-              <div className={styles.auditCardHead}>
-                <div>
-                  <small>Sample visibility report</small>
-                  <b>Local Business</b>
-                </div>
-                <div className={styles.auditScore}><b>68</b><span>/100</span></div>
-              </div>
-              <div className={styles.signalList}>
-                {auditSignals.map(({ label, value, icon: Icon }) => (
-                  <div className={styles.signalRow} key={label}>
-                    <Icon aria-hidden="true" />
-                    <span>{label}</span>
-                    <div className={styles.signalTrack}><i style={{ width: `${value}%` }} /></div>
-                    <b>{value}</b>
-                  </div>
-                ))}
-              </div>
-              <div className={styles.priorityFlag}>
-                <Target aria-hidden="true" />
-                <span><small>Highest-priority opportunity</small><b>Improve AI business clarity</b></span>
-              </div>
+            <div className={`${styles.artworkFrame} ${styles.auditArtwork}`}>
+              <Image
+                className={styles.artworkImage}
+                src="/images/local-seo/local-seo2.png"
+                width={1536}
+                height={1024}
+                sizes="(max-width: 820px) calc(100vw - 40px), 590px"
+                alt="BotPager local visibility dashboard showing growth in search impressions, website visits, leads and bookings"
+              />
             </div>
           </div>
         </section>
@@ -572,23 +475,15 @@ export function SeoGeoLanding({ faqs }: { faqs: FAQ[] }) {
               text="Traffic is useful only when it creates opportunities. BotPager connects visibility with the rest of your customer acquisition system."
               light
             />
-            <div className={styles.growthFlow} aria-label="BotPager customer acquisition flow">
-              {[
-                [Search, "Get found"],
-                [Globe2, "Get clicked"],
-                [MessageCircleMore, "Get a response"],
-                [Network, "Get followed up"],
-                [ClipboardCheck, "Get booked"],
-              ].map(([Icon, label], index) => {
-                const FlowIcon = Icon as typeof Search;
-                return (
-                  <div className={styles.flowStep} key={label as string}>
-                    <span><FlowIcon aria-hidden="true" /></span>
-                    <b>{label as string}</b>
-                    {index < 4 && <ChevronRight aria-hidden="true" />}
-                  </div>
-                );
-              })}
+            <div className={`${styles.artworkFrame} ${styles.differenceArtwork}`}>
+              <Image
+                className={styles.artworkImage}
+                src="/images/local-seo/local-seo1.png"
+                width={1536}
+                height={1024}
+                sizes="(max-width: 820px) calc(100vw - 40px), 1120px"
+                alt="Local business appearing across Google Search, Google Maps, ChatGPT and Gemini"
+              />
             </div>
             <div className={styles.connectedServices}>
               <p>Your visibility strategy can work together with:</p>
