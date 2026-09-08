@@ -20,16 +20,15 @@ export async function generateMetadata({ params }: IndustryPageProps): Promise<M
 
   const seoTitle = publishedIndustry?.seoTitle ?? industry.title;
   const description = publishedIndustry?.description ?? industry.description;
-  const isIndexable = Boolean(publishedIndustry);
 
   return {
     title: seoTitle,
     description,
     alternates: { canonical: industry.href },
     robots: {
-      index: isIndexable,
+      index: true,
       follow: true,
-      googleBot: { index: isIndexable, follow: true, "max-image-preview": "large", "max-snippet": -1 },
+      googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1 },
     },
     openGraph: {
       type: "website",

@@ -405,9 +405,9 @@ export const industryPages: ArchitectureItem[] = [
   },
 ];
 
-// Industry pages move into this collection only after they have enough original,
-// industry-specific content to be indexed. The shorter architecture entries above
-// remain useful as previews while their detail routes stay noindex.
+// Industry pages move into this collection when they have the richer vertical
+// template and long-form content. The shorter entries above remain indexable
+// overview pages and can be expanded progressively without changing their URLs.
 export const publishedIndustryPages: IndustryPageContent[] = [
   {
     slug: "plumbing",
