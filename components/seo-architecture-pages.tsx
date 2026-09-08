@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ArchitectureItem, ServicePageContent } from "@/lib/seo/site-architecture";
+import type { ArchitectureItem, IndustryPageContent, ServicePageContent } from "@/lib/seo/site-architecture";
 import { Header, SiteFooter } from "@/components/landing-page";
 import styles from "./seo-architecture-pages.module.css";
 
@@ -105,6 +105,157 @@ export function ArchitectureDetailPage({ item, parentLabel, parentHref }: { item
             </div>
             <nav className={styles.related} aria-label="Related services and industries">
               {item.relatedLinks.map((link) => <Link href={link.href} key={link.href}>{link.label}</Link>)}
+            </nav>
+          </div>
+        </section>
+
+        <CallToAction />
+      </main>
+    </PageChrome>
+  );
+}
+
+export function IndustryDetailPage({ industry }: { industry: IndustryPageContent }) {
+  return (
+    <PageChrome>
+      <main id="main-content" className={styles.page}>
+        <section className={styles.hero} aria-labelledby="page-title">
+          <div className={styles.shell}>
+            <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
+              <Link href="/">Home</Link><span aria-hidden="true">/</span>
+              <Link href="/industries">Industries</Link><span aria-hidden="true">/</span>
+              <span>{industry.name}</span>
+            </nav>
+            <p className={styles.eyebrow}>{industry.eyebrow}</p>
+            <h1 id="page-title">{industry.title}</h1>
+            <p className={styles.lead}>{industry.description}</p>
+            <div className={styles.heroActions}>
+              <Link className={styles.button} href="/free-growth-audit">Get Your Free Growth Audit</Link>
+              <Link className={styles.secondaryButton} href="#plumbing-system">Explore the system</Link>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.section} aria-labelledby="industry-overview-title">
+          <div className={styles.shell}>
+            <div className={styles.serviceIntro}>
+              <div>
+                <p className={styles.eyebrow}>Built around plumbing demand</p>
+                <h2 id="industry-overview-title">Meet customers at the moment they need help</h2>
+              </div>
+              <div className={styles.serviceCopy}>
+                {industry.introduction.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
+              </div>
+            </div>
+            <div className={styles.outcome}>
+              <small>What the system is designed to create</small>
+              <p>{industry.outcome}</p>
+            </div>
+          </div>
+        </section>
+
+        <section className={`${styles.section} ${styles.sectionMuted}`} aria-labelledby="acquisition-problems-title">
+          <div className={styles.shell}>
+            <div className={styles.sectionHeading}>
+              <p className={styles.eyebrow}>Customer acquisition problems</p>
+              <h2 id="acquisition-problems-title">Where plumbing opportunities get lost</h2>
+              <p>Plumbing demand ranges from urgent service calls to carefully considered projects. Each path can break when information, response, or follow-up is disconnected.</p>
+            </div>
+            <div className={styles.challengeGrid}>
+              {industry.acquisitionProblems.map((problem) => (
+                <article className={styles.challengeCard} key={problem.title}>
+                  <h3>{problem.title}</h3>
+                  <p>{problem.text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.section} id="plumbing-system" aria-labelledby="recommended-system-title">
+          <div className={styles.shell}>
+            <div className={styles.sectionHeading}>
+              <p className={styles.eyebrow}>The recommended BotPager system</p>
+              <h2 id="recommended-system-title">Connect the journey from search to scheduled work</h2>
+              <p>The pieces work together around the way a plumbing customer discovers, evaluates, contacts, and chooses a provider.</p>
+            </div>
+            <div className={styles.detailGrid}>
+              {industry.system.map((part, index) => (
+                <article className={styles.detailCard} key={part.title}>
+                  <span aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+                  <h3>{part.title}</h3>
+                  <p>{part.text}</p>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className={`${styles.section} ${styles.sectionMuted}`} aria-labelledby="website-ai-title">
+          <div className={styles.shell}>
+            <div className={styles.sectionHeading}>
+              <p className={styles.eyebrow}>Website and AI</p>
+              <h2 id="website-ai-title">Make it easier to ask for plumbing help</h2>
+            </div>
+            <div className={styles.contentGrid}>
+              <article className={styles.content}>
+                <h3>Smart Website functionality</h3>
+                <p>Give urgent and planned-service customers a clear, mobile-friendly route to the right information and action.</p>
+                <ul>{industry.smartWebsiteFeatures.map((feature) => <li key={feature}>{feature}</li>)}</ul>
+              </article>
+              <article className={styles.content}>
+                <h3>AI receptionist use cases</h3>
+                <p>Provide a useful first response while preserving clear rules for safety, business judgment, and human handoff.</p>
+                <ul>{industry.aiUseCases.map((useCase) => <li key={useCase}>{useCase}</li>)}</ul>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.section} aria-labelledby="growth-channels-title">
+          <div className={styles.shell}>
+            <div className={styles.sectionHeading}>
+              <p className={styles.eyebrow}>Acquisition and conversion</p>
+              <h2 id="growth-channels-title">Keep more qualified plumbing leads moving</h2>
+              <p>Lead follow-up, organic visibility, and paid search each solve a different part of the customer journey.</p>
+            </div>
+            <div className={styles.detailGrid}>
+              <article className={styles.detailCard}>
+                <span>CRM &amp; automation</span>
+                <h3>Lead follow-up</h3>
+                <ul className={styles.detailList}>{industry.followUpUseCases.map((useCase) => <li key={useCase}>{useCase}</li>)}</ul>
+              </article>
+              <article className={styles.detailCard}>
+                <span>Organic discovery</span>
+                <h3>Local SEO strategy</h3>
+                <ul className={styles.detailList}>{industry.localSeoStrategy.map((item) => <li key={item}>{item}</li>)}</ul>
+              </article>
+              <article className={styles.detailCard}>
+                <span>High-intent demand</span>
+                <h3>Paid search use cases</h3>
+                <ul className={styles.detailList}>{industry.paidSearchUseCases.map((useCase) => <li key={useCase}>{useCase}</li>)}</ul>
+              </article>
+            </div>
+          </div>
+        </section>
+
+        <section className={`${styles.section} ${styles.sectionMuted}`} aria-labelledby="industry-faq-title">
+          <div className={styles.shell}>
+            <div className={styles.sectionHeading}>
+              <p className={styles.eyebrow}>Digital marketing for plumbers FAQ</p>
+              <h2 id="industry-faq-title">Common questions</h2>
+            </div>
+            <div className={styles.faqList}>
+              {industry.faqs.map((faq, index) => (
+                <details key={faq.question} open={index === 0}>
+                  <summary><span>{faq.question}</span><b aria-hidden="true">+</b></summary>
+                  <p>{faq.answer}</p>
+                </details>
+              ))}
+            </div>
+            <nav className={styles.related} aria-label="Related BotPager services">
+              {industry.relatedLinks.map((link) => <Link href={link.href} key={link.href}>{link.label}</Link>)}
+              <Link href="/industries">Explore all industries</Link>
             </nav>
           </div>
         </section>

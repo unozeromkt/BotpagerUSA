@@ -243,12 +243,28 @@ a.card:hover {
 }
 
 .detailCard h3,
+.challengeCard h3,
+.content h3,
 .processCard h3 {
   margin: 0 0 12px;
   font-family: "Oswald", sans-serif;
   font-size: 26px;
   line-height: 1.12;
   text-transform: uppercase;
+}
+
+.detailList {
+  margin: 20px 0 0;
+  padding-left: 19px;
+  display: grid;
+  gap: 12px;
+  color: #626b82;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.detailList li::marker {
+  color: #4b22f4;
 }
 
 .detailCard p,

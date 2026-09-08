@@ -19,6 +19,19 @@ export type ServicePageContent = ArchitectureItem & {
   faqs: { question: string; answer: string }[];
 };
 
+export type IndustryPageContent = ArchitectureItem & {
+  seoTitle: string;
+  introduction: string[];
+  acquisitionProblems: { title: string; text: string }[];
+  system: { title: string; text: string }[];
+  smartWebsiteFeatures: string[];
+  aiUseCases: string[];
+  followUpUseCases: string[];
+  localSeoStrategy: string[];
+  paidSearchUseCases: string[];
+  faqs: { question: string; answer: string }[];
+};
+
 export const servicePages: ServicePageContent[] = [
   {
     slug: "smart-websites",
@@ -392,6 +405,133 @@ export const industryPages: ArchitectureItem[] = [
   },
 ];
 
+// Industry pages move into this collection only after they have enough original,
+// industry-specific content to be indexed. The shorter architecture entries above
+// remain useful as previews while their detail routes stay noindex.
+export const publishedIndustryPages: IndustryPageContent[] = [
+  {
+    slug: "plumbing",
+    href: "/industries/plumbing",
+    name: "Plumbing",
+    seoTitle: "Digital Marketing for Plumbers | Websites, SEO & AI",
+    title: "Get More Plumbing Leads and Booked Jobs",
+    description:
+      "Digital marketing for plumbing companies that connects a conversion-focused website, AI lead response, automated follow-up, local SEO, and Google Ads.",
+    eyebrow: "Digital marketing for plumbers",
+    introduction: [
+      "Plumbing customers rarely follow one predictable path. A homeowner with an active leak may call the first credible company that responds, while someone planning a water heater replacement may compare options, reviews, financing questions, and appointment availability over several days.",
+      "BotPager builds the customer-acquisition system around those different moments. The website helps each visitor find the right service and next step, AI supports the first response, the CRM keeps the opportunity visible, and search campaigns bring the business in front of people already looking for plumbing help.",
+    ],
+    acquisitionProblems: [
+      {
+        title: "Urgent leads move fast",
+        text: "Customers with leaks, backups, or no hot water may contact several companies within minutes. An unanswered call or slow form response can mean the opportunity goes elsewhere.",
+      },
+      {
+        title: "One page cannot explain every service",
+        text: "Emergency repairs, drain cleaning, fixture work, repiping, and water heater projects have different questions and search intent. Generic website copy makes it harder for customers to recognize the right fit.",
+      },
+      {
+        title: "Estimates need consistent follow-up",
+        text: "Higher-consideration work may not close during the first conversation. Without a visible pipeline and a useful next step, qualified estimates can quietly go cold.",
+      },
+      {
+        title: "Marketing data stops at the lead",
+        text: "Calls and forms may be counted without showing whether the inquiry was qualified, scheduled, quoted, or won. That makes it difficult to improve the sources that create real jobs.",
+      },
+    ],
+    system: [
+      {
+        title: "Attract the right searches",
+        text: "Build useful service pages, strengthen local search signals, and run focused paid search campaigns around the plumbing work the business wants to grow.",
+      },
+      {
+        title: "Make the next step obvious",
+        text: "Match urgent and planned-service visitors with clear calls, quote requests, appointment paths, and information that helps them act with confidence.",
+      },
+      {
+        title: "Respond and qualify",
+        text: "Use approved AI conversations and connected workflows to collect the service need, timing, location, and contact details before a human handoff.",
+      },
+      {
+        title: "Track the opportunity",
+        text: "Keep conversations, pipeline stages, reminders, estimates, and follow-up actions connected so the team can see what should happen next.",
+      },
+    ],
+    smartWebsiteFeatures: [
+      "Dedicated paths for emergency repairs, drain services, water heaters, installations, and other priority plumbing work",
+      "Mobile-first call, request-service, and estimate actions placed where customers need them",
+      "Service-area and availability information based on facts supplied by the plumbing company",
+      "Connected forms that capture the service need and route the inquiry into the follow-up workflow",
+    ],
+    aiUseCases: [
+      "Answer approved questions about services, scheduling, service areas, and the next step at any hour",
+      "Collect contact details, plumbing issue, urgency, property context, and preferred response method",
+      "Separate routine inquiries from conversations that require an immediate human review",
+      "Guide qualified visitors toward a service request, estimate, or direct team handoff",
+    ],
+    followUpUseCases: [
+      "Acknowledge new website inquiries and missed calls with an approved response",
+      "Assign each opportunity a stage, owner, and next action inside the CRM",
+      "Send appointment or estimate reminders according to the business workflow and customer consent",
+      "Re-engage open estimates or unbooked inquiries without relying on staff memory",
+    ],
+    localSeoStrategy: [
+      "Create distinct, useful pages for priority plumbing services instead of repeating generic keyword copy",
+      "Align the website and Google Business Profile with accurate services, categories, and business information",
+      "Strengthen internal links between plumbing services, customer questions, and relevant conversion paths",
+      "Measure visibility and customer actions while avoiding fabricated locations or near-duplicate city pages",
+    ],
+    paidSearchUseCases: [
+      "Separate urgent repair intent from planned installation and replacement searches",
+      "Focus location targeting on the plumbing company's real service coverage",
+      "Send each ad group to a landing experience that matches the service and next step",
+      "Connect call and form tracking with lead status so optimization can consider quality, not clicks alone",
+    ],
+    challenges: [
+      "Urgent customers contact multiple plumbers quickly.",
+      "After-hours calls and messages can become missed jobs.",
+      "Different repair and installation intents need clear service paths.",
+    ],
+    capabilities: [
+      "Emergency and planned-service website journeys",
+      "AI-assisted response and early qualification",
+      "CRM, local SEO, paid search, and follow-up coordination",
+    ],
+    outcome:
+      "A connected plumbing marketing system designed to turn more high-intent searches and inquiries into qualified conversations, scheduled visits, and booked jobs.",
+    relatedLinks: [
+      { href: "/services/smart-websites", label: "Build a plumbing lead-generation website" },
+      { href: "/services/ai-agent", label: "Add an AI receptionist" },
+      { href: "/services/crm-automations", label: "Automate plumbing lead follow-up" },
+      { href: "/services/local-seo-geo", label: "Improve local plumbing visibility" },
+      { href: "/services/google-ads", label: "Reach high-intent plumbing searches" },
+    ],
+    faqs: [
+      {
+        question: "What does digital marketing for plumbers include?",
+        answer: "The right mix depends on the company, but it can include a service-focused website, local SEO, Google Business Profile improvements, Google Ads, call and form tracking, AI-assisted response, CRM organization, and lead follow-up automation.",
+      },
+      {
+        question: "Can an AI receptionist handle plumbing inquiries after hours?",
+        answer: "Yes. It can provide an approved first response, gather contact and service details, answer configured questions, and route the inquiry toward the next step. The plumbing company defines which situations require immediate human attention.",
+      },
+      {
+        question: "How can a plumbing website generate better leads?",
+        answer: "A stronger plumbing website separates important services, explains who and where the company serves, makes calls and service requests easy on mobile, and captures enough context for the team to respond effectively.",
+      },
+      {
+        question: "Do plumbers need separate pages for each service?",
+        answer: "Priority services often deserve separate pages when customers have distinct needs and questions. Each page should provide genuinely useful information rather than repeating the same copy with a different keyword.",
+      },
+      {
+        question: "Can Google Ads leads be tracked through the booking process?",
+        answer: "Supported call and form activity can be connected with CRM stages and follow-up workflows. This gives the team more context about which inquiries become qualified opportunities and booked work.",
+      },
+    ],
+  },
+];
+
 export const resourceTopics = [
   "Local search and Google Business Profile",
   "Faster lead response and missed-call recovery",
@@ -407,4 +547,8 @@ export function getServicePage(slug: string) {
 
 export function getIndustryPage(slug: string) {
   return industryPages.find((industry) => industry.slug === slug);
+}
+
+export function getPublishedIndustryPage(slug: string) {
+  return publishedIndustryPages.find((industry) => industry.slug === slug);
 }

@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { servicePages } from "@/lib/seo/site-architecture";
+import { publishedIndustryPages, servicePages } from "@/lib/seo/site-architecture";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
@@ -27,6 +27,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.8,
     },
+    ...publishedIndustryPages.map(({ href }) => ({
+      url: `https://botpager.com${href}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
     {
       url: "https://botpager.com/about",
       lastModified: new Date(),
