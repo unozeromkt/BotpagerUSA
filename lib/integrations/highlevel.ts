@@ -4,6 +4,7 @@ import { getAnswerLabel } from "@/lib/audit/questions";
 import type { AuditReport, AuditSubmission } from "@/lib/audit/types";
 import { getGrowthAnswerLabel } from "@/lib/growth-game/config";
 import type { GrowthResult, GrowthSubmission } from "@/lib/growth-game/types";
+import type { VisibilityAuditReport, VisibilityLead } from "@/lib/visibility-audit/types";
 
 const HIGHLEVEL_BASE_URL = "https://services.leadconnectorhq.com";
 const AUDIT_CUSTOM_FIELD_COUNT = 6;
@@ -130,6 +131,95 @@ function buildNote(submission: AuditSubmission, report: AuditReport) {
 
 export function isHighLevelConfigured() {
   return getConfig() !== null;
+}
+
+function buildVisibilityAuditNote(lead: VisibilityLead, report: VisibilityAuditReport) {
+  return [
+    "SEARCH + AI VISIBILITY AUDIT",
+    `Business: ${lead.businessName}`,
+    `Website: ${report.websiteUrl}`,
+    `Business type: ${report.businessType}`,
+    `City / service area: ${report.city}`,
+    `Visibility score: ${report.overallScore}/100 — ${report.rating}`,
+    `Pages scanned: ${report.scannedPages}`,
+    "",
+    "CATEGORY SCORES",
+    ...report.scores.map((score) => `${score.label}: ${score.score}/100`),
+    "",
+    "PRIORITY ISSUES",
+    ...report.issues.flatMap((issue, index) => [
+      `${index + 1}. ${issue.priority}: ${issue.title}`,
+      `Impact: ${issue.impact}`,
+      `Evidence: ${issue.evidence}`,
+      `Recommendation: ${issue.recommendation}`,
+      "",
+    ]),
+    "RECOMMENDED IMPROVEMENTS",
+    ...report.recommendations.map((recommendation) => `- ${recommendation}`),
+    "",
+    "CONSENT",
+    `Email report consent: ${lead.consent ? "Yes" : "No"}`,
+    `Consent captured at: ${new Date().toISOString()}`,
+  ].join("\n");
+}
+
+export async function saveVisibilityAuditLead(lead: VisibilityLead, report: VisibilityAuditReport) {
+  const config = getConfig();
+  if (!config) return null;
+  const [firstName, ...lastParts] = lead.name.trim().split(/\s+/);
+  const customFields = [
+    [process.env.GHL_FIELD_VISIBILITY_SCORE, String(report.overallScore)],
+    [process.env.GHL_FIELD_VISIBILITY_RATING, report.rating],
+    [process.env.GHL_FIELD_VISIBILITY_REPORT, report.issues.map((issue) => `${issue.priority}: ${issue.title}`).join("\n")],
+  ]
+    .filter((entry): entry is [string, string] => Boolean(entry[0]))
+    .map(([id, fieldValue]) => ({ id, fieldValue }));
+
+  const payload = await highLevelRequest<{ contact?: HighLevelContact }>(config, "/contacts/upsert", {
+    method: "POST",
+    body: JSON.stringify({
+      firstName,
+      lastName: lastParts.join(" ") || undefined,
+      email: lead.email,
+      phone: lead.phone || undefined,
+      companyName: lead.businessName,
+      website: report.websiteUrl,
+      city: report.city,
+      country: "US",
+      source: "BotPager Search + AI Visibility Audit",
+      locationId: config.locationId,
+      customFields: customFields.length ? customFields : undefined,
+      createNewIfDuplicateAllowed: false,
+    }),
+  });
+  if (!payload.contact?.id) throw new Error("HighLevel did not return a contact id.");
+
+  try {
+    await highLevelRequest(config, `/contacts/${payload.contact.id}/tags`, {
+      method: "POST",
+      body: JSON.stringify({ tags: ["botpager-visibility-audit", "botpager-visibility-audit-ready", `visibility-${report.rating.toLowerCase().replaceAll(" ", "-")}`] }),
+    });
+  } catch {
+    console.warn("[BotPager Visibility Audit] Contact tags could not be added.");
+  }
+
+  if (config.userId) {
+    try {
+      await highLevelRequest(config, `/contacts/${payload.contact.id}/notes`, {
+        method: "POST",
+        body: JSON.stringify({
+          userId: config.userId,
+          title: "BotPager Search + AI Visibility Audit",
+          body: buildVisibilityAuditNote(lead, report),
+          color: "#5933ee",
+          pinned: false,
+        }),
+      });
+    } catch {
+      console.warn("[BotPager Visibility Audit] Contact note could not be created.");
+    }
+  }
+  return payload.contact;
 }
 
 function buildGrowthGameNote(submission: GrowthSubmission, result: GrowthResult) {

@@ -71,7 +71,7 @@ export const servicePages: ServicePageContent[] = [
     relatedLinks: [
       { href: "/services/ai-agent", label: "Add an AI receptionist" },
       { href: "/industries/home-services", label: "Explore the home services approach" },
-      { href: "/services/local-seo-geo", label: "Build local search visibility" },
+      { href: "/local-seo-ai-search-optimization", label: "Build local search visibility" },
     ],
     faqs: [
       { question: "What makes a Smart Website different from a standard business website?", answer: "A Smart Website is planned around customer actions and connected workflows. It combines clear service information with lead capture, tracking, AI response, CRM routing, and follow-up where those capabilities fit the business." },
@@ -288,7 +288,7 @@ export const industryPages: ArchitectureItem[] = [
     outcome: "More local inquiries progress from the first search to a scheduled visit, estimate, or booked job.",
     relatedLinks: [
       { href: "/services/smart-websites", label: "Websites for home service companies" },
-      { href: "/services/local-seo-geo", label: "Build local search visibility" },
+      { href: "/local-seo-ai-search-optimization", label: "Build local search visibility" },
     ],
   },
   {
@@ -320,7 +320,7 @@ export const industryPages: ArchitectureItem[] = [
     outcome: "More cleaning inquiries move toward the right estimate or booking workflow without getting lost.",
     relatedLinks: [
       { href: "/services/crm-automations", label: "Automate cleaning lead follow-up" },
-      { href: "/services/local-seo-geo", label: "Improve local visibility" },
+      { href: "/local-seo-ai-search-optimization", label: "Improve local visibility" },
     ],
   },
   {
@@ -336,7 +336,7 @@ export const industryPages: ArchitectureItem[] = [
     outcome: "A clearer route from local landscaping research to a qualified project conversation.",
     relatedLinks: [
       { href: "/services/smart-websites", label: "Build a landscaping lead-generation website" },
-      { href: "/services/local-seo-geo", label: "Strengthen local search signals" },
+      { href: "/local-seo-ai-search-optimization", label: "Strengthen local search signals" },
     ],
   },
   {
@@ -368,7 +368,7 @@ export const industryPages: ArchitectureItem[] = [
     outcome: "A coordinated path for turning HVAC searches and inquiries into scheduled service and estimate conversations.",
     relatedLinks: [
       { href: "/services/crm-automations", label: "Organize HVAC lead follow-up" },
-      { href: "/services/local-seo-geo", label: "Improve HVAC local visibility" },
+      { href: "/local-seo-ai-search-optimization", label: "Improve HVAC local visibility" },
     ],
   },
   {
@@ -400,7 +400,7 @@ export const industryPages: ArchitectureItem[] = [
     outcome: "A clearer, faster customer journey from electrical service need to a qualified conversation.",
     relatedLinks: [
       { href: "/services/ai-agent", label: "Respond while electricians are in the field" },
-      { href: "/services/local-seo-geo", label: "Build electrical service visibility" },
+      { href: "/local-seo-ai-search-optimization", label: "Build electrical service visibility" },
     ],
   },
 ];
@@ -504,7 +504,7 @@ export const publishedIndustryPages: IndustryPageContent[] = [
       { href: "/services/smart-websites", label: "Build a plumbing lead-generation website" },
       { href: "/services/ai-agent", label: "Add an AI receptionist" },
       { href: "/services/crm-automations", label: "Automate plumbing lead follow-up" },
-      { href: "/services/local-seo-geo", label: "Improve local plumbing visibility" },
+      { href: "/local-seo-ai-search-optimization", label: "Improve local plumbing visibility" },
       { href: "/services/google-ads", label: "Reach high-intent plumbing searches" },
     ],
     faqs: [

@@ -440,7 +440,7 @@ const servicePageHrefs: Record<string, string> = {
   "smart-websites": "/services/smart-websites",
   "multichannel-ai-agent": "/services/ai-agent",
   "crm-automations": "/services/crm-automations",
-  "local-seo-geo": "/services/local-seo-geo",
+  "local-seo-geo": "/local-seo-ai-search-optimization",
   "google-ads": "/services/google-ads",
 };
 
@@ -1220,7 +1220,7 @@ export function SiteFooter({ variant = "default" }: { variant?: LandingVariant }
     <footer className="footer">
       <div className="container footerGrid">
         <div><Logo light /><p>{isConversion ? "Websites and automated follow-up that help local service businesses get more customers." : "AI-powered websites, chatbots, and automations that turn more leads into booked jobs."}</p><p className="footerLegalIdentity">BotPager is operated by Uno Zero Marketing LLC.<br />23945 SAN GIOVANNI DR<br />LAND O LAKES FL 34639</p><div className="socials"><a href="#" aria-label="Instagram"><InstagramMark /></a><a href="#" aria-label="TikTok"><TikTokMark /></a><a href="#" aria-label="LinkedIn"><LinkedInMark /></a></div></div>
-        <div><h3>Solutions</h3><a href="/services/smart-websites">Smart Websites</a><a href="/services/ai-agent">AI Agent</a><a href="/services/crm-automations">CRM & Automations</a><a href="/services/local-seo-geo">Local SEO & GEO</a><a href="/services/google-ads">Google Ads</a></div>
+        <div><h3>Solutions</h3><a href="/services/smart-websites">Smart Websites</a><a href="/services/ai-agent">AI Agent</a><a href="/services/crm-automations">CRM & Automations</a><a href="/local-seo-ai-search-optimization">Local SEO & GEO</a><a href="/services/google-ads">Google Ads</a></div>
         <div><h3>Company</h3><a href="/about">About Us</a><a href="/industries">Industries</a><a href="/#how-it-works">How It Works</a><a href="/resources">Resources</a><a href="mailto:info@botpager.com">Contact</a></div>
         <div><h3>Get in touch</h3><a href="https://botpager.com"><Globe2 /> botpager.com</a><a href="tel:+12392510184"><Phone /> 239-251-0184</a><a href="mailto:info@botpager.com"><Mail /> info@botpager.com</a><a href="mailto:legal@botpager.com"><Mail /> legal@botpager.com</a></div>
       </div>

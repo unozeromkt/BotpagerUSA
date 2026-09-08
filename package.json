@@ -11,6 +11,7 @@
   "dependencies": {
     "@fontsource/inter": "latest",
     "@fontsource/oswald": "latest",
+    "cheerio": "^1.2.0",
     "lucide-react": "latest",
     "motion": "latest",
     "next": "latest",

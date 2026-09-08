@@ -15,6 +15,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.9,
     },
+    {
+      url: "https://botpager.com/local-seo-ai-search-optimization",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: "https://botpager.com/visibility-audit",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
     ...servicePages.map(({ href }) => ({
       url: `https://botpager.com${href}`,
       lastModified: new Date(),
