@@ -14,6 +14,15 @@ Keep the token in the deployment secret `GHL_PRIVATE_INTEGRATION_TOKEN`. Do not 
 
 Also copy the sub-account ID into `GHL_LOCATION_ID`. Copy the ID of the user who should appear as the audit-note author into `GHL_USER_ID`.
 
+## LATAM diagnostic forms
+
+The forms on `/es/` and its four service pages use the same private integration credentials. A successful submission upserts the contact in the configured sub-account, preserves the source page and available UTM/click attribution in a contact note, and applies these tags:
+
+- `botpager-latam-lead`
+- `latam-smart-website`, `latam-agente-ia`, `latam-seo-geo`, or `latam-crm-automatizacion`
+
+No additional environment variables are required. If `GHL_PRIVATE_INTEGRATION_TOKEN` or `GHL_LOCATION_ID` is missing, the endpoint stays in preview mode and does not create a contact. Configure `GHL_USER_ID` to save the attribution note as well.
+
 ## Phase 2: Contact custom fields
 
 Create these six contact custom fields. Long-text fields are recommended for the report content.

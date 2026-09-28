@@ -133,6 +133,92 @@ export function isHighLevelConfigured() {
   return getConfig() !== null;
 }
 
+type LatamLead = {
+  name: string;
+  company: string;
+  email: string;
+  phone: string;
+  country: string;
+  interest: string;
+  website: string;
+  consent: boolean;
+  tracking: Record<string, string>;
+};
+
+function buildLatamLeadNote(lead: LatamLead) {
+  const trackingLines = Object.entries(lead.tracking)
+    .filter(([, value]) => value)
+    .map(([key, value]) => `${key}: ${value}`);
+
+  return [
+    "SOLICITUD DE DIAGNÓSTICO — BOTPAGER LATAM",
+    `Empresa: ${lead.company}`,
+    `País: ${lead.country}`,
+    `Solución de interés: ${lead.interest}`,
+    `Sitio web: ${lead.website || "No proporcionado"}`,
+    `WhatsApp / teléfono: ${lead.phone || "No proporcionado"}`,
+    "",
+    "ATRIBUCIÓN",
+    ...(trackingLines.length ? trackingLines : ["Sin parámetros de atribución disponibles"]),
+    "",
+    "CONSENTIMIENTO",
+    `Contacto solicitado: ${lead.consent ? "Sí" : "No"}`,
+    `Registrado: ${new Date().toISOString()}`,
+  ].join("\n");
+}
+
+export async function saveLatamLead(lead: LatamLead) {
+  const config = getConfig();
+  if (!config) return null;
+
+  const [firstName, ...lastParts] = lead.name.trim().split(/\s+/);
+  const payload = await highLevelRequest<{ contact?: HighLevelContact }>(config, "/contacts/upsert", {
+    method: "POST",
+    body: JSON.stringify({
+      firstName,
+      lastName: lastParts.join(" ") || undefined,
+      email: lead.email,
+      phone: lead.phone || undefined,
+      companyName: lead.company,
+      website: lead.website || undefined,
+      country: lead.country === "OTHER" ? undefined : lead.country,
+      source: `BotPager LATAM — ${lead.interest}`,
+      locationId: config.locationId,
+      createNewIfDuplicateAllowed: false,
+    }),
+  });
+
+  if (!payload.contact?.id) throw new Error("HighLevel did not return a contact id.");
+
+  try {
+    await highLevelRequest(config, `/contacts/${payload.contact.id}/tags`, {
+      method: "POST",
+      body: JSON.stringify({ tags: ["botpager-latam-lead", `latam-${lead.interest}`] }),
+    });
+  } catch {
+    console.warn("[BotPager LATAM] Contact tags could not be added.");
+  }
+
+  if (config.userId) {
+    try {
+      await highLevelRequest(config, `/contacts/${payload.contact.id}/notes`, {
+        method: "POST",
+        body: JSON.stringify({
+          userId: config.userId,
+          title: "BotPager LATAM — Solicitud de diagnóstico",
+          body: buildLatamLeadNote(lead),
+          color: "#562ff4",
+          pinned: false,
+        }),
+      });
+    } catch {
+      console.warn("[BotPager LATAM] Contact note could not be created.");
+    }
+  }
+
+  return payload.contact;
+}
+
 function buildVisibilityAuditNote(lead: VisibilityLead, report: VisibilityAuditReport) {
   return [
     "SEARCH + AI VISIBILITY AUDIT",

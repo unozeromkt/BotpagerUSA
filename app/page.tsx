@@ -15,7 +15,10 @@ const faqData: [string, string][] = [
 export const metadata: Metadata = {
   title: { absolute: "Local Business Marketing & AI Growth System | BotPager" },
   description: "BotPager helps local service businesses get found, capture more leads, respond 24/7 with AI, automate follow-up, and turn more inquiries into customers.",
-  alternates: { canonical: "/" },
+  alternates: {
+    canonical: "/",
+    languages: { "en-US": "/", es: "/es/" },
+  },
   openGraph: {
     type: "website",
     url: "/",

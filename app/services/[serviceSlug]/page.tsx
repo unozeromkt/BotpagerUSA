@@ -7,6 +7,12 @@ type ServicePageProps = {
   params: Promise<{ serviceSlug: string }>;
 };
 
+const spanishEquivalentByServiceSlug: Record<string, string> = {
+  "smart-websites": "/es/smart-website/",
+  "ai-agent": "/es/agente-ia/",
+  "crm-automations": "/es/crm-automatizacion/",
+};
+
 export function generateStaticParams() {
   return servicePages.map(({ slug }) => ({ serviceSlug: slug }));
 }
@@ -20,7 +26,12 @@ export async function generateMetadata({ params }: ServicePageProps): Promise<Me
   return {
     title: service.seoTitle,
     description: service.description,
-    alternates: { canonical: service.href },
+    alternates: {
+      canonical: service.href,
+      ...(spanishEquivalentByServiceSlug[service.slug]
+        ? { languages: { "en-US": service.href, es: spanishEquivalentByServiceSlug[service.slug] } }
+        : {}),
+    },
     robots: {
       index: true,
       follow: true,

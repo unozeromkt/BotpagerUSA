@@ -51,7 +51,10 @@ export const metadata: Metadata = {
     "ChatGPT search visibility",
     "SEO for local businesses",
   ],
-  alternates: { canonical: "/local-seo-ai-search-optimization" },
+  alternates: {
+    canonical: "/local-seo-ai-search-optimization",
+    languages: { "en-US": "/local-seo-ai-search-optimization", es: "/es/seo-geo/" },
+  },
   openGraph: {
     type: "website",
     url: "/local-seo-ai-search-optimization",
