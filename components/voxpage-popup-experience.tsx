@@ -109,7 +109,17 @@ function LeadConnectorInlineWidget({ widgetId }: { widgetId: string }) {
   const hostRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!hostRef.current) return;
+    const host = hostRef.current;
+    if (!host) return;
+
+    // The embed resolves its height inside nested shadow DOM wrappers. Give it
+    // the stage's actual pixel height rather than an unresolved percentage.
+    const syncHeight = () => {
+      host.style.setProperty("--voxpage-inline-height", `${host.clientHeight}px`);
+    };
+    syncHeight();
+    const resizeObserver = new ResizeObserver(syncHeight);
+    resizeObserver.observe(host);
 
     const script = document.createElement("script");
     script.id = `leadconnector-inline-widget-${widgetId}`;
@@ -118,9 +128,12 @@ function LeadConnectorInlineWidget({ widgetId }: { widgetId: string }) {
     script.dataset.resourcesUrl = "https://widgets.leadconnectorhq.com/chat-widget/loader.js";
     script.dataset.widgetId = widgetId;
     script.dataset.source = "WEB_USER";
-    hostRef.current.appendChild(script);
+    host.appendChild(script);
 
-    return () => script.remove();
+    return () => {
+      resizeObserver.disconnect();
+      script.remove();
+    };
   }, [widgetId]);
 
   return (
@@ -168,6 +181,19 @@ export function VoxPagePopupExperience({
     document.body.style.overflow = "hidden";
     const focusTimer = window.setTimeout(() => closeRef.current?.focus(), 80);
 
+    // Mobile keyboards can shrink the visual viewport without changing dvh.
+    const viewport = window.visualViewport;
+    const backdrop = dialogRef.current?.parentElement;
+    const syncViewport = () => {
+      const height = viewport?.height ?? window.innerHeight;
+      backdrop?.style.setProperty("--voxpage-viewport-height", `${height}px`);
+      backdrop?.style.setProperty("--voxpage-viewport-top", `${viewport?.offsetTop ?? 0}px`);
+      if (backdrop) backdrop.dataset.compactViewport = String(height <= 700);
+    };
+    syncViewport();
+    viewport?.addEventListener("resize", syncViewport);
+    viewport?.addEventListener("scroll", syncViewport);
+
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         closeDialog();
@@ -199,6 +225,8 @@ export function VoxPagePopupExperience({
     return () => {
       window.clearTimeout(focusTimer);
       document.body.style.overflow = previousOverflow;
+      viewport?.removeEventListener("resize", syncViewport);
+      viewport?.removeEventListener("scroll", syncViewport);
       document.removeEventListener("keydown", handleKeyDown);
       launcherRef.current?.focus();
     };
