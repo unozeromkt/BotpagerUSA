@@ -2,9 +2,9 @@ import "server-only";
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
 import { highLevelRequest } from "@/lib/integrations/highlevel";
 import { effixCrm, firstEffixStage, getEffixConfig } from "./crm";
-import { campaign, campaignOpen, jointExperience, goals, sectors, type Booking, type CampaignSettings, type LeadInput } from "./config";
+import { campaign, campaignOpen, jointExperience, goals, sectors, type Booking, type CampaignSettings, type LeadInput, type SavedLead } from "./config";
 import { CampaignError } from "./http";
-import { clean, safeUrl, validTimezone } from "./validation";
+import { clean, parseEmail, safeUrl, validTimezone } from "./validation";
 
 type Receipt = { contactId: string; opportunityId: string; business: string; operationId: string; benefit: boolean; expires: number };
 type Opportunity = { id: string; name: string; pipelineId: string; contactId: string; pipelineStageId?: string; status?: string };
@@ -89,18 +89,40 @@ async function saveNote(contactId: string, marker: string, body: string) {
   if (!note.note?.id) throw new Error("No se guardó la nota de autorización.");
 }
 
+async function requestCouponEmail(contactId: string, email: string): Promise<NonNullable<SavedLead["confirmationEmail"]>> {
+  const workflowId = process.env.GHL_EFFIX_COUPON_WORKFLOW_ID?.trim();
+  if (!workflowId) return "pending";
+  const marker = `EFFIX_CUPON_EMAIL:${campaign.id}:${createHash("sha256").update(email).digest("hex").slice(0, 16)}`;
+  try {
+    const response = await highLevelRequest<{ notes: { body: string }[] }>(config(), `/contacts/${encodeURIComponent(contactId)}/notes`, { method: "GET" });
+    if (!Array.isArray(response.notes)) throw new Error("Respuesta de notas inválida.");
+    if (response.notes.some(note => note.body?.includes(marker))) return "requested";
+    const result = await highLevelRequest<{ succeeded?: boolean; succeded?: boolean }>(config(), `/contacts/${encodeURIComponent(contactId)}/workflow/${encodeURIComponent(workflowId)}`, {
+      method: "POST", body: JSON.stringify({ eventStartTime: new Date(Date.now()).toISOString() }),
+    });
+    if (result.succeeded !== true && result.succeded !== true) throw new Error("Inscripción no confirmada.");
+    // The workflow disables re-entry to prevent duplicate messages after an uncertain response.
+    await saveNote(contactId, marker, `Confirmación del cupón ${campaign.code} solicitada al workflow ${workflowId}. Vigencia: ${campaign.endsAt} (límite exclusivo). No acredita entrega del correo.`);
+    return "requested";
+  } catch {
+    console.error("[Feria Effix] Registro guardado; confirmación por correo pendiente.");
+    return "pending";
+  }
+}
+
 export async function saveLead(lead: LeadInput) {
   config();
   const joint = lead.origin === jointExperience.origin;
+  const benefit = campaignOpen();
   if (!joint && !settings().live) throw new CampaignError("El registro de la campaña no está disponible.", 503);
-  if (!joint && !campaignOpen()) throw new CampaignError("El beneficio se activa del 14 al 20 de octubre de 2026, hora de Colombia.", 409);
+  if (!joint && !campaignOpen()) throw new CampaignError("El beneficio se activa del 14 al 30 de octubre de 2026, hora de Colombia.", 409);
   if (lead.websiteTrap) throw new CampaignError("No pudimos registrar tus datos. Intenta de nuevo.");
   return serial(createHash("sha256").update(lead.phone).digest("hex"), async () => {
     const c = config();
     const firstStageId = await firstEffixStage(c);
     const contact = await highLevelRequest<{ contact: { id: string } }>(c, "/contacts/upsert", { method: "POST", body: JSON.stringify({
       locationId: c.locationId, firstName: lead.name.split(" ")[0], lastName: lead.name.split(" ").slice(1).join(" ") || undefined,
-      phone: lead.phone, country: lead.country, source: "Feria Effix 2026", createNewIfDuplicateAllowed: false,
+      email: lead.email, phone: lead.phone, country: lead.country, source: "Feria Effix 2026", createNewIfDuplicateAllowed: false,
     }) });
     if (!contact.contact?.id) throw new Error("No se guardó el contacto.");
     // Each business has its own opportunity, even when it shares the same phone/contact.
@@ -123,15 +145,15 @@ export async function saveLead(lead: LeadInput) {
     const marker = `EFFIX_REGISTRO:${lead.operationId}:${snapshotKey}`;
     await saveNote(contact.contact.id, marker, JSON.stringify({
       campaign: campaign.id, business: lead.business, opportunityId: opportunity.id, sector: lead.sector, objective: lead.goal, tracking,
-      origin: lead.origin, interest: joint ? jointExperience.interest : undefined,
+      email: lead.email, origin: lead.origin, interest: joint ? jointExperience.interest : undefined,
       contactConsent: { granted: true, text: joint ? jointExperience.contactConsent : campaign.contactConsent }, marketingConsent: { granted: lead.marketing, text: campaign.marketingConsent },
-      policyVersion: campaign.policyVersion, capturedAt: new Date().toISOString(), benefit: joint ? undefined : { code: campaign.code, discount: campaign.discount, endsAt: campaign.endsAt },
+      policyVersion: campaign.policyVersion, capturedAt: new Date().toISOString(), benefit: benefit ? { code: campaign.code, discount: campaign.discount, endsAt: campaign.endsAt } : undefined,
     }, null, 2));
     const values: Record<string, string> = {
       business: lead.business,
       ...(!joint ? { sector: sectors.find(item => item.id === lead.sector)!.label, objective: goals.find(item => item.id === lead.goal)!.label } : {}), origin: tracking.utm_medium || "enlace", seller,
       contact_consent: "Sí", marketing_consent: lead.marketing ? "Sí" : "No", consent_at: new Date().toISOString(),
-      ...(!joint ? { benefit_code: campaign.code, benefit_expires_at: campaign.endsAt } : {}), policy_version: campaign.policyVersion, operation_id: lead.operationId,
+      ...(benefit ? { benefit_code: campaign.code, benefit_expires_at: campaign.endsAt } : {}), policy_version: campaign.policyVersion, operation_id: lead.operationId,
     };
     let fieldIds: Record<string, string> = {};
     try { fieldIds = JSON.parse(process.env.GHL_EFFIX_FIELDS_JSON || "{}"); } catch { throw new Error("Configuración de campos inválida."); }
@@ -139,8 +161,9 @@ export async function saveLead(lead: LeadInput) {
     if (customFields.length) await highLevelRequest(c, `/opportunities/${encodeURIComponent(opportunity.id)}`, { method: "PUT", body: JSON.stringify({ customFields }) });
     // Trigger only after the opportunity and consent record are durable.
     if (!joint) await highLevelRequest(c, `/contacts/${encodeURIComponent(contact.contact.id)}/tags`, { method: "POST", body: JSON.stringify({ tags: [campaign.id, `sector_${lead.sector}`, `objetivo_${lead.goal}`, `origen_${["nfc", "qr"].includes(lead.tracking.utm_medium) ? lead.tracking.utm_medium : "enlace"}`, "effix_beneficio_activo"] }) });
-    const data: Receipt = { contactId: contact.contact.id, opportunityId: opportunity.id, business: lead.business, operationId: lead.operationId, benefit: !joint, expires: Date.now() + 24 * 60 * 60_000 };
-    return { receipt: sign(data), benefit: !joint, expiresAt: joint ? new Date(data.expires).toISOString() : campaign.endsAt, business: lead.business };
+    const data: Receipt = { contactId: contact.contact.id, opportunityId: opportunity.id, business: lead.business, operationId: lead.operationId, benefit, expires: Date.now() + 24 * 60 * 60_000 };
+    const confirmationEmail = benefit ? await requestCouponEmail(contact.contact.id, lead.email) : "not_applicable";
+    return { receipt: sign(data), benefit, expiresAt: benefit ? campaign.endsAt : new Date(data.expires).toISOString(), business: lead.business, email: lead.email, confirmationEmail };
   });
 }
 
@@ -170,8 +193,10 @@ export async function book(data: Receipt, input: Record<string, unknown>) {
   const timezone = validTimezone(input.timezone);
   const startTime = clean(input.startTime, 80);
   if (!Number.isFinite(Date.parse(startTime))) throw new CampaignError("Selecciona un horario disponible.");
-  const email = clean(input.email, 160).toLowerCase();
-  if ((settings().requiresEmail || email) && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) throw new CampaignError("Ingresa un correo válido para recibir la invitación.");
+  let email = "";
+  if (settings().requiresEmail || input.email) {
+    try { email = parseEmail(input.email); } catch { throw new CampaignError("Ingresa un correo válido para recibir la invitación."); }
+  }
   const website = clean(input.website, 240);
   if (website && !safeUrl(website)) throw new CampaignError("Ingresa el enlace completo de tu web o Instagram, empezando por https://.");
   return serial(data.opportunityId, async () => {

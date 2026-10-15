@@ -189,3 +189,5 @@
 }
 
 .auditOffer{background:linear-gradient(130deg,#562ff4,#392170);border-radius:14px;padding:22px 24px;margin:23px 0;color:#fff}.auditOffer>span{display:block;font-size:9px;letter-spacing:.1em;color:#d8c7f1;font-weight:650}.auditOffer>strong{display:block;font-size:49px;line-height:1;letter-spacing:-.04em;margin:15px 0;color:#f6e8ac}.page .auditOffer p{font-size:13px;line-height:1.7;color:#eee6f8;margin:0}.auditOffer>small{display:block;margin-top:12px;font-size:10px;color:#d8c7f1}@media(max-width:650px){.auditOffer{padding:20px}.auditOffer>strong{font-size:43px}}
+
+.fieldHint{display:block;margin-top:8px;color:#746f7c;font-size:12px;line-height:1.6;font-weight:400}

@@ -5,10 +5,19 @@ export function clean(value: unknown, max = 120) {
   return typeof value === "string" ? value.replace(/[\u0000-\u001f\u007f]/g, " ").trim().replace(/\s+/g, " ").slice(0, max) : "";
 }
 
+export function parseEmail(value: unknown) {
+  const email = typeof value === "string" ? value.trim().toLowerCase() : "";
+  if (email.length > 254 || !/^[^\s@\u0000-\u001f\u007f]+@[^\s@\u0000-\u001f\u007f]+\.[^\s@\u0000-\u001f\u007f]+$/.test(email)) {
+    throw new Error("Ingresa un correo válido para recibir la confirmación de tu cupón.");
+  }
+  return email;
+}
+
 export function parseLead(input: unknown): LeadInput {
   if (!input || typeof input !== "object") throw new Error("Revisa los datos enviados.");
   const data = input as Record<string, unknown>;
   const joint = data.origin === "groovy-botpager";
+  const email = parseEmail(data.email);
   const name = clean(data.name, 100), business = clean(data.business, 120);
   if (joint && (business.length < 1 || business.length > 50)) throw new Error("El negocio debe tener entre 1 y 50 caracteres.");
   if (name.length < 2 || business.length < (joint ? 1 : 2)) throw new Error("Completa tu nombre y el nombre de tu negocio.");
@@ -31,7 +40,7 @@ export function parseLead(input: unknown): LeadInput {
     const value = clean(rawTracking[key], 80);
     return /^[a-zA-Z0-9_-]{1,80}$/.test(value) ? [[key, value]] : [];
   }));
-  return { ...(joint ? { origin: "groovy-botpager" as const } : {}), name, business, phone: phone.number, country: phone.country ?? country, sector, goal, consent: true, marketing: data.marketing === true, operationId, websiteTrap: clean(data.websiteTrap), tracking };
+  return { ...(joint ? { origin: "groovy-botpager" as const } : {}), name, business, email, phone: phone.number, country: phone.country ?? country, sector, goal, consent: true, marketing: data.marketing === true, operationId, websiteTrap: clean(data.websiteTrap), tracking };
 }
 
 export function validTimezone(value: unknown) {

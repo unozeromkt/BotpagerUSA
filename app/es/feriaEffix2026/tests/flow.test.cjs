@@ -21,10 +21,11 @@ const { readRequest } = require('../_lib/http.ts');
 const realNow = Date.now;
 const now = Date.parse('2026-10-15T10:00:00-05:00');
 const slot = '2026-10-16T10:00:00-05:00';
-const input = { name: '  Ana   Pérez  ', business: 'Negocio de prueba', phone: '3001234567', country: 'CO', sector: 'servicios', goal: 'cotizar', consent: true, marketing: false, operationId: 'f6737ba2-8047-423b-bfc2-3d369afae7d2', websiteTrap: '', tracking: { utm_medium: 'nfc', tag_id: 'gus_01' } };
+const input = { name: '  Ana   Pérez  ', business: 'Negocio de prueba', email: ' Ana@Example.com ', phone: '3001234567', country: 'CO', sector: 'servicios', goal: 'cotizar', consent: true, marketing: false, operationId: 'f6737ba2-8047-423b-bfc2-3d369afae7d2', websiteTrap: '', tracking: { utm_medium: 'nfc', tag_id: 'gus_01' } };
 let state;
 
 test.beforeEach(() => {
+  delete process.env.GHL_EFFIX_COUPON_WORKFLOW_ID;
   Date.now = () => now;
   Object.assign(process.env, { EFFIX_ENABLED: 'true', EFFIX_PRIVACY_APPROVED: 'true', EFFIX_RECEIPT_SECRET: 'test-only-secret-with-at-least-32-characters', GHL_USER_ID: 'user', GHL_EFFIX_PIPELINE_ID: 'pipeline', GHL_EFFIX_STAGE_NEW_ID: 'new', GHL_EFFIX_STAGE_BENEFIT_ID: 'benefit', GHL_EFFIX_STAGE_BOOKED_ID: 'booked', GHL_EFFIX_STAGE_COORDINATION_ID: 'coordinate', GHL_EFFIX_CALENDAR_ID: 'calendar', EFFIX_CALENDAR_REQUIRES_EMAIL: 'false', EFFIX_SELLERS_JSON: '{"gus_01":"Gustavo"}', GHL_EFFIX_FIELDS_JSON: '{"business":"field-business","marketing_consent":"field-marketing"}' });
   state = { pipelines: [{ id: effixCrm.pipelineId, stages: [{ id: 'new', position: 0 }, { id: 'benefit', position: 1 }] }], opportunities: [], notes: [], tasks: [], events: [], calls: [], slots: [slot], fail: '', failed: false };
@@ -42,6 +43,7 @@ async function mockRequest(config, target, init) {
   if (url.pathname === '/opportunities/' && method === 'POST') { const opportunity = { id: `opp-${state.opportunities.length + 1}`, ...body }; state.opportunities.push(opportunity); return { opportunity }; }
   if (url.pathname.startsWith('/opportunities/')) { const opportunity = state.opportunities.find(item => item.id === url.pathname.split('/').at(-1)); assert.ok(opportunity); if (method === 'PUT') Object.assign(opportunity, body); return { opportunity }; }
   if (url.pathname.endsWith('/notes')) { if (method === 'GET') return { notes: state.notes }; const note = { id: `note-${state.notes.length + 1}`, ...body }; state.notes.push(note); return { note }; }
+  if (url.pathname.includes('/workflow/')) return state.workflowResult ?? { succeeded: true };
   if (url.pathname.endsWith('/tags')) return {};
   if (url.pathname.endsWith('/free-slots')) return { '2026-10-16': { slots: state.slots } };
   if (url.pathname.endsWith('/appointments') && method === 'GET') return { events: state.events.map(({ id, title, calendarId, startTime, endTime, description }) => ({ id, title, calendarId, startTime, endTime, notes: description, status: 'booked' })) };
@@ -56,8 +58,8 @@ test('50% aprobado y ventana exacta de Colombia', () => {
   assert.equal(campaign.discount, 50); assert.equal(campaign.code, 'EFFIX50');
   assert.equal(campaignOpen(Date.parse('2026-10-14T04:59:59Z')), false);
   assert.equal(campaignOpen(Date.parse('2026-10-14T05:00:00Z')), true);
-  assert.equal(campaignOpen(Date.parse('2026-10-21T04:59:59Z')), true);
-  assert.equal(campaignOpen(Date.parse('2026-10-21T05:00:00Z')), false);
+  assert.equal(campaignOpen(Date.parse('2026-10-31T04:59:59Z')), true);
+  assert.equal(campaignOpen(Date.parse('2026-10-31T05:00:00Z')), false);
 });
 test('normaliza WhatsApp colombiano y mantiene marketing opcional', () => {
   const lead = parseLead(input); assert.equal(lead.phone, '+573001234567'); assert.equal(lead.name, 'Ana Pérez'); assert.equal(lead.marketing, false);
@@ -74,7 +76,7 @@ test('valida zona horaria y enlaces HTTPS; limita atribución', () => {
 });
 test('no activa sin configuración ni fuera de fechas', async () => {
   process.env.EFFIX_ENABLED = 'false'; assert.equal(settings().live, false); await assert.rejects(saveLead(parseLead(input))); assert.equal(state.calls.length, 0);
-  process.env.EFFIX_ENABLED = 'true'; Date.now = () => Date.parse('2026-10-21T05:00:00Z'); await assert.rejects(saveLead(parseLead(input))); assert.equal(state.calls.length, 0);
+  process.env.EFFIX_ENABLED = 'true'; Date.now = () => Date.parse('2026-10-31T05:00:00Z'); await assert.rejects(saveLead(parseLead(input))); assert.equal(state.calls.length, 0);
 });
 test('CRM conserva la primera etapa y guarda consentimiento antes de activar; recibo firmado', async () => {
   const saved = await saveLead(parseLead(input)); assert.equal(saved.benefit, true); assert.equal(state.opportunities[0].pipelineStageId, 'new');
@@ -107,7 +109,7 @@ test('horario ocupado y fallo de reserva no confirman cita', async () => {
   const data = receipt((await saveLead(parseLead(input))).receipt); state.slots = []; await assert.rejects(book(data, { startTime: slot, timezone: 'America/Bogota' })); assert.equal(state.events.length, 0);
   state.slots = [slot]; state.fail = 'POST:/calendars/events/appointments'; await assert.rejects(book(data, { startTime: slot, timezone: 'America/Bogota' })); assert.equal(state.opportunities[0].pipelineStageId, 'new');
 });
-test('correo se solicita solo al reservar cuando hace falta', async () => {
+test('agenda valida el correo de la invitación cuando lo requiere', async () => {
   const data = receipt((await saveLead(parseLead(input))).receipt); process.env.EFFIX_CALENDAR_REQUIRES_EMAIL = 'true';
   await assert.rejects(book(data, { startTime: slot, timezone: 'America/Bogota' })); assert.equal(state.events.length, 0);
   await book(data, { startTime: slot, timezone: 'America/Bogota', email: 'test@example.com', website: 'https://example.com' }); assert.equal(state.events.length, 1);
@@ -233,4 +235,53 @@ test('no crea contactos si falla la consulta, falta el pipeline o su primera eta
   state.fail = 'GET:/opportunities/pipelines';
   await assert.rejects(saveLead(parseLead(input)));
   assert.equal(state.calls.some(call => call.method === 'POST'), false);
+});
+
+
+test('email obligatorio normalizado sin aceptar saltos de línea ni truncar direcciones', () => {
+  assert.equal(parseLead(input).email, 'ana@example.com');
+  for (const email of [undefined, '', 'nombre', 'a@b', 'a @example.com', 'a@example.com\r\nBcc:otra@example.com', 'x'.repeat(250)+'@example.com']) {
+    assert.throws(() => parseLead({ ...input, email }));
+  }
+});
+test('activa el cupón del recorrido conjunto y guarda email en CRM sin tags de marketing', async () => {
+  const saved = await saveLead(parseLead({ ...input, origin: 'groovy-botpager' }));
+  assert.equal(saved.benefit, true); assert.equal(saved.expiresAt, campaign.endsAt);
+  assert.equal(saved.confirmationEmail, 'pending'); assert.equal(saved.email, 'ana@example.com');
+  assert.equal(state.calls.find(call => call.path === '/contacts/upsert').body.email, saved.email);
+  assert.equal(state.calls.some(call => call.path.endsWith('/tags')), false);
+  assert.equal(JSON.parse(state.notes[0].body.split('\n').slice(1).join('\n')).benefit.code, campaign.code);
+});
+test('confirma inscripción de correo después del consentimiento y no la repite al reintentar', async () => {
+  process.env.GHL_EFFIX_COUPON_WORKFLOW_ID = 'coupon-workflow';
+  const lead = parseLead({ ...input, origin: 'groovy-botpager' });
+  const saved = await saveLead(lead); await saveLead(lead);
+  assert.equal(saved.confirmationEmail, 'requested'); assert.equal(state.opportunities.length, 1);
+  const enrollments = state.calls.filter(call => call.path === '/contacts/contact/workflow/coupon-workflow');
+  assert.equal(enrollments.length, 1); assert.equal(enrollments[0].method, 'POST');
+  assert.ok(state.calls.indexOf(enrollments[0]) > state.calls.findIndex(call => call.method === 'POST' && call.path.endsWith('/notes')));
+  assert.equal(state.notes.filter(note => note.body.startsWith('EFFIX_CUPON_EMAIL:')).length, 1);
+});
+test('fallo de inscripción conserva el cupón y permite recuperar el envío', async () => {
+  process.env.GHL_EFFIX_COUPON_WORKFLOW_ID = 'coupon-workflow';
+  state.fail = 'POST:/contacts/contact/workflow/coupon-workflow';
+  const lead = parseLead(input), first = await saveLead(lead);
+  assert.equal(first.benefit, true); assert.equal(first.confirmationEmail, 'pending');
+  assert.equal(state.opportunities.length, 1); assert.equal(state.notes.length, 1);
+  const retry = await saveLead(lead); assert.equal(retry.confirmationEmail, 'requested');
+  assert.equal(state.opportunities.length, 1);
+});
+test('sin confirmación de HighLevel no anuncia correo solicitado y acepta respuesta legacy documentada', async () => {
+  process.env.GHL_EFFIX_COUPON_WORKFLOW_ID = 'coupon-workflow';
+  state.workflowResult = { succeeded: false };
+  assert.equal((await saveLead(parseLead(input))).confirmationEmail, 'pending');
+  state.workflowResult = { succeded: true };
+  assert.equal((await saveLead(parseLead(input))).confirmationEmail, 'requested');
+});
+test('fuera de campaña el recorrido guarda una consulta sin cupón ni envío de confirmación', async () => {
+  process.env.GHL_EFFIX_COUPON_WORKFLOW_ID = 'coupon-workflow';
+  Date.now = () => Date.parse('2026-10-31T05:00:00Z');
+  const saved = await saveLead(parseLead({ ...input, origin: 'groovy-botpager' }));
+  assert.equal(saved.benefit, false); assert.equal(saved.confirmationEmail, 'not_applicable');
+  assert.equal(state.calls.some(call => call.path.includes('/workflow/')), false);
 });

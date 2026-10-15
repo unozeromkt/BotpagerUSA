@@ -2,7 +2,7 @@
 
 Implementación en español en **`/es/feriaEffix2026`**. Se reutilizan el proyecto Next.js, el isotipo de BotPager y la conexión de servidor `lib/integrations/highlevel.ts`. El chat general se oculta en esta ruta para mantener una sola acción principal. La microdemo es guiada, no usa IA real ni consume créditos de OpenAI.
 
-El usuario aprobó **50% sobre la implementación inicial**, para contrataciones **del 14 al 20 de octubre de 2026**, con cierre el **20 a las 23:59:59, America/Bogota**. Se usa `EFFIX50`, en lugar del 15% propuesto inicialmente en el MD. El registro de campaña utiliza la misma ventana. Esto no afirma que sean las fechas oficiales de la feria. El beneficio se confirma en pantalla después del guardado exitoso en el CRM, incluida la oportunidad y su autorización. La propuesta comercial define el alcance, precio regular, descuento, precio final y qué constituye contratación.
+El usuario aprobó **50% sobre la implementación inicial**, para contrataciones **del 14 al 30 de octubre de 2026**, con cierre el **30 a las 23:59:59, America/Bogota**. Se usa `EFFIX50`, en lugar del 15% propuesto inicialmente en el MD. El registro de campaña utiliza la misma ventana. Esto no afirma que sean las fechas oficiales de la feria. El beneficio se confirma en pantalla después del guardado exitoso en el CRM, incluida la oportunidad y su autorización. La propuesta comercial define el alcance, precio regular, descuento, precio final y qué constituye contratación.
 
 ## Qué está implementado
 
@@ -50,7 +50,7 @@ En la subcuenta, configurar deduplicación de contactos por teléfono y permitir
 
 Reutilizar un calendario existente si ofrece **15 minutos**, disponibilidad y reuniones reales. En caso contrario crear uno para «Demo BotPager · Feria Effix». Conectar Google Meet/Zoom o una ubicación de reunión aprobada, zona horaria, asesor, buffers y el envío de confirmación con enlaces reales. No seleccionar una duración que no esté activa en el calendario. Copiar su ID a `GHL_EFFIX_CALENDAR_ID`.
 
-Si necesita correo para la invitación, establecer `EFFIX_CALENDAR_REQUIRES_EMAIL=true`. El correo se pide únicamente en agenda, después del guardado del contacto. La integración usa la configuración de reunión del calendario; no define una ubicación ficticia.
+Si necesita correo para la invitación, establecer `EFFIX_CALENDAR_REQUIRES_EMAIL=true`. El correo es obligatorio en el registro para confirmar el cupón; se reutiliza al reservar. La integración usa la configuración de reunión del calendario; no define una ubicación ficticia.
 
 ## Variables de entorno
 
@@ -92,7 +92,7 @@ Crear los siguientes campos personalizados de **Oportunidad** y mapear sus IDs e
 | `policy_version` | EFFIX · Versión aviso | effix-2026-v1 |
 | `operation_id` | EFFIX · Operación | UUID |
 | `benefit_code` | EFFIX · Código | EFFIX50 |
-| `benefit_expires_at` | EFFIX · Vencimiento | 2026-10-21T00:00:00-05:00, exclusivo |
+| `benefit_expires_at` | EFFIX · Vencimiento | 2026-10-31T00:00:00-05:00, exclusivo |
 
 Usar campos de texto para estos valores y componer un JSON con las claves anteriores y sus IDs reales. Las autorizaciones históricas se guardan en notas; los campos reflejan la solicitud más reciente del negocio. Los tags `sector_*`/`objetivo_*` pertenecen al contacto y pueden acumularse; usar los campos de oportunidad para mensajes sobre un negocio concreto.
 
@@ -113,7 +113,7 @@ La opción «Prefiero coordinar por WhatsApp» **ya crea una tarea** al asesor. 
 
 Usar el canal WhatsApp que BotPager tenga conectado. Si no está conectado, esa conexión del proveedor sí es necesaria. Verificar plantillas, reglas de sesión y manejo de errores con el proveedor. Las novedades generales solo se permiten cuando marketing = Sí, con mecanismo de retiro. La autorización de solicitud no sustituye ese permiso. Una plantilla sugerida para registro:
 
-> Hola, [nombre]. Soy [asesor] de BotPager. Gracias por conversar con nosotros en EFFIX. Tu beneficio EFFIX50 está activo: 50% en la implementación inicial al contratar del 14 al 20 de octubre de 2026, según las condiciones de campaña. Puedes reservar tu demo de 15 minutos aquí: [enlace]. Si prefieres coordinar por aquí, responde a este mensaje.
+> Hola, [nombre]. Soy [asesor] de BotPager. Gracias por conversar con nosotros en EFFIX. Tu beneficio EFFIX50 está activo: 50% en la implementación inicial al contratar del 14 al 30 de octubre de 2026, según las condiciones de campaña. Puedes reservar tu demo de 15 minutos aquí: [enlace]. Si prefieres coordinar por aquí, responde a este mensaje.
 
 La llamada de reserva utiliza `toNotify: true`, así que GHL puede ejecutar sus notificaciones configuradas tras el envío del visitante. Revisar esos flujos antes de activar.
 
@@ -143,3 +143,9 @@ Después de completar GHL: revisar el aviso en español, marcar `EFFIX_PRIVACY_A
 Los bloqueos en memoria y las consultas al CRM cubren reintentos y concurrencia dentro de una instancia, pero no constituyen una transacción distribuida: dos instancias que creen simultáneamente el primer registro podrían competir. Antes de una campaña con múltiples réplicas, agregar un bloqueo/registro idempotente duradero con claves únicas por teléfono/negocio/acción, y rate limiting en el borde. No se introduce una base de datos ni un proveedor nuevo para el piloto. Si una operación externa se guarda pero su respuesta se pierde, se recupera consultando notas, oportunidades, tareas o citas en el siguiente intento.
 
 No se han validado reservas, permisos ni workflows contra la cuenta real porque las credenciales no están configuradas. El enlace de Canva no fue accesible desde la herramienta de lectura; el diseño se basó en los manuales locales proporcionados.
+
+## Confirmación del cupón por correo
+
+Todos los formularios Effix requieren email y lo guardan en el contacto de HighLevel. El recorrido conjunto y la auditoría también activan EFFIX50 durante la ventana de campaña. El vencimiento exclusivo es `2026-10-31T00:00:00-05:00`: disponible hasta el 30 de octubre a las 23:59:59 en Colombia.
+
+Configurar `GHL_EFFIX_COUPON_WORKFLOW_ID` con un workflow publicado de la misma subcuenta, con una sola acción de correo de confirmación, remitente configurado y **Allow Re-entry desactivado**. El servidor inscribe mediante `POST /contacts/:id/workflow/:id` (scope `contacts.write`) después de guardar contacto, oportunidad y consentimiento. Una nota durable evita repetir solicitudes confirmadas. Un fallo de envío no invalida el registro ni el cupón; se informa como pendiente. `requested` indica inscripción confirmada, no entrega en la bandeja. La confirmación del beneficio es independiente del consentimiento opcional de marketing.

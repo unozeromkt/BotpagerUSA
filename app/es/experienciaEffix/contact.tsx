@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent } from "react";
-import { ArrowRight, CalendarDays, Check, LoaderCircle, MessageCircle } from "lucide-react";
+import { ArrowRight, CalendarDays, Check, LoaderCircle, Mail, MessageCircle } from "lucide-react";
 import { campaign, countries, jointExperience, type Booking, type CampaignSettings, type SavedLead } from "../feriaEffix2026/_lib/config";
 import s from "./experience.module.css";
 
@@ -10,12 +10,12 @@ async function api(path: string, body: unknown) {
   return data;
 }
 export function Contact({ business, settings, reportGate=false, onComplete, initialLead }: { business: string; settings: CampaignSettings; reportGate?:boolean; onComplete?:(lead?:SavedLead)=>void; initialLead?:SavedLead }) {
-  const [fields,setFields] = useState({name:'',business,phone:'',country:'CO',consent:false,marketing:false,websiteTrap:''});
+  const [fields,setFields] = useState({name:'',business,email:'',phone:'',country:'CO',consent:false,marketing:false,websiteTrap:''});
   const [saved,setSaved] = useState<SavedLead|undefined>(initialLead);
   const [busy,setBusy] = useState(false), [error,setError] = useState('');
   const [booking,setBooking] = useState<Booking>(), [coordinated,setCoordinated] = useState(false);
   const [calendar,setCalendar] = useState(false), [slots,setSlots] = useState<string[]>([]), [selected,setSelected] = useState('');
-  const [zone,setZone] = useState(campaign.timezone as string), [week,setWeek] = useState(0), [email,setEmail] = useState('');
+  const [zone,setZone] = useState(campaign.timezone as string), [week,setWeek] = useState(0), [email,setEmail] = useState(initialLead?.email || '');
   const operation = useRef('');
   const update = (key: string, value: string | boolean) => setFields(previous=>({...previous,[key]:value}));
   async function run(action:()=>Promise<void>) { setBusy(true); setError(''); try { await action(); } catch(error) { setError(error instanceof Error ? error.message : 'No hay conexión. Conservamos tus datos; puedes reintentar.'); } finally { setBusy(false); } }
@@ -27,18 +27,19 @@ export function Contact({ business, settings, reportGate=false, onComplete, init
     const tracking = Object.fromEntries(['utm_source','utm_medium','utm_campaign','utm_content','tag_id'].flatMap(key=>{const value=search.get(key)||'';return /^[a-zA-Z0-9_-]{1,80}$/.test(value)?[[key,value]]:[];}));
     const data = await api('lead',{...fields,business:fields.business.trim(),origin:jointExperience.origin,operationId:operation.current,tracking});
     if (!data.lead?.receipt) throw new Error('No pudimos confirmar el guardado. Intenta de nuevo.');
-    setSaved(data.lead);onComplete?.(data.lead);
+    setEmail(data.lead.email || fields.email);setSaved(data.lead);onComplete?.(data.lead);
   }); }
   function loadSlots(nextWeek=week,nextZone=zone) { if (!saved) return; setCalendar(true);setWeek(nextWeek);setZone(nextZone);setSelected('');setSlots([]);void run(async()=>{const data=await api('slots',{receipt:saved.receipt,timezone:nextZone,start:Date.now()+nextWeek*7*86400000});setSlots(data.slots);}); }
   function reserve(event: FormEvent) { event.preventDefault();if (!saved || !selected)return;void run(async()=>{const data=await api('booking',{receipt:saved.receipt,startTime:selected,timezone:zone,email});if(!data.booking?.id)throw new Error('La reserva no fue confirmada.');setBooking(data.booking);}); }
   function coordinate() { if(!saved)return;void run(async()=>{const data=await api('coordination',{receipt:saved.receipt});if(!data.taskId)throw new Error('No se pudo registrar la coordinación.');setCoordinated(true);setCalendar(false);}); }
   const date=(value:string)=>new Intl.DateTimeFormat('es',{timeZone:zone,weekday:'short',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'}).format(new Date(value));
   return <section className={s.contact} aria-label="Hablemos de tu negocio">
-    {!saved ? <><span className={s.eyebrow}>EL SIGUIENTE PASO ES CONTIGO</span><h1>{reportGate?<>Tu reporte para <span>{business}</span></>:<>¿Quieres esto para <span>{business}</span>?</>}</h1><p>{reportGate?"El reporte se abrirá aquí. Si el registro está habilitado, podremos contactarte sobre tu diagnóstico.":"Hablemos de cómo unir branding, estrategia digital, contenido y atención con IA en tu negocio."}</p>
+    {!saved ? <><span className={s.eyebrow}>EL SIGUIENTE PASO ES CONTIGO</span><h1>{reportGate?<>Tu reporte para <span>{business}</span></>:<>¿Quieres esto para <span>{business}</span>?</>}</h1><p>{reportGate?"Abre tu reporte y activa tu cupón EFFIX50. Recibirás la confirmación en tu correo.":"Hablemos de cómo unir branding, estrategia digital, contenido y atención con IA en tu negocio."}</p>
       {!settings.live && <div className={s.notice}>Modo local · El CRM no está habilitado. Tus datos permanecen en esta sesión; no enviaremos el reporte por WhatsApp.</div>}
-      {reportGate&&<div className={s.auditOffer}><span>BENEFICIO EXCLUSIVO · FERIA EFFIX</span><strong>50% OFF</strong><p>Por estar en Feria Effix, accedes a un <b>50% de descuento en la contratación de todos nuestros servicios.</b></p><small>Groovy + BotPager</small></div>}
+      {reportGate&&<div className={s.auditOffer}><span>BENEFICIO EXCLUSIVO · FERIA EFFIX</span><strong>50% OFF</strong><p>Por estar en Feria Effix, accedes a un <b>50% de descuento en la contratación de todos nuestros servicios.</b></p><small>EFFIX50 · Vigente hasta el 30 de octubre de 2026, 23:59 (Colombia).</small></div>}
       <form onSubmit={submit} className={s.form}>
         <label>Tu nombre<input required minLength={2} maxLength={100} autoComplete="name" value={fields.name} onChange={event=>update('name',event.target.value)} placeholder="¿Cómo te llamas?"/></label>
+        <label>Correo electrónico<input required type="email" maxLength={254} autoComplete="email" name="email" value={fields.email} onChange={event=>update('email',event.target.value)} placeholder="tu@negocio.com"/><small className={s.fieldHint}>Para confirmar tu cupón EFFIX50 · 50% OFF hasta el 30 de octubre de 2026.</small></label>
         <label>WhatsApp<div className={s.phone}><select aria-label="País y código de WhatsApp" value={fields.country} onChange={event=>update('country',event.target.value)}>{countries.map(country=><option key={country.id} value={country.id}>{country.dial} · {country.label}</option>)}</select><input aria-label="Número de WhatsApp" required type="tel" autoComplete="tel-national" maxLength={40} value={fields.phone} onChange={event=>update('phone',event.target.value)} placeholder="Tu número"/></div></label>
         <label>Tu negocio<input required minLength={1} maxLength={50} readOnly={reportGate} autoComplete="organization" value={fields.business} onChange={event=>update('business',event.target.value)}/></label>
         <div className={s.trap} aria-hidden="true"><label>Deja este campo vacío<input tabIndex={-1} autoComplete="off" value={fields.websiteTrap} onChange={event=>update('websiteTrap',event.target.value)}/></label></div>
@@ -47,6 +48,7 @@ export function Contact({ business, settings, reportGate=false, onComplete, init
         <small className={s.privacy}>BotPager atiende tu solicitud. No compartimos tus datos con Groovy ni autorizamos marketing de Groovy mediante este formulario.</small>
         <button className={s.primary} disabled={busy}>{busy ? <LoaderCircle className={s.spinner}/> : null}{busy?'Enviando…':reportGate?'Abrir mi reporte y propuesta':'Hablemos de mi negocio'}<ArrowRight size={18}/></button>
       </form></> : <><span className={s.successIcon}><Check/></span><h1>¡Listo{fields.name.trim()?`, ${fields.name.trim().split(' ')[0]}`:''}!</h1><p>Ya recibimos tu solicitud para <strong>{saved.business}</strong>. Podemos conversar ahora o puedes elegir un horario.</p>
+      {saved.benefit&&<div className={s.auditOffer}><Mail size={24}/><span>FERIA EFFIX 2026 · CUPÓN ACTIVO</span><strong>50% OFF</strong><p><b>EFFIX50</b> · Disponible hasta el <b>30 de octubre de 2026</b>, 23:59, hora de Colombia.</p><small>{saved.confirmationEmail==='requested'?`Solicitamos el envío de la confirmación a ${saved.email}. Revisa también tu carpeta de spam.`:'Tu cupón está activo y guardado. La confirmación por correo está pendiente; el equipo puede ayudarte.'}</small></div>}
       {booking ? <div className={s.notice}><b>Tu cita está confirmada</b><p>{date(booking.startTime)} · {booking.timezone}</p>{booking.meetingUrl&&<a href={booking.meetingUrl} target="_blank" rel="noreferrer">Abrir reunión ↗</a>}{booking.rescheduleUrl&&<a href={booking.rescheduleUrl} target="_blank" rel="noreferrer"> Cambiar horario ↗</a>}</div> : coordinated ? <div className={s.notice}>✓ Registramos tu solicitud de coordinación por WhatsApp. El equipo retomará el contacto.</div> : <div className={s.successActions}>
         {settings.bookingEnabled ? <button className={s.primary} disabled={busy} onClick={()=>loadSlots(0)}><CalendarDays size={18}/>Elegir un horario</button> : <p>La agenda no está disponible. Podemos coordinar contigo por WhatsApp.</p>}
         <button className={s.secondary} disabled={busy} onClick={coordinate}><MessageCircle size={18}/>Prefiero coordinar por WhatsApp</button>

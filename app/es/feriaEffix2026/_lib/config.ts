@@ -3,17 +3,17 @@ export const campaign = {
   code: "EFFIX50",
   discount: 50,
   startsAt: "2026-10-14T00:00:00-05:00",
-  endsAt: "2026-10-21T00:00:00-05:00",
+  endsAt: "2026-10-31T00:00:00-05:00",
   timezone: "America/Bogota",
-  policyVersion: "effix-2026-v1",
-  contactConsent: "Autorizo a BotPager a contactarme por WhatsApp sobre esta solicitud, el beneficio EFFIX y mi demo",
+  policyVersion: "effix-2026-v2",
+  contactConsent: "Autorizo a BotPager a contactarme por correo electrónico y WhatsApp sobre esta solicitud, el beneficio EFFIX y mi demo",
   marketingConsent: "También quiero recibir novedades y ofertas de BotPager",
 } as const;
 
 export const jointExperience = {
   origin: "groovy-botpager",
   interest: "Groovy + BotPager: recorrido completo",
-  contactConsent: "Autorizo a BotPager (Uno Zero Marketing LLC) a contactarme por WhatsApp sobre mi solicitud de Groovy + BotPager",
+  contactConsent: "Autorizo a BotPager (Uno Zero Marketing LLC) a contactarme por correo electrónico y WhatsApp sobre mi solicitud de Groovy + BotPager y enviarme la confirmación del cupón EFFIX50",
 } as const;
 
 export const sectors = [
@@ -50,11 +50,11 @@ export type SectorId = typeof sectors[number]["id"];
 export type GoalId = typeof goals[number]["id"];
 export type CampaignSettings = { live: boolean; bookingEnabled: boolean; requiresEmail: boolean; startsAt: string; endsAt: string };
 export type LeadInput = {
-  name: string; business: string; phone: string; country: string;
+  name: string; business: string; email: string; phone: string; country: string;
   origin?: "groovy-botpager"; sector?: SectorId; goal?: GoalId; consent: true; marketing: boolean;
   operationId: string; websiteTrap: string; tracking: Record<string, string>;
 };
-export type SavedLead = { receipt: string; benefit: boolean; expiresAt: string; business: string };
+export type SavedLead = { receipt: string; benefit: boolean; expiresAt: string; business: string; email?: string; confirmationEmail?: "requested" | "pending" | "not_applicable" };
 export type Booking = { id: string; startTime: string; endTime: string; timezone: string; meetingUrl?: string; rescheduleUrl?: string };
 
 export function campaignOpen(now = Date.now()) {
