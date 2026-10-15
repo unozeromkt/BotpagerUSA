@@ -1,40 +1,31 @@
 "use client";
 
-import Script from "next/script";
-import { usePathname } from "next/navigation";
-import { demoConfigs } from "@/lib/demos";
+import { useEffect, useRef } from "react";
 
 type LeadConnectorWidgetProps = {
   widgetId: string;
-  hideOnDemos?: boolean;
-  hideOnPaths?: string[];
 };
 
-export function LeadConnectorWidget({
-  widgetId,
-  hideOnDemos = false,
-  hideOnPaths = [],
-}: LeadConnectorWidgetProps) {
-  const pathname = usePathname();
-  const topLevelSlug = pathname.replace(/^\//, "").replace(/\/$/, "");
-  const isDemoPage =
-    pathname === "/demos" ||
-    pathname.startsWith("/demos/") ||
-    Object.prototype.hasOwnProperty.call(demoConfigs, topLevelSlug);
-  const isExcludedPath = hideOnPaths.some(
-    (path) => pathname === path || pathname.startsWith(`${path}/`),
-  );
+export function LeadConnectorWidget({ widgetId }: LeadConnectorWidgetProps) {
+  const hostRef = useRef<HTMLDivElement>(null);
 
-  if ((hideOnDemos && isDemoPage) || isExcludedPath) return null;
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host) return;
 
-  return (
-    <Script
-      id={`leadconnector-chat-widget-${widgetId}`}
-      src="https://widgets.leadconnectorhq.com/loader.js"
-      strategy="afterInteractive"
-      data-resources-url="https://widgets.leadconnectorhq.com/chat-widget/loader.js"
-      data-widget-id={widgetId}
-      data-source="WEB_USER"
-    />
-  );
+    // The loader mounts its widget beside the script. A separate container also
+    // keeps any delayed provider response detached after navigating away.
+    const container = document.createElement("div");
+    const script = document.createElement("script");
+    script.src = "https://widgets.leadconnectorhq.com/loader.js";
+    script.async = true;
+    script.dataset.resourcesUrl = "https://widgets.leadconnectorhq.com/chat-widget/loader.js";
+    script.dataset.widgetId = widgetId;
+    container.appendChild(script);
+    host.appendChild(container);
+
+    return () => container.remove();
+  }, [widgetId]);
+
+  return <div ref={hostRef} data-site-chat-widget={widgetId} />;
 }
