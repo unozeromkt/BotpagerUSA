@@ -23,9 +23,8 @@ type HighLevelConfig = {
   apiVersion: string;
 };
 
-export function getConfig(): HighLevelConfig | null {
+export function getConfig(locationId = process.env.GHL_LOCATION_ID): HighLevelConfig | null {
   const token = process.env.GHL_PRIVATE_INTEGRATION_TOKEN;
-  const locationId = process.env.GHL_LOCATION_ID;
   if (!token || !locationId) return null;
 
   return {

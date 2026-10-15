@@ -1,6 +1,7 @@
 import "server-only";
 import { createHash, createHmac, timingSafeEqual } from "node:crypto";
-import { getConfig, highLevelRequest } from "@/lib/integrations/highlevel";
+import { highLevelRequest } from "@/lib/integrations/highlevel";
+import { effixCrm, firstEffixStage, getEffixConfig } from "./crm";
 import { campaign, campaignOpen, jointExperience, goals, sectors, type Booking, type CampaignSettings, type LeadInput } from "./config";
 import { CampaignError } from "./http";
 import { clean, safeUrl, validTimezone } from "./validation";
@@ -20,7 +21,7 @@ export async function serial<T>(key: string, action: () => Promise<T>): Promise<
 
 export function settings(): CampaignSettings {
   return {
-    live: Boolean(process.env.EFFIX_ENABLED === "true" && process.env.EFFIX_PRIVACY_APPROVED === "true" && getConfig() && process.env.EFFIX_RECEIPT_SECRET && process.env.EFFIX_RECEIPT_SECRET.length >= 32 && process.env.GHL_USER_ID && process.env.GHL_EFFIX_PIPELINE_ID && process.env.GHL_EFFIX_STAGE_NEW_ID && process.env.GHL_EFFIX_STAGE_BENEFIT_ID),
+    live: Boolean(process.env.EFFIX_ENABLED === "true" && process.env.EFFIX_PRIVACY_APPROVED === "true" && getEffixConfig() && (process.env.EFFIX_RECEIPT_SECRET?.length ?? 0) >= 32 && process.env.GHL_USER_ID),
     bookingEnabled: Boolean(process.env.GHL_EFFIX_CALENDAR_ID && process.env.GHL_EFFIX_STAGE_BOOKED_ID),
     requiresEmail: process.env.EFFIX_CALENDAR_REQUIRES_EMAIL === "true",
     startsAt: campaign.startsAt, endsAt: campaign.endsAt,
@@ -28,11 +29,11 @@ export function settings(): CampaignSettings {
 }
 
 export function experienceSettings(): CampaignSettings {
-  return { ...settings(), live: Boolean(process.env.EFFIX_ENABLED === "true" && process.env.EFFIX_PRIVACY_APPROVED === "true" && getConfig() && (process.env.EFFIX_RECEIPT_SECRET?.length ?? 0) >= 32 && process.env.GHL_USER_ID && process.env.GHL_EFFIX_PIPELINE_ID && process.env.GHL_EFFIX_STAGE_NEW_ID) };
+  return settings();
 }
 
 function config() {
-  const value = getConfig();
+  const value = getEffixConfig();
   if (!experienceSettings().live || !value) throw new CampaignError("El registro todavía no está disponible. Puedes probar el recorrido y conversar con el asesor.", 503);
   return value;
 }
@@ -59,14 +60,14 @@ export function receipt(value: unknown): Receipt {
 
 async function verifyOpportunity(data: Receipt) {
   const response = await highLevelRequest<{ opportunity: Opportunity }>(config(), `/opportunities/${encodeURIComponent(data.opportunityId)}`, { method: "GET" });
-  if (response.opportunity?.contactId !== data.contactId || response.opportunity?.pipelineId !== process.env.GHL_EFFIX_PIPELINE_ID) throw new CampaignError("No pudimos verificar tu registro.", 403);
+  if (response.opportunity?.contactId !== data.contactId || response.opportunity?.pipelineId !== effixCrm.pipelineId) throw new CampaignError("No pudimos verificar tu registro.", 403);
   return response.opportunity;
 }
 
 async function findOpportunity(contactId: string, name: string) {
   let page = 1;
   while (page <= 100) {
-    const query = new URLSearchParams({ locationId: config().locationId, pipelineId: process.env.GHL_EFFIX_PIPELINE_ID!, contactId, limit: "100", page: String(page) });
+    const query = new URLSearchParams({ locationId: config().locationId, pipelineId: effixCrm.pipelineId, contactId, limit: "100", page: String(page) });
     const response = await highLevelRequest<{ opportunities: Opportunity[] }>(config(), `/opportunities/search?${query}`, { method: "GET" });
     if (!Array.isArray(response.opportunities)) throw new Error("Respuesta de oportunidades inválida.");
     const businessKey = name.split(" · ").at(-1);
@@ -96,6 +97,7 @@ export async function saveLead(lead: LeadInput) {
   if (lead.websiteTrap) throw new CampaignError("No pudimos registrar tus datos. Intenta de nuevo.");
   return serial(createHash("sha256").update(lead.phone).digest("hex"), async () => {
     const c = config();
+    const firstStageId = await firstEffixStage(c);
     const contact = await highLevelRequest<{ contact: { id: string } }>(c, "/contacts/upsert", { method: "POST", body: JSON.stringify({
       locationId: c.locationId, firstName: lead.name.split(" ")[0], lastName: lead.name.split(" ").slice(1).join(" ") || undefined,
       phone: lead.phone, country: lead.country, source: "Feria Effix 2026", createNewIfDuplicateAllowed: false,
@@ -105,10 +107,9 @@ export async function saveLead(lead: LeadInput) {
     const businessKey = createHash("sha256").update(lead.business.normalize("NFKC").toLocaleLowerCase("es")).digest("hex").slice(0, 16);
     const name = `EFFIX 2026 · ${lead.business.slice(0, 80)} · ${businessKey}`;
     let opportunity = await findOpportunity(contact.contact.id, name);
-    const created = !opportunity;
     if (!opportunity) {
       const response = await highLevelRequest<{ opportunity: Opportunity }>(c, "/opportunities/", { method: "POST", body: JSON.stringify({
-        locationId: c.locationId, pipelineId: process.env.GHL_EFFIX_PIPELINE_ID, pipelineStageId: process.env.GHL_EFFIX_STAGE_NEW_ID,
+        locationId: c.locationId, pipelineId: effixCrm.pipelineId, pipelineStageId: firstStageId,
         name, contactId: contact.contact.id, status: "open", assignedTo: c.userId,
       }) });
       opportunity = response.opportunity;
@@ -136,7 +137,6 @@ export async function saveLead(lead: LeadInput) {
     try { fieldIds = JSON.parse(process.env.GHL_EFFIX_FIELDS_JSON || "{}"); } catch { throw new Error("Configuración de campos inválida."); }
     const customFields = Object.entries(values).flatMap(([key, value]) => typeof fieldIds[key] === "string" && fieldIds[key] ? [{ id: fieldIds[key], fieldValue: value }] : []);
     if (customFields.length) await highLevelRequest(c, `/opportunities/${encodeURIComponent(opportunity.id)}`, { method: "PUT", body: JSON.stringify({ customFields }) });
-    if (!joint && (created || opportunity.pipelineStageId === process.env.GHL_EFFIX_STAGE_NEW_ID)) await highLevelRequest(c, `/opportunities/${encodeURIComponent(opportunity.id)}`, { method: "PUT", body: JSON.stringify({ pipelineStageId: process.env.GHL_EFFIX_STAGE_BENEFIT_ID }) });
     // Trigger only after the opportunity and consent record are durable.
     if (!joint) await highLevelRequest(c, `/contacts/${encodeURIComponent(contact.contact.id)}/tags`, { method: "POST", body: JSON.stringify({ tags: [campaign.id, `sector_${lead.sector}`, `objetivo_${lead.goal}`, `origen_${["nfc", "qr"].includes(lead.tracking.utm_medium) ? lead.tracking.utm_medium : "enlace"}`, "effix_beneficio_activo"] }) });
     const data: Receipt = { contactId: contact.contact.id, opportunityId: opportunity.id, business: lead.business, operationId: lead.operationId, benefit: !joint, expires: Date.now() + 24 * 60 * 60_000 };

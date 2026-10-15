@@ -19,9 +19,9 @@ El usuario aprobó **50% sobre la implementación inicial**, para contrataciones
 
 ## ¿Hace falta otra integración en GHL?
 
-**No hace falta otra plataforma ni un nuevo chatbot para esta versión.** Puede usarse la Private Integration de la misma subcuenta que ya usan las experiencias de BotPager, si cuenta con los permisos necesarios. Esta copia local solo contiene el ID público del widget: no tiene token ni `GHL_LOCATION_ID`. No se han creado ni modificado registros, calendarios, pipelines o workflows de GHL desde esta implementación.
+**Se reutiliza la Private Integration existente de BotPager**, si cuenta con los permisos necesarios. Effix usa `GHL_PRIVATE_INTEGRATION_TOKEN` y `GHL_USER_ID`, sin crear una integración nueva. Esta copia local no tiene el token. No se han creado ni modificado registros, calendarios, pipelines o workflows reales de GHL desde esta implementación.
 
-El usuario confirmó que **«Feria Effix» es un pipeline de Oportunidades**. `GHL_EFFIX_PIPELINE_ID` debe apuntar exactamente a ese pipeline. No crear otro pipeline ni usar un ID de Funnel de Sitios.
+El enlace proporcionado identifica la subcuenta **`ue94rPvevtVT7o7wCQt2`** y el pipeline de Oportunidades **`4o6WiPB5RnPKn70WzABN` (Feria Effix)**. Están configurados en `_lib/crm.ts`, únicamente para Effix; no alteran la ubicación global de los otros formularios. No crear otro pipeline ni usar un ID de Funnel de Sitios.
 
 En **Settings → Private Integrations**, verificar los permisos de la integración de BotPager:
 
@@ -36,15 +36,15 @@ Si el token actual no cubre esos permisos, ampliar o reemplazar la integración/
 
 ## Configuración del pipeline y calendario
 
-En el pipeline **Feria Effix**, usar estas etapas (se pueden conservar los nombres existentes y mapear sus IDs equivalentes):
+Cada registro nuevo entra en **la primera etapa actual de Feria Effix**. El servidor consulta `GET /opportunities/pipelines` y resuelve la primera etapa según su posición; no usa un ID fijo ni requiere cambiar variables si se reordenan las etapas. Si el pipeline o su etapa inicial no se pueden consultar, el envío falla explícitamente antes de crear el contacto.
 
-1. Nuevo → `GHL_EFFIX_STAGE_NEW_ID`.
-2. Beneficio activo → `GHL_EFFIX_STAGE_BENEFIT_ID`.
-3. Demo agendada → `GHL_EFFIX_STAGE_BOOKED_ID`.
-4. Pendiente de coordinar → `GHL_EFFIX_STAGE_COORDINATION_ID`.
-5. Demo realizada, Propuesta enviada, Ganado / No continúa → actualización del asesor y workflows de GHL.
+No se mueve automáticamente a «Beneficio activo» al registrarse. Los reintentos reutilizan oportunidades existentes y conservan una etapa comercial más avanzada. Las acciones posteriores siguen usando sus etapas configuradas:
 
-La oportunidad nace en Nuevo; pasa a Beneficio activo **después** de guardar la autorización y los campos. No activar mensajes desde la etapa Nuevo. En reintentos se conserva una etapa comercial más avanzada. Una reserva o tarea se conserva aunque una actualización posterior de etapa falle: la respuesta incluye `stageSynced: false` y el servidor registra un aviso sin datos personales. Reconciliar esos casos en el piloto.
+- Demo agendada → `GHL_EFFIX_STAGE_BOOKED_ID`.
+- Pendiente de coordinar → `GHL_EFFIX_STAGE_COORDINATION_ID`.
+- Demo realizada, Propuesta enviada, Ganado / No continúa → actualización del asesor y workflows de GHL.
+
+Una reserva o tarea se conserva aunque una actualización posterior de etapa falle: la respuesta incluye `stageSynced: false` y el servidor registra un aviso sin datos personales. Reconciliar esos casos en el piloto. El guardado del consentimiento y los campos precede a la etiqueta de activación de la campaña original.
 
 En la subcuenta, configurar deduplicación de contactos por teléfono y permitir múltiples oportunidades para un contacto. El registro por negocio se distingue con una clave en el nombre de la oportunidad.
 
@@ -58,12 +58,8 @@ Completar en `.env.local` y en el entorno del despliegue; los ejemplos vacíos e
 
 ```dotenv
 GHL_PRIVATE_INTEGRATION_TOKEN=
-GHL_LOCATION_ID=
 GHL_USER_ID=
 GHL_API_VERSION=v3
-GHL_EFFIX_PIPELINE_ID=
-GHL_EFFIX_STAGE_NEW_ID=
-GHL_EFFIX_STAGE_BENEFIT_ID=
 GHL_EFFIX_STAGE_BOOKED_ID=
 GHL_EFFIX_STAGE_COORDINATION_ID=
 GHL_EFFIX_CALENDAR_ID=
@@ -75,7 +71,7 @@ EFFIX_PRIVACY_APPROVED=false
 EFFIX_ENABLED=false
 ```
 
-Generar `EFFIX_RECEIPT_SECRET` aleatorio, de al menos 32 caracteres. Guardarlo solo en el servidor. `GHL_USER_ID` es el asesor responsable y autor de las notas. No cambiar `GHL_API_VERSION` de las experiencias existentes sin comprobarlas.
+Generar `EFFIX_RECEIPT_SECRET` aleatorio, de al menos 32 caracteres. Guardarlo solo en el servidor. `GHL_USER_ID` es el asesor responsable y autor de las notas. No cambiar `GHL_API_VERSION` de las experiencias existentes sin comprobarlas. `GHL_LOCATION_ID` global no es necesario para Effix: usa la subcuenta indicada arriba. Las antiguas variables `GHL_EFFIX_PIPELINE_ID`, `GHL_EFFIX_STAGE_NEW_ID` y `GHL_EFFIX_STAGE_BENEFIT_ID` ya no se consultan. Aplicar las variables al entorno correcto de Vercel (Production o Preview) y volver a desplegar.
 
 `EFFIX_SELLERS_JSON` es una tabla controlada por servidor, por ejemplo `{"gus_01":"Gustavo"}`. Solo un `tag_id` presente en esa tabla atribuye un vendedor; el resto queda «Sin atribuir». El tag identifica atribución, no elegibilidad.
 
@@ -106,7 +102,7 @@ La web **no envía WhatsApp directamente**. Crear y probar estos flujos con núm
 
 | Disparador | Acción y condiciones |
 | --- | --- |
-| Oportunidad pasa a Beneficio activo, pipeline Feria Effix | Confirmación de registro y enlace de agenda. Autorización de solicitud Sí, sin DND ni retiro. No usar creación en Nuevo como disparador. |
+| Etiqueta `effix_beneficio_activo` añadida por la campaña original, después del guardado completo | Confirmación de registro y enlace de agenda. Autorización de solicitud Sí, sin DND ni retiro. No usar la creación en la primera etapa como disparador; los recorridos conjuntos no añaden esta etiqueta. |
 | 24 horas después sin demo ni coordinación | Un recordatorio del beneficio; omitir si ya respondió, rechazó, retiró autorización o venció la promoción. |
 | Cita confirmada del calendario EFFIX | Confirmación con fecha, hora, zona, reunión y enlace real para reprogramar. Desduplicar por ID de cita. |
 | 24 horas y 1 hora antes | Recordatorio si la cita sigue activa; omitir el de 24 h si se reservó con menos anticipación. |

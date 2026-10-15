@@ -59,13 +59,13 @@ Se reutiliza `/es/feriaEffix2026/api/*`, sin duplicar una aplicación ni credenc
 - No exige ni inventa sector/objetivo.
 - Guarda el contexto «Groovy + BotPager: recorrido completo» y el consentimiento exacto en la nota existente.
 - Conserva identificación por teléfono, oportunidad por negocio, atribución del vendedor, recibos firmados y recuperación de reintentos.
-- Crea oportunidades abiertas en «Nuevo contacto». No activa beneficios, no añade etiquetas que disparan la promoción anterior, no cambia una venta a ganada y no retrocede oportunidades existentes.
+- Crea oportunidades abiertas en la primera etapa actual del pipeline Feria Effix, consultada en GHL en cada registro. No activa beneficios, no añade etiquetas que disparan la promoción anterior, no cambia una venta a ganada y no retrocede oportunidades existentes.
 - Mantiene marketing opcional de BotPager separado del contacto por esta solicitud. No autoriza transferencia ni marketing de Groovy. Se amplió el aviso de privacidad existente con el alcance del nuevo recorrido.
 - Confirma únicamente cuando la API devuelve un recibo real; agenda y coordinación requieren ese recibo.
 
 Este entorno muestra **Modo demostración**: no está habilitado para guardar contactos reales. No se creó ningún contacto, oportunidad, cita ni campaña real durante la implementación. Las pruebas de éxito usan un simulador de GHL y no acreditan una prueba en producción.
 
-Para habilitar la conexión, usar la configuración ya documentada en `../feriaEffix2026/README.md` y `.env.example` del repositorio: credenciales de HighLevel, ubicación, usuario, pipeline, etapa inicial, `EFFIX_RECEIPT_SECRET` de al menos 32 caracteres, `EFFIX_ENABLED` y aprobación del aviso mediante `EFFIX_PRIVACY_APPROVED`. El nuevo recorrido no necesita una etapa de beneficio ni depende de sus fechas promocionales. Para agendar hacen falta calendario y etapa de reserva; para coordinar, la etapa de coordinación. Los valores deben ser los reales del entorno autorizado.
+Para habilitar la conexión, usar la configuración ya documentada en `../feriaEffix2026/README.md` y `.env.example` del repositorio: el mismo `GHL_PRIVATE_INTEGRATION_TOKEN` de BotPager, `GHL_USER_ID`, `EFFIX_RECEIPT_SECRET` de al menos 32 caracteres, `EFFIX_ENABLED=true` y `EFFIX_PRIVACY_APPROVED=true`. La subcuenta `ue94rPvevtVT7o7wCQt2` y el pipeline `4o6WiPB5RnPKn70WzABN` están configurados en `../feriaEffix2026/_lib/crm.ts`; la primera etapa se resuelve desde la API. No se necesitan variables con IDs de pipeline o etapa inicial. Este recorrido no depende de las fechas de la promoción original. Para agendar hacen falta calendario y etapa de reserva; para coordinar, la etapa de coordinación. No se reemplazan las credenciales ni la ubicación global de los demás formularios de BotPager.
 
 Desde la raíz del repositorio:
 
