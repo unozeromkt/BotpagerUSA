@@ -98,7 +98,9 @@ async function requestCouponEmail(contactId: string, email: string): Promise<Non
     if (!Array.isArray(response.notes)) throw new Error("Respuesta de notas inválida.");
     if (response.notes.some(note => note.body?.includes(marker))) return "requested";
     const result = await highLevelRequest<{ succeeded?: boolean; succeded?: boolean }>(config(), `/contacts/${encodeURIComponent(contactId)}/workflow/${encodeURIComponent(workflowId)}`, {
-      method: "POST", body: JSON.stringify({ eventStartTime: new Date(Date.now()).toISOString() }),
+      // This confirmation starts immediately and has no event-date steps.
+      // Omitting the optional eventStartTime avoids upstream date-format validation.
+      method: "POST", body: JSON.stringify({}),
     });
     if (result.succeeded !== true && result.succeded !== true) throw new Error("Inscripción no confirmada.");
     // The workflow disables re-entry to prevent duplicate messages after an uncertain response.

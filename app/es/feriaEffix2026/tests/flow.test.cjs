@@ -259,6 +259,7 @@ test('confirma inscripción de correo después del consentimiento y no la repite
   assert.equal(saved.confirmationEmail, 'requested'); assert.equal(state.opportunities.length, 1);
   const enrollments = state.calls.filter(call => call.path === '/contacts/contact/workflow/coupon-workflow');
   assert.equal(enrollments.length, 1); assert.equal(enrollments[0].method, 'POST');
+  assert.deepEqual(enrollments[0].body, {}, 'La confirmación inmediata no programa una fecha de evento');
   assert.ok(state.calls.indexOf(enrollments[0]) > state.calls.findIndex(call => call.method === 'POST' && call.path.endsWith('/notes')));
   assert.equal(state.notes.filter(note => note.body.startsWith('EFFIX_CUPON_EMAIL:')).length, 1);
 });
