@@ -133,7 +133,7 @@ function ProductVisual() {
   );
 }
 
-function LatamFooter() {
+function LatamFooter({ effixAccess = false }: { effixAccess?: boolean }) {
   return (
     <footer className={styles.footer}>
       <div className={`container ${styles.footerGrid}`}>
@@ -143,6 +143,7 @@ function LatamFooter() {
         <div><h3>Contacto</h3><a href="https://botpager.com"><Globe2 /> botpager.com</a><a href="tel:+12392510184"><Phone /> +1 239-251-0184</a><a href="mailto:info@botpager.com"><Mail /> info@botpager.com</a></div>
       </div>
       <div className={`container ${styles.footerBottom}`}><span>© 2026 BotPager. Todos los derechos reservados.</span><span><Link href="/privacy">Privacidad</Link><Link href="/terms">Términos</Link></span></div>
+      {effixAccess && <div className={`container ${styles.footerAccess}`}><details><summary aria-label="Mostrar accesos a Effix">Effix</summary><nav aria-label="Accesos Effix"><Link href="/es/experienciaEffix" prefetch={false} rel="nofollow">Experiencia</Link><Link href="/es/Auditor%C3%ADaEffix" prefetch={false} rel="nofollow">Auditoría</Link></nav></details></div>}
     </footer>
   );
 }
@@ -304,7 +305,7 @@ export function LatamHomePage() {
 
         <DiagnosticSection />
       </main>
-      <LatamFooter />
+      <LatamFooter effixAccess />
     </div>
   );
 }
