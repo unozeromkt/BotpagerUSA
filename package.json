@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "test:effix": "node --test app/es/experienciaEffix/tests/*.test.cjs app/es/AuditoríaEffix/tests/*.test.cjs app/es/feriaEffix2026/tests/flow.test.cjs",
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
@@ -11,7 +12,10 @@
   "dependencies": {
     "@fontsource/inter": "latest",
     "@fontsource/oswald": "latest",
+    "@fontsource/poppins": "^5.3.0",
+    "@fontsource/space-mono": "^5.3.0",
     "cheerio": "^1.2.0",
+    "libphonenumber-js": "^1.13.15",
     "lucide-react": "latest",
     "motion": "latest",
     "next": "latest",

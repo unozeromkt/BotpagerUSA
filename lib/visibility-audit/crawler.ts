@@ -1,8 +1,8 @@
 import "server-only";
 
-import dns from "node:dns/promises";
-import net from "node:net";
+import { fetchPublicPage as safeFetch } from "./public-page";
 import { load } from "cheerio";
+import {socialLink,type SocialLinks} from "./social-links";
 import type { VisibilityAuditInput } from "./types";
 
 const MAX_PAGES = 20;
@@ -35,6 +35,9 @@ export type PageSignals = {
   hasMobileViewport: boolean;
   hasGoogleBusinessProfileLink: boolean;
   ogImage: string;
+  socialLinks: SocialLinks;
+  instagram: string;
+  tiktok: string;
 };
 
 export type CrawlSnapshot = {
@@ -44,6 +47,7 @@ export type CrawlSnapshot = {
   robotsFound: boolean;
   sitemapFound: boolean;
   googlebotAllowed: boolean;
+  robotsReliable: boolean;
   bingbotAllowed: boolean;
   oaiSearchBotAllowed: boolean;
   pageSpeed: { screenshotDataUrl: string; performanceScore?: number } | null;
@@ -85,92 +89,6 @@ async function getPageSpeedSnapshot(url: string) {
   finally { clearTimeout(timeout); }
 }
 
-function isPrivateIp(address: string) {
-  if (net.isIPv4(address)) {
-    const [a, b] = address.split(".").map(Number);
-    return (
-      a === 0 || a === 10 || a === 127 ||
-      (a === 169 && b === 254) ||
-      (a === 172 && b >= 16 && b <= 31) ||
-      (a === 192 && b === 168) ||
-      (a === 100 && b >= 64 && b <= 127) ||
-      a >= 224
-    );
-  }
-  const normalized = address.toLowerCase();
-  return normalized === "::1" || normalized === "::" || normalized.startsWith("fc") || normalized.startsWith("fd") || normalized.startsWith("fe8") || normalized.startsWith("fe9") || normalized.startsWith("fea") || normalized.startsWith("feb") || normalized.startsWith("::ffff:127.") || normalized.startsWith("::ffff:10.") || normalized.startsWith("::ffff:192.168.");
-}
-
-async function assertPublicUrl(url: URL) {
-  if (!/^https?:$/.test(url.protocol)) throw new Error("Only public HTTP websites can be audited.");
-  if (!["", "80", "443"].includes(url.port)) throw new Error("Only standard website ports can be audited.");
-  const hostname = url.hostname.toLowerCase().replace(/\.$/, "");
-  if (hostname === "localhost" || hostname.endsWith(".local") || hostname.endsWith(".internal")) {
-    throw new Error("Enter a public business website.");
-  }
-  if (net.isIP(hostname)) {
-    if (isPrivateIp(hostname)) throw new Error("Enter a public business website.");
-    return;
-  }
-  const addresses = await dns.lookup(hostname, { all: true, verbatim: true });
-  if (!addresses.length || addresses.some(({ address }) => isPrivateIp(address))) {
-    throw new Error("The website does not resolve to a public address.");
-  }
-}
-
-async function readLimitedText(response: Response) {
-  const length = Number(response.headers.get("content-length") ?? 0);
-  if (length > MAX_HTML_BYTES) throw new Error("The website page is too large to audit safely.");
-  if (!response.body) return "";
-  const reader = response.body.getReader();
-  const chunks: Uint8Array[] = [];
-  let total = 0;
-  while (true) {
-    const { done, value } = await reader.read();
-    if (done) break;
-    total += value.byteLength;
-    if (total > MAX_HTML_BYTES) {
-      await reader.cancel();
-      throw new Error("The website page is too large to audit safely.");
-    }
-    chunks.push(value);
-  }
-  const combined = new Uint8Array(total);
-  let offset = 0;
-  for (const chunk of chunks) {
-    combined.set(chunk, offset);
-    offset += chunk.byteLength;
-  }
-  return new TextDecoder().decode(combined);
-}
-
-async function safeFetch(input: URL, timeoutMs = 8_000) {
-  let current = new URL(input);
-  for (let redirect = 0; redirect < 5; redirect += 1) {
-    await assertPublicUrl(current);
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), timeoutMs);
-    try {
-      const response = await fetch(current, {
-        redirect: "manual",
-        headers: { "User-Agent": USER_AGENT, Accept: "text/html,application/xhtml+xml,text/plain;q=0.9,*/*;q=0.5" },
-        cache: "no-store",
-        signal: controller.signal,
-      });
-      if ([301, 302, 303, 307, 308].includes(response.status)) {
-        const location = response.headers.get("location");
-        if (!location) throw new Error("The website returned an invalid redirect.");
-        current = new URL(location, current);
-        continue;
-      }
-      return { response, finalUrl: current, text: await readLimitedText(response) };
-    } finally {
-      clearTimeout(timeout);
-    }
-  }
-  throw new Error("The website redirected too many times.");
-}
-
 function collectSchemaTypes(value: unknown, types: Set<string>) {
   if (Array.isArray(value)) {
     value.forEach((item) => collectSchemaTypes(item, types));
@@ -184,12 +102,20 @@ function collectSchemaTypes(value: unknown, types: Set<string>) {
   Object.values(record).forEach((item) => collectSchemaTypes(item, types));
 }
 
-function parsePage(url: URL, status: number, html: string): PageSignals {
+export function parsePage(url: URL, status: number, html: string): PageSignals {
   const $ = load(html);
   const schemaTypes = new Set<string>();
   $('script[type="application/ld+json"]').each((_, element) => {
     try { collectSchemaTypes(JSON.parse($(element).text()), schemaTypes); } catch { /* Ignore malformed public markup. */ }
   });
+  // Read header/footer anchors and structured data before discarding scripts/SVG.
+  const socialLinks:SocialLinks={};
+  const remember=(value:string)=>{const found=socialLink(value);if(found&&!socialLinks[found.network])socialLinks[found.network]=found.url;};
+  $('header a[href], footer a[href], nav a[href], a[href]').each((_,el)=>remember($(el).attr('href')||''));
+  const structured=(value:unknown):void=>{if(Array.isArray(value)){value.forEach(structured);return;}if(value&&typeof value==='object'){for(const [key,item] of Object.entries(value)){if(key==='sameAs'){for(const link of Array.isArray(item)?item:[item])if(typeof link==='string')remember(link);}else structured(item);}}};
+  $('script[type="application/ld+json"]').each((_,el)=>{try{structured(JSON.parse($(el).text()));}catch{/* Invalid metadata is not evidence. */}});
+  // Framework hydration data often contains footer links that are not rendered in HTML.
+  $('script:not([src]), template, noscript').each((_,el)=>{const content=$(el).html()?.replace(/\\u002[fF]/g,'/').replace(/\\\//g,'/')||'';for(const match of content.matchAll(/https?:\/\/[^\s"'<>\\]+/g))remember(match[0]);});
   $("script, style, noscript, template, svg").remove();
   const text = $("body").text().replace(/\s+/g, " ").trim().slice(0, 180_000);
   const lowerText = text.toLowerCase();
@@ -206,6 +132,7 @@ function parsePage(url: URL, status: number, html: string): PageSignals {
   const metaRobots = $('meta[name="robots"], meta[name="googlebot"]').map((_, element) => $(element).attr("content") ?? "").get().join(" ").toLowerCase();
   const hrefValues = $("a[href]").map((_, element) => $(element).attr("href") ?? "").get().join(" ").toLowerCase();
   const htmlLower = html.toLowerCase();
+
   const hasGoogleBusinessProfileLink = $("a[href]").toArray().some((element) => {
     const href = $(element).attr("href") ?? "";
     return /(?:google\.[a-z.]+\/maps|maps\.app\.goo\.gl|g\.page\/|google\.[a-z.]+\/search\?.*query_place_id)/i.test(href);
@@ -225,42 +152,41 @@ function parsePage(url: URL, status: number, html: string): PageSignals {
     hasPhone: /tel:/i.test(hrefValues) || /(?:\+?1[\s.-]?)?\(?\d{3}\)?[\s.-]\d{3}[\s.-]\d{4}/.test(text),
     hasEmail: /mailto:/i.test(hrefValues) || /[\w.+-]+@[\w.-]+\.[a-z]{2,}/i.test(text),
     hasAddress: /\b\d{1,6}\s+[a-z0-9.' -]+\s(?:st|street|ave|avenue|rd|road|blvd|boulevard|dr|drive|ln|lane|way|pkwy|parkway)\b/i.test(text),
-    hasForm: $("form").length > 0 || /request (?:a )?(?:quote|estimate)|contact us|send message/.test(lowerText),
+    hasForm: $("form").length > 0,
     hasWhatsApp: /wa\.me|whatsapp/.test(hrefValues + htmlLower),
     hasCalendar: /calendly|calendar|schedule (?:a |your )?(?:call|appointment)|book (?:a |your )?(?:call|appointment)/.test(lowerText + hrefValues),
     hasChat: /intercom|leadconnector|chat widget|livechat|chatbot|ai agent/.test(htmlLower),
-    hasCta: /get (?:a )?(?:quote|estimate|started)|request (?:a )?(?:quote|estimate)|book now|schedule|call now|contact us/.test(lowerText),
+    hasCta: /cotiz|reserva|agend|contáct|contacta|escríbe|comprar|lláma|conoce más|get (?:a )?(?:quote|estimate|started)|request (?:a )?(?:quote|estimate)|book now|schedule|call now|contact us/.test(lowerText),
     hasReviews: /testimonials?|customer reviews?|google reviews?|\b[4-5]\.[0-9]\s*(?:\/\s*5|stars?)/.test(lowerText),
     hasCredentials: /licensed|insured|certified|accredited|years? of experience|our team|meet the team|award/.test(lowerText),
     hasFaq: $("[itemtype*='FAQPage']").length > 0 || schemaTypes.has("FAQPage") || /frequently asked questions|\bfaq\b/.test(lowerText),
     hasMobileViewport: /width\s*=\s*device-width/i.test($('meta[name="viewport"]').attr("content") ?? ""),
     hasGoogleBusinessProfileLink,
+    socialLinks, instagram: socialLinks.instagram||"", tiktok: socialLinks.tiktok||"",
     ogImage: resolvedWebUrl($('meta[property="og:image"], meta[name="twitter:image"]').first().attr("content"), url),
   };
 }
 
-function agentAllowed(robotsText: string, agent: string) {
-  if (!robotsText.trim()) return true;
-  const groups = robotsText.split(/(?=^\s*user-agent\s*:)/gim);
-  const relevant = groups.filter((group) => {
-    const agents = [...group.matchAll(/^\s*user-agent\s*:\s*([^#\r\n]+)/gim)].map((match) => match[1].trim().toLowerCase());
-    return agents.includes(agent.toLowerCase()) || agents.includes("*");
-  });
-  return !relevant.some((group) => [...group.matchAll(/^\s*disallow\s*:\s*([^#\r\n]*)/gim)].some((match) => match[1].trim() === "/"));
+export function agentAllowed(robotsText: string, agent: string) {
+ const groups:{agents:string[];rules:{allow:boolean;path:string}[]}[]=[];let current={agents:[] as string[],rules:[] as {allow:boolean;path:string}[]};
+ for(const line of robotsText.split(/\r?\n/)){const match=line.replace(/#.*/,'').trim().match(/^([^:]+):\s*(.*)$/);if(!match)continue;const field=match[1].trim().toLowerCase(),value=match[2].trim();if(field==='user-agent'){if(current.rules.length){groups.push(current);current={agents:[],rules:[]};}current.agents.push(value.toLowerCase());}else if(['allow','disallow'].includes(field)&&current.agents.length){current.rules.push({allow:field==='allow',path:value});}}
+ groups.push(current);const specificity=(g:typeof current)=>Math.max(-1,...g.agents.map(a=>a==='*'?0:agent.toLowerCase().includes(a)?a.length:-1));const best=Math.max(-1,...groups.map(specificity));if(best<0)return true;
+ const rules=groups.filter(g=>specificity(g)===best).flatMap(g=>g.rules).filter(r=>r.path==='/'||r.path==='/*');return !rules.some(r=>!r.allow)||rules.some(r=>r.allow);
 }
 
 function pagePriority(url: string) {
   const path = new URL(url).pathname.toLowerCase();
   if (path === "/" || path === "") return 100;
-  if (/service|solution/.test(path)) return 90;
-  if (/about|company|team/.test(path)) return 80;
-  if (/contact|quote|book/.test(path)) return 75;
+  if (/service|solution|servicio|solucion/.test(path)) return 90;
+  if (/about|company|team|nosotros|equipo/.test(path)) return 80;
+  if (/contact|quote|book|cotiza|reserva/.test(path)) return 75;
   if (/location|area|city/.test(path)) return 70;
   if (/faq|resource|blog|article/.test(path)) return 60;
   return 20 - path.split("/").length;
 }
 
-export async function crawlWebsite(input: VisibilityAuditInput): Promise<CrawlSnapshot> {
+export async function crawlWebsite(input: VisibilityAuditInput, options:{maxPages?:number}={}): Promise<CrawlSnapshot> {
+  const maxPages=Math.max(1,Math.min(MAX_PAGES,options.maxPages??MAX_PAGES));
   const startUrl = new URL(input.websiteUrl);
   const homeFetch = await safeFetch(startUrl, 12_000);
   const contentType = homeFetch.response.headers.get("content-type") ?? "";
@@ -268,6 +194,7 @@ export async function crawlWebsite(input: VisibilityAuditInput): Promise<CrawlSn
     throw new Error("We could not open the website homepage. Check the URL and try again.");
   }
   const home = parsePage(homeFetch.finalUrl, homeFetch.response.status, homeFetch.text);
+  home.noindex ||= /\bnoindex\b/i.test(homeFetch.response.headers.get("x-robots-tag")||"");
   const origin = homeFetch.finalUrl.origin;
   const pageSpeedPromise = getPageSpeedSnapshot(homeFetch.finalUrl.toString());
 
@@ -285,7 +212,7 @@ export async function crawlWebsite(input: VisibilityAuditInput): Promise<CrawlSn
       return !/\.(?:jpg|jpeg|png|gif|webp|svg|pdf|zip|xml|json)$/i.test(path) && !/privacy|terms|login|cart|checkout/.test(path);
     })
     .sort((left, right) => pagePriority(right) - pagePriority(left))
-    .slice(0, MAX_PAGES - 1);
+    .slice(0, maxPages - 1);
 
   const pages: PageSignals[] = [home];
   for (let index = 0; index < candidates.length; index += 4) {
@@ -307,9 +234,17 @@ export async function crawlWebsite(input: VisibilityAuditInput): Promise<CrawlSn
     pages: pages.slice(0, MAX_PAGES),
     robotsFound: Boolean(robots?.response.ok),
     sitemapFound: Boolean(sitemap?.response.ok && /<(?:urlset|sitemapindex)[\s>]/i.test(sitemap.text)),
+    robotsReliable: Boolean(robots&&(robots.response.ok||robots.response.status===404)),
     googlebotAllowed: agentAllowed(robotsText, "googlebot"),
     bingbotAllowed: agentAllowed(robotsText, "bingbot"),
     oaiSearchBotAllowed: agentAllowed(robotsText, "oai-searchbot"),
     pageSpeed: await pageSpeedPromise,
   };
+}
+
+/** Lightweight discovery, before the full four-page diagnostic. */
+export async function discoverWebsiteLinks(website:string):Promise<SocialLinks>{
+ const result=await safeFetch(new URL(website),7000);
+ if(!result.response.ok||!result.response.headers.get('content-type')?.includes('text/html'))return {};
+ return parsePage(result.finalUrl,result.response.status,result.text).socialLinks;
 }

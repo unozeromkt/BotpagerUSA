@@ -1,0 +1,524 @@
+{
+  "measuredAt": "2026-10-13T20:36:44.396Z",
+  "method": "HTTP cold requests, gzip requested; body bytes only. Conservative: includes unused font subsets, fallbacks, and the entire default audio track.",
+  "resourceCount": 103,
+  "transferredBodyBytes": 3249100,
+  "decodedBytes": 3976453,
+  "assets": [
+    {
+      "path": "/es/experienciaEffix",
+      "transferredBodyBytes": 7472,
+      "decodedBytes": 26062
+    },
+    {
+      "path": "/_next/static/chunks/2x5xa3khr9zc7.css",
+      "transferredBodyBytes": 21815,
+      "decodedBytes": 112954
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-ext-400-normal.3vm4r-qr3_yee.woff2",
+      "transferredBodyBytes": 10232,
+      "decodedBytes": 10232
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-ext-400-normal.2e4vdgi7dy-n4.woff",
+      "transferredBodyBytes": 13336,
+      "decodedBytes": 13336
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-400-normal.1nwx-p2ngx2yg.woff2",
+      "transferredBodyBytes": 7712,
+      "decodedBytes": 7712
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-400-normal.2jms6gqb5gbhf.woff",
+      "transferredBodyBytes": 9780,
+      "decodedBytes": 9780
+    },
+    {
+      "path": "/_next/static/media/inter-greek-ext-400-normal.2gr4b827yb2_q.woff2",
+      "transferredBodyBytes": 5264,
+      "decodedBytes": 5264
+    },
+    {
+      "path": "/_next/static/media/inter-greek-ext-400-normal.38g6916w0wpxs.woff",
+      "transferredBodyBytes": 7064,
+      "decodedBytes": 7064
+    },
+    {
+      "path": "/_next/static/media/inter-greek-400-normal.402ep76-j03q8.woff2",
+      "transferredBodyBytes": 7776,
+      "decodedBytes": 7776
+    },
+    {
+      "path": "/_next/static/media/inter-greek-400-normal.2x8hqgpakc599.woff",
+      "transferredBodyBytes": 9924,
+      "decodedBytes": 9924
+    },
+    {
+      "path": "/_next/static/media/inter-vietnamese-400-normal.1sl-kw9vnef9y.woff2",
+      "transferredBodyBytes": 4972,
+      "decodedBytes": 4972
+    },
+    {
+      "path": "/_next/static/media/inter-vietnamese-400-normal.3206qgbkgsfc6.woff",
+      "transferredBodyBytes": 6500,
+      "decodedBytes": 6500
+    },
+    {
+      "path": "/_next/static/media/inter-latin-ext-400-normal.1aowtwjb6jex7.woff2",
+      "transferredBodyBytes": 35000,
+      "decodedBytes": 35000
+    },
+    {
+      "path": "/_next/static/media/inter-latin-ext-400-normal.0zt1v0rj9tqox.woff",
+      "transferredBodyBytes": 47560,
+      "decodedBytes": 47560
+    },
+    {
+      "path": "/_next/static/media/inter-latin-400-normal.2qdljeg3s-lsl.woff2",
+      "transferredBodyBytes": 23664,
+      "decodedBytes": 23664
+    },
+    {
+      "path": "/_next/static/media/inter-latin-400-normal.102grxki9ek3x.woff",
+      "transferredBodyBytes": 30696,
+      "decodedBytes": 30696
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-ext-500-normal.451fj7ly9889_.woff2",
+      "transferredBodyBytes": 10432,
+      "decodedBytes": 10432
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-ext-500-normal.0_c2ylqj08xb6.woff",
+      "transferredBodyBytes": 13452,
+      "decodedBytes": 13452
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-500-normal.3zacfqz4x1vrc.woff2",
+      "transferredBodyBytes": 7900,
+      "decodedBytes": 7900
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-500-normal.05wrgophr2f13.woff",
+      "transferredBodyBytes": 9940,
+      "decodedBytes": 9940
+    },
+    {
+      "path": "/_next/static/media/inter-greek-ext-500-normal.3k6j2t6znom4a.woff2",
+      "transferredBodyBytes": 5428,
+      "decodedBytes": 5428
+    },
+    {
+      "path": "/_next/static/media/inter-greek-ext-500-normal.3qwacgs2d7zx0.woff",
+      "transferredBodyBytes": 7192,
+      "decodedBytes": 7192
+    },
+    {
+      "path": "/_next/static/media/inter-greek-500-normal.2ofy8orayc7fk.woff2",
+      "transferredBodyBytes": 7920,
+      "decodedBytes": 7920
+    },
+    {
+      "path": "/_next/static/media/inter-greek-500-normal.2irgx7vnqhmdq.woff",
+      "transferredBodyBytes": 9980,
+      "decodedBytes": 9980
+    },
+    {
+      "path": "/_next/static/media/inter-vietnamese-500-normal.1csmxjt29l4d6.woff2",
+      "transferredBodyBytes": 5112,
+      "decodedBytes": 5112
+    },
+    {
+      "path": "/_next/static/media/inter-vietnamese-500-normal.315hfdijg963m.woff",
+      "transferredBodyBytes": 6596,
+      "decodedBytes": 6596
+    },
+    {
+      "path": "/_next/static/media/inter-latin-ext-500-normal.0qn8fxo3_-rz7.woff2",
+      "transferredBodyBytes": 36024,
+      "decodedBytes": 36024
+    },
+    {
+      "path": "/_next/static/media/inter-latin-ext-500-normal.39_ak3tg9vcce.woff",
+      "transferredBodyBytes": 48492,
+      "decodedBytes": 48492
+    },
+    {
+      "path": "/_next/static/media/inter-latin-500-normal.1d14jwmkqqa0f.woff2",
+      "transferredBodyBytes": 24272,
+      "decodedBytes": 24272
+    },
+    {
+      "path": "/_next/static/media/inter-latin-500-normal.3mx_ru0c2nzc3.woff",
+      "transferredBodyBytes": 31284,
+      "decodedBytes": 31284
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-ext-600-normal.341-hvs74ljp4.woff2",
+      "transferredBodyBytes": 10484,
+      "decodedBytes": 10484
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-ext-600-normal.1of5i9-_e5ga4.woff",
+      "transferredBodyBytes": 13464,
+      "decodedBytes": 13464
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-600-normal.0tppy39gl-lzn.woff2",
+      "transferredBodyBytes": 7972,
+      "decodedBytes": 7972
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-600-normal.3jalm3505289h.woff",
+      "transferredBodyBytes": 9936,
+      "decodedBytes": 9936
+    },
+    {
+      "path": "/_next/static/media/inter-greek-ext-600-normal.20m9kgz843wth.woff2",
+      "transferredBodyBytes": 5432,
+      "decodedBytes": 5432
+    },
+    {
+      "path": "/_next/static/media/inter-greek-ext-600-normal.3vzrk1-4zat7v.woff",
+      "transferredBodyBytes": 7212,
+      "decodedBytes": 7212
+    },
+    {
+      "path": "/_next/static/media/inter-greek-600-normal.2ove9n9b8_3hb.woff2",
+      "transferredBodyBytes": 7944,
+      "decodedBytes": 7944
+    },
+    {
+      "path": "/_next/static/media/inter-greek-600-normal.3aakp9m92tg2m.woff",
+      "transferredBodyBytes": 10032,
+      "decodedBytes": 10032
+    },
+    {
+      "path": "/_next/static/media/inter-vietnamese-600-normal.0m_wd36g8rw-r.woff2",
+      "transferredBodyBytes": 5100,
+      "decodedBytes": 5100
+    },
+    {
+      "path": "/_next/static/media/inter-vietnamese-600-normal.0dwa77f5pp57q.woff",
+      "transferredBodyBytes": 6640,
+      "decodedBytes": 6640
+    },
+    {
+      "path": "/_next/static/media/inter-latin-ext-600-normal.1zn8rwi8y9u6i.woff2",
+      "transferredBodyBytes": 36260,
+      "decodedBytes": 36260
+    },
+    {
+      "path": "/_next/static/media/inter-latin-ext-600-normal.1pfmybho54-ry.woff",
+      "transferredBodyBytes": 48668,
+      "decodedBytes": 48668
+    },
+    {
+      "path": "/_next/static/media/inter-latin-600-normal.2dov6rjg62vru.woff2",
+      "transferredBodyBytes": 24452,
+      "decodedBytes": 24452
+    },
+    {
+      "path": "/_next/static/media/inter-latin-600-normal.2mum3nstrlzrd.woff",
+      "transferredBodyBytes": 31260,
+      "decodedBytes": 31260
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-ext-700-normal.3ckkpi--x2os1.woff2",
+      "transferredBodyBytes": 10496,
+      "decodedBytes": 10496
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-ext-700-normal.3dxmsbxujhx46.woff",
+      "transferredBodyBytes": 13408,
+      "decodedBytes": 13408
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-700-normal.0gg1d0-0b9ut0.woff2",
+      "transferredBodyBytes": 7904,
+      "decodedBytes": 7904
+    },
+    {
+      "path": "/_next/static/media/inter-cyrillic-700-normal.2axi65e8cn602.woff",
+      "transferredBodyBytes": 9912,
+      "decodedBytes": 9912
+    },
+    {
+      "path": "/_next/static/media/inter-greek-ext-700-normal.24op6t-yeckl-.woff2",
+      "transferredBodyBytes": 5444,
+      "decodedBytes": 5444
+    },
+    {
+      "path": "/_next/static/media/inter-greek-ext-700-normal.0u773jmkidix4.woff",
+      "transferredBodyBytes": 7216,
+      "decodedBytes": 7216
+    },
+    {
+      "path": "/_next/static/media/inter-greek-700-normal.3vfem_i2rj42n.woff2",
+      "transferredBodyBytes": 7920,
+      "decodedBytes": 7920
+    },
+    {
+      "path": "/_next/static/media/inter-greek-700-normal.3q6n5k1zguxil.woff",
+      "transferredBodyBytes": 9980,
+      "decodedBytes": 9980
+    },
+    {
+      "path": "/_next/static/media/inter-vietnamese-700-normal.0b-htgf_q_fie.woff2",
+      "transferredBodyBytes": 5104,
+      "decodedBytes": 5104
+    },
+    {
+      "path": "/_next/static/media/inter-vietnamese-700-normal.2c7g6fvsrqi3p.woff",
+      "transferredBodyBytes": 6632,
+      "decodedBytes": 6632
+    },
+    {
+      "path": "/_next/static/media/inter-latin-ext-700-normal.2yxivqwrhow2d.woff2",
+      "transferredBodyBytes": 36244,
+      "decodedBytes": 36244
+    },
+    {
+      "path": "/_next/static/media/inter-latin-ext-700-normal.0g4_n0pq31d8c.woff",
+      "transferredBodyBytes": 48632,
+      "decodedBytes": 48632
+    },
+    {
+      "path": "/_next/static/media/inter-latin-700-normal.4421omqeymgmp.woff2",
+      "transferredBodyBytes": 24356,
+      "decodedBytes": 24356
+    },
+    {
+      "path": "/_next/static/media/inter-latin-700-normal.2u2w-uf8g45lc.woff",
+      "transferredBodyBytes": 31320,
+      "decodedBytes": 31320
+    },
+    {
+      "path": "/_next/static/media/oswald-cyrillic-ext-500-normal.11xf42vpc1qaz.woff2",
+      "transferredBodyBytes": 8132,
+      "decodedBytes": 8132
+    },
+    {
+      "path": "/_next/static/media/oswald-cyrillic-ext-500-normal.0rzs5bb_b2mjf.woff",
+      "transferredBodyBytes": 10576,
+      "decodedBytes": 10576
+    },
+    {
+      "path": "/_next/static/media/oswald-cyrillic-500-normal.39p11k9-3vez2.woff2",
+      "transferredBodyBytes": 6844,
+      "decodedBytes": 6844
+    },
+    {
+      "path": "/_next/static/media/oswald-cyrillic-500-normal.05yh_3j332o5s.woff",
+      "transferredBodyBytes": 8608,
+      "decodedBytes": 8608
+    },
+    {
+      "path": "/_next/static/media/oswald-vietnamese-500-normal.1fm0x80qxatz-.woff2",
+      "transferredBodyBytes": 4176,
+      "decodedBytes": 4176
+    },
+    {
+      "path": "/_next/static/media/oswald-vietnamese-500-normal.43dzym6co03wm.woff",
+      "transferredBodyBytes": 5908,
+      "decodedBytes": 5908
+    },
+    {
+      "path": "/_next/static/media/oswald-latin-ext-500-normal.0wo93ki64ipzi.woff2",
+      "transferredBodyBytes": 12044,
+      "decodedBytes": 12044
+    },
+    {
+      "path": "/_next/static/media/oswald-latin-ext-500-normal.3cd50epthscz6.woff",
+      "transferredBodyBytes": 16184,
+      "decodedBytes": 16184
+    },
+    {
+      "path": "/_next/static/media/oswald-latin-500-normal.1r1tfvsdc503p.woff2",
+      "transferredBodyBytes": 12704,
+      "decodedBytes": 12704
+    },
+    {
+      "path": "/_next/static/media/oswald-latin-500-normal.0tvcs2msh88-g.woff",
+      "transferredBodyBytes": 16156,
+      "decodedBytes": 16156
+    },
+    {
+      "path": "/_next/static/media/oswald-cyrillic-ext-600-normal.3g_jcn2mp14cg.woff2",
+      "transferredBodyBytes": 8080,
+      "decodedBytes": 8080
+    },
+    {
+      "path": "/_next/static/media/oswald-cyrillic-ext-600-normal.2agg41ksqwe5g.woff",
+      "transferredBodyBytes": 10580,
+      "decodedBytes": 10580
+    },
+    {
+      "path": "/_next/static/media/oswald-cyrillic-600-normal.02vu2sjbzug53.woff2",
+      "transferredBodyBytes": 6844,
+      "decodedBytes": 6844
+    },
+    {
+      "path": "/_next/static/media/oswald-cyrillic-600-normal.2uxxgpu6iuvfm.woff",
+      "transferredBodyBytes": 8592,
+      "decodedBytes": 8592
+    },
+    {
+      "path": "/_next/static/media/oswald-vietnamese-600-normal.2g0s-_a0d3a1n.woff2",
+      "transferredBodyBytes": 4140,
+      "decodedBytes": 4140
+    },
+    {
+      "path": "/_next/static/media/oswald-vietnamese-600-normal.1tosf_8_bb10b.woff",
+      "transferredBodyBytes": 5888,
+      "decodedBytes": 5888
+    },
+    {
+      "path": "/_next/static/media/oswald-latin-ext-600-normal.185xvbl088mm2.woff2",
+      "transferredBodyBytes": 12036,
+      "decodedBytes": 12036
+    },
+    {
+      "path": "/_next/static/media/oswald-latin-ext-600-normal.15q-xvndzgs65.woff",
+      "transferredBodyBytes": 16156,
+      "decodedBytes": 16156
+    },
+    {
+      "path": "/_next/static/media/oswald-latin-600-normal.2s9_tnruh4e-7.woff2",
+      "transferredBodyBytes": 12740,
+      "decodedBytes": 12740
+    },
+    {
+      "path": "/_next/static/media/oswald-latin-600-normal.115br_bb-upba.woff",
+      "transferredBodyBytes": 16176,
+      "decodedBytes": 16176
+    },
+    {
+      "path": "/_next/static/media/oswald-cyrillic-ext-700-normal.2akg_c6f4okis.woff2",
+      "transferredBodyBytes": 7964,
+      "decodedBytes": 7964
+    },
+    {
+      "path": "/_next/static/media/oswald-cyrillic-ext-700-normal.3ooy1uuxhi3uf.woff",
+      "transferredBodyBytes": 10492,
+      "decodedBytes": 10492
+    },
+    {
+      "path": "/_next/static/media/oswald-cyrillic-700-normal.000limwfv4rv1.woff2",
+      "transferredBodyBytes": 6752,
+      "decodedBytes": 6752
+    },
+    {
+      "path": "/_next/static/media/oswald-cyrillic-700-normal.1puhaym4qzk12.woff",
+      "transferredBodyBytes": 8544,
+      "decodedBytes": 8544
+    },
+    {
+      "path": "/_next/static/media/oswald-vietnamese-700-normal.1uv0pgn-tvelr.woff2",
+      "transferredBodyBytes": 4192,
+      "decodedBytes": 4192
+    },
+    {
+      "path": "/_next/static/media/oswald-vietnamese-700-normal.0ah3fu2f3_i8m.woff",
+      "transferredBodyBytes": 5860,
+      "decodedBytes": 5860
+    },
+    {
+      "path": "/_next/static/media/oswald-latin-ext-700-normal.3uv6f2g6gfhzx.woff2",
+      "transferredBodyBytes": 11980,
+      "decodedBytes": 11980
+    },
+    {
+      "path": "/_next/static/media/oswald-latin-ext-700-normal.30wfy1i68bq12.woff",
+      "transferredBodyBytes": 16132,
+      "decodedBytes": 16132
+    },
+    {
+      "path": "/_next/static/media/oswald-latin-700-normal.3lxihg9xyecvo.woff2",
+      "transferredBodyBytes": 12672,
+      "decodedBytes": 12672
+    },
+    {
+      "path": "/_next/static/media/oswald-latin-700-normal.399qkngdz-1-l.woff",
+      "transferredBodyBytes": 16076,
+      "decodedBytes": 16076
+    },
+    {
+      "path": "/_next/static/chunks/3htmuy3msr7su.css",
+      "transferredBodyBytes": 14772,
+      "decodedBytes": 86442
+    },
+    {
+      "path": "/_next/static/chunks/1-3z3tdrv6lac.js",
+      "transferredBodyBytes": 3614,
+      "decodedBytes": 12887
+    },
+    {
+      "path": "/_next/static/chunks/11jq0c2_zavac.js",
+      "transferredBodyBytes": 8504,
+      "decodedBytes": 31917
+    },
+    {
+      "path": "/_next/static/chunks/29cifbbslpok4.js",
+      "transferredBodyBytes": 71554,
+      "decodedBytes": 228844
+    },
+    {
+      "path": "/_next/static/chunks/3e8pb2qzbu06n.js",
+      "transferredBodyBytes": 42303,
+      "decodedBytes": 154019
+    },
+    {
+      "path": "/_next/static/chunks/turbopack-17s_yupe0ef3i.js",
+      "transferredBodyBytes": 4281,
+      "decodedBytes": 10877
+    },
+    {
+      "path": "/_next/static/chunks/1toaca048x3ou.js",
+      "transferredBodyBytes": 3662,
+      "decodedBytes": 14377
+    },
+    {
+      "path": "/_next/static/chunks/02pbtqe-q4alu.js",
+      "transferredBodyBytes": 10289,
+      "decodedBytes": 30846
+    },
+    {
+      "path": "/_next/static/chunks/04x8fj537a_e4.js",
+      "transferredBodyBytes": 40515,
+      "decodedBytes": 123622
+    },
+    {
+      "path": "/_next/static/chunks/1d-hindmx9ouw.js",
+      "transferredBodyBytes": 2689,
+      "decodedBytes": 6276
+    },
+    {
+      "path": "/_next/static/chunks/1loh5_dber667.js",
+      "transferredBodyBytes": 18796,
+      "decodedBytes": 65529
+    },
+    {
+      "path": "/_next/static/chunks/0cz1d0mv5g_q7.js",
+      "transferredBodyBytes": 39627,
+      "decodedBytes": 112594
+    },
+    {
+      "path": "/es/experienciaEffix/recorrido.mp3",
+      "transferredBodyBytes": 1715830,
+      "decodedBytes": 1715830
+    },
+    {
+      "path": "/es/feriaEffix2026/groovy-logo.png",
+      "transferredBodyBytes": 20545,
+      "decodedBytes": 20545
+    },
+    {
+      "path": "/images/botpager-isotype.png",
+      "transferredBodyBytes": 26676,
+      "decodedBytes": 26676
+    }
+  ]
+}

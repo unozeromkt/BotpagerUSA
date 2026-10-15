@@ -23,7 +23,7 @@ type HighLevelConfig = {
   apiVersion: string;
 };
 
-function getConfig(): HighLevelConfig | null {
+export function getConfig(): HighLevelConfig | null {
   const token = process.env.GHL_PRIVATE_INTEGRATION_TOKEN;
   const locationId = process.env.GHL_LOCATION_ID;
   if (!token || !locationId) return null;
@@ -36,7 +36,7 @@ function getConfig(): HighLevelConfig | null {
   };
 }
 
-async function highLevelRequest<T>(config: HighLevelConfig, path: string, init: RequestInit) {
+export async function highLevelRequest<T>(config: HighLevelConfig, path: string, init: RequestInit) {
   const response = await fetch(`${HIGHLEVEL_BASE_URL}${path}`, {
     ...init,
     headers: {
@@ -47,6 +47,7 @@ async function highLevelRequest<T>(config: HighLevelConfig, path: string, init: 
       ...init.headers,
     },
     cache: "no-store",
+    signal: init.signal ?? AbortSignal.timeout(15_000),
   });
 
   if (!response.ok) {

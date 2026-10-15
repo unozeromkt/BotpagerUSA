@@ -22,7 +22,7 @@ export function SiteChatExperience({ mainWidgetId }: SiteChatExperienceProps) {
     );
   }
 
-  if (pathname === "/demos" || pathname.startsWith("/demos/") || pathname === "/growth-game") {
+  if (pathname === "/demos" || pathname.startsWith("/demos/") || pathname === "/growth-game" || pathname.startsWith("/es/feriaEffix2026") || pathname.startsWith("/es/experienciaEffix") || pathname.startsWith("/es/AuditoríaEffix") || pathname.startsWith("/es/Auditor%C3%ADaEffix") || pathname.startsWith("/es/AuditoriaEffix")) {
     return null;
   }
 
