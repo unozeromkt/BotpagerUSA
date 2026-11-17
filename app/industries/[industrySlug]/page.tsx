@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ArchitectureDetailPage, IndustryDetailPage } from "@/components/seo-architecture-pages";
+import { RoofingLandingPage } from "@/components/roofing-landing-page";
 import { getIndustryPage, getPublishedIndustryPage, industryPages } from "@/lib/seo/site-architecture";
 
 type IndustryPageProps = {
@@ -51,6 +52,10 @@ export default async function IndustryDetailRoute({ params }: IndustryPageProps)
   const industry = getIndustryPage(industrySlug);
 
   if (!industry) notFound();
+
+  if (industry.slug === "roofing") {
+    return <RoofingLandingPage industry={industry} />;
+  }
 
   const publishedIndustry = getPublishedIndustryPage(industrySlug);
 
