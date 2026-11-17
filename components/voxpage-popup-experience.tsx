@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
+import type { DemoWidgetVariant } from "@/lib/demos";
 import {
   ArrowUp,
   CalendarDays,
@@ -15,7 +16,7 @@ import styles from "./voxpage-popup-experience.module.css";
 
 type VoxPagePopupExperienceProps = {
   inlineWidgetId?: string;
-  variant?: "botpager" | "exotics";
+  variant?: DemoWidgetVariant;
 };
 
 const experienceContent = {
@@ -41,6 +42,23 @@ const experienceContent = {
     trustItems: ["White-glove guidance", "Fast, personal response"],
     previewMessage: "Welcome to Energetic Exotics. How can our concierge help plan your next experience?",
   },
+  drs: {
+    brandName: "DRS Roofing",
+    status: "AI roofing assistant",
+    promptTitle: "How can we help with your roof?",
+    promptText: "Chat with the DRS Roofing assistant.",
+    eyebrow: "Your AI roofing assistant",
+    title: "Let’s talk roofing.",
+    description: "Ask about repairs, roof replacement, or inspections. We’ll help you take the next step toward a free estimate.",
+    trustItems: ["Serving Central Florida", "Roofing expertise since 1995"],
+    previewMessage: "Welcome to DRS Roofing. How can we help with your roofing project today?",
+  },
+} as const;
+
+const experienceAvatars = {
+  botpager: { src: "/images/botpager-isotype.png", width: 604, height: 603 },
+  exotics: { src: "/images/energetic-exotics-chat-avatar.png", width: 256, height: 256 },
+  drs: { src: "/images/drs-roofing-logo.png", width: 287, height: 167 },
 } as const;
 
 function VoxPageAvatar({
@@ -48,19 +66,15 @@ function VoxPageAvatar({
   variant = "botpager",
 }: {
   small?: boolean;
-  variant?: "botpager" | "exotics";
+  variant?: DemoWidgetVariant;
 }) {
   return (
     <span
-      className={`${small ? styles.avatarSmall : styles.avatar} ${variant === "exotics" ? styles.avatarExotics : ""}`}
+      className={`${small ? styles.avatarSmall : styles.avatar} ${variant === "exotics" ? styles.avatarExotics : variant === "drs" ? styles.avatarDrs : ""}`}
       aria-hidden="true"
     >
       <Image
-        src={variant === "exotics"
-          ? "/images/energetic-exotics-chat-avatar.png"
-          : "/images/botpager-isotype.png"}
-        width={variant === "exotics" ? 256 : 604}
-        height={variant === "exotics" ? 256 : 603}
+        {...experienceAvatars[variant]}
         alt=""
         priority
       />
@@ -68,7 +82,7 @@ function VoxPageAvatar({
   );
 }
 
-function InlineWidgetPreview({ variant }: { variant: "botpager" | "exotics" }) {
+function InlineWidgetPreview({ variant }: { variant: DemoWidgetVariant }) {
   const content = experienceContent[variant];
 
   return (
@@ -107,6 +121,7 @@ function InlineWidgetPreview({ variant }: { variant: "botpager" | "exotics" }) {
 
 function LeadConnectorInlineWidget({ widgetId }: { widgetId: string }) {
   const hostRef = useRef<HTMLDivElement>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
     const host = hostRef.current;
@@ -128,11 +143,21 @@ function LeadConnectorInlineWidget({ widgetId }: { widgetId: string }) {
     script.dataset.resourcesUrl = "https://widgets.leadconnectorhq.com/chat-widget/loader.js";
     script.dataset.widgetId = widgetId;
     script.dataset.source = "WEB_USER";
-    host.appendChild(script);
+    script.onerror = () => setLoadFailed(true);
+    // Defer the third-party loader until React's Strict Mode replay has ended.
+    // Removing an in-flight loader can make GHL attach a second widget to body.
+    const loadTimer = window.setTimeout(() => host.appendChild(script), 0);
+    const failureTimer = window.setTimeout(() => {
+      if (!host.querySelector("chat-widget.hydrated")) setLoadFailed(true);
+    }, 20000);
 
     return () => {
+      window.clearTimeout(loadTimer);
+      window.clearTimeout(failureTimer);
+      script.onerror = null;
       resizeObserver.disconnect();
-      script.remove();
+      // Keep the loader inside its detached host until any in-flight work ends.
+      // React removes the whole host on unmount, including its chat instance.
     };
   }, [widgetId]);
 
@@ -141,7 +166,13 @@ function LeadConnectorInlineWidget({ widgetId }: { widgetId: string }) {
       ref={hostRef}
       className={styles.inlineWidget}
       data-testid="leadconnector-inline-widget"
-    />
+    >
+      <p className={styles.widgetLoading} role="status">
+        {loadFailed
+          ? "The assistant couldn’t load. Please refresh the page to try again."
+          : "Loading your assistant…"}
+      </p>
+    </div>
   );
 }
 
@@ -158,13 +189,14 @@ export function VoxPagePopupExperience({
   const shouldReduceMotion = useReducedMotion();
   const content = experienceContent[variant];
   const isExotics = variant === "exotics";
-  const themeClass = isExotics ? styles.themeExotics : "";
+  const isDrs = variant === "drs";
+  const themeClass = isExotics ? styles.themeExotics : isDrs ? styles.themeDrs : "";
   const openLabel = isExotics
     ? "Open Energetic Exotics concierge"
-    : "Open VoxPage conversation";
+    : isDrs ? "Open DRS Roofing assistant" : "Open VoxPage conversation";
   const closeLabel = isExotics
     ? "Close Energetic Exotics concierge"
-    : "Close VoxPage conversation";
+    : isDrs ? "Close DRS Roofing assistant" : "Close VoxPage conversation";
 
   const openDialog = () => {
     setHasOpened(true);
@@ -184,6 +216,11 @@ export function VoxPagePopupExperience({
     // Mobile keyboards can shrink the visual viewport without changing dvh.
     const viewport = window.visualViewport;
     const backdrop = dialogRef.current?.parentElement;
+    // Keep the embedded client website out of the modal's keyboard order.
+    const background = Array.from(backdrop?.parentElement?.children ?? [])
+      .filter((element): element is HTMLElement => element instanceof HTMLElement && element !== backdrop);
+    const previousInert = background.map((element) => element.inert);
+    background.forEach((element) => { element.inert = true; });
     const syncViewport = () => {
       const height = viewport?.height ?? window.innerHeight;
       backdrop?.style.setProperty("--voxpage-viewport-height", `${height}px`);
@@ -200,22 +237,29 @@ export function VoxPagePopupExperience({
         return;
       }
 
-      // HighLevel renders its controls inside a shadow root. Native tab order must
-      // remain untouched there so keyboard users can reach the embedded chat.
-      if (inlineWidgetId || event.key !== "Tab" || !dialogRef.current) return;
-      const focusable = Array.from(
-        dialogRef.current.querySelectorAll<HTMLElement>(
-          'button:not([disabled]), a[href], input:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
-        ),
-      );
+      if (event.key !== "Tab" || !dialogRef.current) return;
+      // Include HighLevel's shadow-root controls when wrapping keyboard focus.
+      const focusable: HTMLElement[] = [];
+      const collectFocusable = (root: HTMLElement | ShadowRoot) => {
+        for (const element of root.querySelectorAll<HTMLElement>("*")) {
+          if (element.tabIndex >= 0 && !element.matches(":disabled") &&
+            !element.closest("[inert]") && element.getClientRects().length > 0 &&
+            getComputedStyle(element).visibility !== "hidden") {
+            focusable.push(element);
+          }
+          if (element.shadowRoot) collectFocusable(element.shadowRoot);
+        }
+      };
+      collectFocusable(dialogRef.current);
       if (focusable.length === 0) return;
 
       const first = focusable[0];
       const last = focusable[focusable.length - 1];
-      if (event.shiftKey && document.activeElement === first) {
+      const active = event.composedPath()[0];
+      if (event.shiftKey && active === first) {
         event.preventDefault();
         last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
+      } else if (!event.shiftKey && active === last) {
         event.preventDefault();
         first.focus();
       }
@@ -225,6 +269,7 @@ export function VoxPagePopupExperience({
     return () => {
       window.clearTimeout(focusTimer);
       document.body.style.overflow = previousOverflow;
+      background.forEach((element, index) => { element.inert = previousInert[index]; });
       viewport?.removeEventListener("resize", syncViewport);
       viewport?.removeEventListener("scroll", syncViewport);
       document.removeEventListener("keydown", handleKeyDown);
@@ -291,11 +336,7 @@ export function VoxPagePopupExperience({
             ) : (
               <motion.span key="avatar" initial={{ opacity: 0, rotate: 20 }} animate={{ opacity: 1, rotate: 0 }} exit={{ opacity: 0 }}>
                 <Image
-                  src={isExotics
-                    ? "/images/energetic-exotics-chat-avatar.png"
-                    : "/images/botpager-isotype.png"}
-                  width={isExotics ? 256 : 604}
-                  height={isExotics ? 256 : 603}
+                  {...experienceAvatars[variant]}
                   alt=""
                   loading="eager"
                 />

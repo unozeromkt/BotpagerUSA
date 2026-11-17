@@ -52,6 +52,7 @@
 }
 
 .launcherOpen .launcherPulse { animation: none; opacity: 0; }
+.launcherDockOpen { visibility: hidden; pointer-events: none; }
 
 .prompt {
   position: absolute;
@@ -144,6 +145,27 @@
 .themeExotics .prompt { border-color: #d9c59f; }
 .themeExotics .promptMain strong { color: #17130d; }
 .themeExotics .promptMain span { color: #796b55; }
+
+.avatarDrs {
+  background: #151515;
+  border-color: #c9c9c9;
+}
+
+.avatarDrs img { object-fit: contain; padding: 3px; }
+.themeDrs .launcher {
+  background: #151515;
+  box-shadow: 0 14px 32px rgba(127, 12, 12, .3), 0 3px 9px rgba(0, 0, 0, .22);
+}
+.themeDrs .launcher img { object-fit: contain; border-radius: 0; }
+.themeDrs .launcherPulse { border-color: rgba(177, 8, 11, .45); }
+.themeDrs .prompt, .themeDrs .prompt > i { border-color: #e3c5c5; }
+.themeDrs .promptMain strong { color: #281415; }
+.themeDrs .promptMain span { color: #645457; }
+
+.launcher:focus-visible, .prompt button:focus-visible, .bannerTop > button:focus-visible {
+  outline: 3px solid #4776e6;
+  outline-offset: 4px;
+}
 
 .backdrop {
   position: fixed;
@@ -272,8 +294,29 @@
 .themeExotics .orbit::after { border-color: rgba(233, 201, 137, .11); }
 .themeExotics .orbit span { background: #f1d495; box-shadow: 0 0 16px rgba(241, 212, 149, .68); }
 
+.themeDrs .banner {
+  background: linear-gradient(155deg, #151515 0%, #351718 42%, #85070a 78%, #b1080b 100%);
+}
+.themeDrs .bannerGlowOne { background: rgba(230, 76, 76, .15); }
+.themeDrs .bannerGlowTwo { background: rgba(177, 8, 11, .4); }
+.themeDrs .eyebrow { color: #ffbcb9; }
+.themeDrs .trustPill { background: rgba(0, 0, 0, .22); border-color: rgba(255, 198, 198, .18); }
+.themeDrs .trustPill svg { color: #85070a; background: #ffd4d2; }
+.themeDrs .trustPill span { font-size: 11px; }
+.themeDrs .bannerCopy p { color: #f0dddd; font-size: 14px; }
+.themeDrs .brand span { font-size: 11px; }
+.themeDrs .bannerTop > button { width: 44px; height: 44px; flex: 0 0 auto; }
+.themeDrs .promptClose { top: 0; right: 0; width: 44px; height: 44px; }
+.themeDrs .prompt { padding-right: 46px; }
+.themeDrs .promptMain { min-height: 44px; }
+.themeDrs .orbit { border-color: rgba(255, 201, 201, .16); }
+.themeDrs .orbit::after { border-color: rgba(255, 201, 201, .1); }
+.themeDrs .orbit span { background: #ffc3c0; box-shadow: 0 0 16px rgba(255, 195, 192, .5); }
+
 .widgetStage { min-width: 0; min-height: 610px; background: #fff; }
-.inlineWidget { width: 100%; height: 610px; overflow: auto; }
+.inlineWidget { position: relative; width: 100%; height: 610px; overflow: auto; }
+.widgetLoading { position: absolute; inset: 0; margin: 0; padding: 32px; display: grid; place-content: center; color: #65708a; font-size: 14px; line-height: 1.6; text-align: center; }
+.inlineWidget:has(:global(chat-widget.hydrated)) > .widgetLoading { display: none; }
 
 /* Override the embed's fixed height at its shadow host so its composer stays
    inside the stage, including after switching to Live Chat. */

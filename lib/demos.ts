@@ -1,10 +1,12 @@
+export type DemoWidgetVariant = "botpager" | "exotics" | "drs";
+
 export type DemoConfig = {
   slug: string;
   clientName: string;
   pageTitle: string;
   websiteUrl: string;
   widgetId?: string;
-  widgetVariant?: "botpager" | "exotics";
+  widgetVariant?: DemoWidgetVariant;
 };
 
 export const demoConfigs: Record<string, DemoConfig> = {
@@ -15,6 +17,14 @@ export const demoConfigs: Record<string, DemoConfig> = {
     websiteUrl: "https://www.energeticexotics.com/",
     widgetId: "6a98f5ea98f3179f2ea0a02f",
     widgetVariant: "exotics",
+  },
+  "drs-roofing-demo": {
+    slug: "drs-roofing-demo",
+    clientName: "DRS Roofing",
+    pageTitle: "Roof Repair, Replacement & Inspections",
+    websiteUrl: "https://drs-roofing.com/",
+    widgetId: "6afbbc0f75f0c3a5208316c1",
+    widgetVariant: "drs",
   },
 };
 
