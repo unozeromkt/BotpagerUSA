@@ -6,53 +6,46 @@ import {
   CalendarCheck2,
   Check,
   ChevronDown,
-  ClipboardList,
+  Globe2,
+  LayoutDashboard,
+  Link2,
+  MapPin,
+  Search,
   Clock3,
-  Moon,
   MessageCircleMore,
   MessagesSquare,
-  PhoneIncoming,
 } from "lucide-react";
 import { Header, SiteFooter } from "@/components/landing-page";
 import type { ArchitectureItem } from "@/lib/seo/site-architecture";
 import styles from "./roofing-landing-page.module.css";
 
-const capabilities = [
+const supportingServices = [
   {
-    icon: CalendarCheck2,
-    label: "A fuller calendar",
-    title: "Book inspections and estimate visits",
-    text: "Move interested homeowners straight to the next step. BotPager schedules visits using your connected calendar, service area, and availability rules.",
+    icon: Globe2,
+    step: "03 / Convert",
+    title: "Smart Roofing Websites",
+    text: "Turn visitors into inquiries with clear service pages, project information, and easy ways to request an inspection.",
+    features: ["Repair & replacement service pages", "Connected chat and lead forms"],
+    href: "/services/smart-websites",
+    link: "Explore Smart Websites",
   },
   {
-    icon: MessagesSquare,
-    label: "Answers that build confidence",
-    title: "Help customers get their questions answered",
-    text: "Explain your roofing services, materials, coverage area, warranties, and what to expect at an inspection using the information your business provides.",
+    icon: LayoutDashboard,
+    step: "04 / Follow up",
+    title: "CRM & Automated Follow-Up",
+    text: "Keep customer details, conversations, and open estimates together, with a clear next step for every opportunity.",
+    features: ["Lead and estimate tracking", "Automated messages & reminders"],
+    href: "/services/crm-automations",
+    link: "Explore CRM & Automations",
   },
   {
-    icon: PhoneIncoming,
-    label: "Support beyond office hours",
-    title: "Respond while your crew is on the roof",
-    text: "Keep conversations moving through web chat, SMS, and configured phone workflows. Give new leads a useful first response, even after your office closes.",
-  },
-  {
-    icon: ClipboardList,
-    label: "Better prepared visits",
-    title: "Capture the details before you arrive",
-    text: "Collect the customer's contact information, property address, roofing concern, and preferred timing. Your team starts with context instead of a cold callback.",
-  },
-  {
-    icon: BellRing,
-    label: "Less back-and-forth",
-    title: "Send confirmations and reminders",
-    text: "Help homeowners know when to expect you. Connected workflows send appointment details and reminders, with a clear way to request a change.",
-  },
-  {
-    icon: MessageCircleMore,
-    label: "Keep opportunities moving",
-    title: "Follow up after the estimate",
-    text: "Stay in touch with homeowners who are still deciding. Organize conversations, estimate status, and next steps in your CRM so your team knows who needs attention.",
+    icon: Search,
+    step: "05 / Get found",
+    title: "Local SEO & Google Ads",
+    text: "Reach homeowners searching for roof repairs, replacements, and inspections in the areas you actually serve.",
+    features: ["Google Search & Maps visibility", "Search campaigns for roofing leads"],
+    href: "/local-seo-ai-search-optimization",
+    link: "Explore Local SEO",
   },
 ];
 
@@ -101,6 +94,34 @@ const faqs = [
 
 function AuditLink({ children = "Get My Free Growth Audit" }: { children?: React.ReactNode }) {
   return <Link className={styles.primaryButton} href="/free-growth-audit">{children}<ArrowRight size={18} aria-hidden="true" /></Link>;
+}
+
+function RoofingWorkflowPreview() {
+  return (
+    <figure className={styles.workflowVisual} aria-labelledby="workflow-caption">
+      <div className={styles.workflowBadge}><Image src="/images/botpager-isotype.png" width={36} height={36} alt="" /><div><strong>24/7</strong><span>AI response</span></div></div>
+      <div className={styles.calendarPreview}>
+        <div className={styles.calendarHeading}><span className={styles.calendarIcon}><CalendarCheck2 size={21} aria-hidden="true" /></span><div><strong>Inspection calendar</strong><span>Your availability. Automatically booked.</span></div></div>
+        <div className={styles.calendarWeekLabel}><span>Example week</span><span>November</span></div>
+        <ul className={styles.calendarDays} aria-label="Example week in November">
+          {[["Mon", "16"], ["Tue", "17"], ["Wed", "18"], ["Thu", "19"], ["Fri", "20"]].map(([day, date]) => <li className={day === "Thu" ? styles.bookedDay : undefined} key={day}><span>{day}</span><strong>{date}</strong></li>)}
+        </ul>
+        <div className={styles.calendarAppointment}><span>10:00<span>AM</span></span><div><strong>Roof inspection</strong><span>Thursday, Nov. 19 · Leak assessment</span></div><Check size={18} aria-label="Booked" /></div>
+        <p className={styles.calendarConnection}><Link2 size={14} aria-hidden="true" />Connected to your booking rules</p>
+      </div>
+      <div className={styles.chatPreview}>
+        <div className={styles.chatPreviewHeader}><Image src="/images/botpager-isotype.png" width={34} height={34} alt="" /><div><strong>Your roofing AI agent</strong><span><i aria-hidden="true" />Online · day &amp; night</span></div><MessagesSquare size={20} aria-hidden="true" /></div>
+        <div className={styles.chatPreviewMessages}>
+          <div className={styles.customerBubble}><span>Homeowner</span><p>Do you repair roof leaks? I need an inspection.</p></div>
+          <div className={styles.aiBubble}><span>BotPager AI</span><p>Yes, we do. I have Thursday at 10 AM available. Does that work for you?</p></div>
+          <div className={styles.customerBubble}><span>Homeowner</span><p>Thursday at 10 works. Thank you!</p></div>
+        </div>
+        <p className={styles.chatContext}><Check size={13} aria-hidden="true" />Address &amp; contact details collected</p>
+        <div className={styles.bookingNotice}><CalendarCheck2 size={22} aria-hidden="true" /><div><strong>Inspection booked</strong><span>Thursday · 10 AM</span></div><Check size={18} aria-hidden="true" /></div>
+      </div>
+      <figcaption id="workflow-caption">Illustrative workflow · answers and bookings follow your business rules.</figcaption>
+    </figure>
+  );
 }
 
 export function RoofingLandingPage({ industry }: { industry: ArchitectureItem }) {
@@ -152,43 +173,20 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
             </nav>
             <div className={styles.heroGrid}>
               <div className={styles.heroCopy}>
-                <p className={styles.agentEyebrow}><span aria-hidden="true" />Your 24/7 AI roofing agent</p>
-                <h1 id="roofing-title">You’re on the roof.<br /><span>Your AI agent<br />is on the job.</span></h1>
-                <p className={styles.lead}>Give your roofing business an agent that answers homeowners’ questions, books inspections, and follows up on estimates. <strong>On the job or off the clock, you’re covered.</strong></p>
+                <p className={styles.agentEyebrow}><span aria-hidden="true" />Built for roofing companies</p>
+                <h1 id="roofing-title">AI that answers customers &amp; <span>books roof inspections.</span></h1>
+                <p className={styles.lead}>Your BotPager agent responds <strong>24/7</strong>, answers roofing questions, and schedules visits in your calendar. Every inquiry has a next step—even after hours.</p>
+                <ul className={styles.heroOutcomes}>
+                  <li><MessagesSquare size={18} aria-hidden="true" /><span>Answer customer questions instantly</span></li>
+                  <li><CalendarCheck2 size={18} aria-hidden="true" /><span>Book inspections using your availability</span></li>
+                  <li><BellRing size={18} aria-hidden="true" /><span>Automate reminders and estimate follow-up</span></li>
+                </ul>
                 <div className={styles.heroActions}>
                   <AuditLink />
-                  <Link className={styles.textLink} href="#roofing-system">See what BotPager can do<ArrowRight size={17} aria-hidden="true" /></Link>
+                  <Link className={styles.textLink} href="#roofing-system">Explore our services<ArrowRight size={17} aria-hidden="true" /></Link>
                 </div>
-                <ul className={styles.heroBenefits}>
-                  <li><Check size={16} aria-hidden="true" />Answers day &amp; night</li>
-                  <li><Check size={16} aria-hidden="true" />Your calendar. Your rules.</li>
-                </ul>
               </div>
-              <figure className={styles.roofingScene} aria-labelledby="roofing-scene-caption">
-                <div className={styles.photoFrame}>
-                  <Image className={styles.roofingPhoto} src="/images/roofing-hero-agent.webp" alt="A roofing professional wearing a safety harness works on asphalt shingles on a residential roof." fill sizes="(max-width: 760px) calc(100vw - 40px), (max-width: 1200px) 50vw, 580px" loading="eager" fetchPriority="high" />
-                  <div className={styles.availabilityBadge}>
-                    <span className={styles.availabilityLabel}><span aria-hidden="true" />Always on</span>
-                    <strong>24/7</strong>
-                    <span>Your AI agent</span>
-                  </div>
-                  <div className={styles.onSiteLabel}><span aria-hidden="true" />You focus on the roof.</div>
-                </div>
-                <div className={styles.agentCard}>
-                  <div className={styles.agentCardHeader}>
-                    <span className={styles.agentAvatar}><Image src="/images/botpager-isotype.png" width={44} height={44} alt="" /><span aria-hidden="true" /></span>
-                    <div><strong>Your BotPager agent</strong><span>Your roofing front desk</span></div>
-                    <span className={styles.online}>Online</span>
-                  </div>
-                  <div className={styles.afterHours}><Moon size={14} aria-hidden="true" /><span>9:41 PM. Your office is closed. Your agent is on.</span></div>
-                  <div className={styles.agentMessages}>
-                    <div className={styles.homeownerQuestion}><span>Homeowner</span><p>Do you fix roof leaks? Can I book an inspection?</p></div>
-                    <div className={styles.agentAnswer}><span>BotPager AI</span><p>Yes, we handle leak repairs. I can help book a visit. What’s the property address?</p></div>
-                  </div>
-                  <div className={styles.agentServices}><span><MessagesSquare size={15} aria-hidden="true" />Questions answered</span><span><CalendarCheck2 size={15} aria-hidden="true" />Visits scheduled</span></div>
-                </div>
-                <figcaption id="roofing-scene-caption">Example conversation · configured around your services and calendar</figcaption>
-              </figure>
+              <RoofingWorkflowPreview />
             </div>
           </div>
         </section>
@@ -197,22 +195,53 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
           <div className={styles.shell}><p>From the first question to the next visit.</p><ul><li>Roof repairs</li><li>Replacements</li><li>Inspections</li><li>Storm damage inquiries</li></ul></div>
         </section>
 
-        <section className={styles.section} id="roofing-system" aria-labelledby="capabilities-title">
-          <div className={styles.shell}>
-            <div className={styles.sectionHeading}>
-              <p className={styles.eyebrow}>More support for your business</p>
-              <h2 id="capabilities-title">An extra set of hands.<br /><span>Before your crew ever arrives.</span></h2>
-              <p>A homeowner shouldn’t have to wait for you to get off a roof to get an answer. Give every inquiry a clear path to a conversation, an inspection, or an estimate.</p>
+        <section className={styles.fieldSection} aria-labelledby="field-title">
+          <div className={`${styles.shell} ${styles.fieldGrid}`}>
+            <div className={styles.fieldCopy}>
+              <p className={styles.eyebrow}>Made for life on the job</p>
+              <h2 id="field-title">You’re on the roof.<br /><span>Your AI agent is on the job.</span></h2>
+              <p>Keep your crew focused on the work. BotPager keeps the conversation going with homeowners who need an answer, an estimate, or a visit.</p>
+              <ul><li><Check size={16} aria-hidden="true" />While you’re on-site</li><li><Check size={16} aria-hidden="true" />After office hours</li></ul>
             </div>
-            <div className={styles.capabilityGrid}>
-              {capabilities.map(({ icon: Icon, label, title, text }) => (
-                <article className={styles.capability} key={title}>
-                  <Icon size={25} aria-hidden="true" />
-                  <p className={styles.capabilityLabel}>{label}</p>
+            <div className={styles.fieldPhoto}><Image src="/images/roofing-hero-agent.webp" alt="A roofing professional wearing a safety harness works on residential asphalt shingles." fill sizes="(max-width: 760px) 100vw, 500px" /><span>On the job. Off the clock. Still connected.</span></div>
+          </div>
+        </section>
+
+        <section className={`${styles.section} ${styles.servicesSection}`} id="roofing-system" aria-labelledby="capabilities-title">
+          <div className={styles.shell}>
+            <div className={styles.servicesHeading}>
+              <div><p className={styles.eyebrow}>More support for your business</p><h2 id="capabilities-title">The services behind<br /><span>your next booked job.</span></h2></div>
+              <p>Connect the way homeowners find you, get answers, and book a visit. Build the right combination for your roofing business.</p>
+            </div>
+            <div className={styles.featuredServices}>
+              <article className={`${styles.featuredService} ${styles.aiService}`}>
+                <div className={styles.serviceTopline}><span>01 / Respond</span><MessagesSquare size={25} aria-hidden="true" /></div>
+                <h3>24/7 AI Receptionist</h3>
+                <p>Give homeowners helpful answers about your services, materials, service area, and next steps—without waiting for your office to open.</p>
+                <div className={styles.aiServiceVisual}><Image src="/images/botpager-isotype.png" width={52} height={52} alt="" /><div><strong>Always ready to respond</strong><span>Web chat · SMS · configured phone workflows</span></div><span className={styles.serviceLiveDot} aria-hidden="true" /></div>
+                <ul className={styles.featureList}><li><Check size={16} aria-hidden="true" />Answers based on your business information</li><li><Check size={16} aria-hidden="true" />Lead qualification and human handoff</li></ul>
+                <Link className={styles.serviceLink} href="/services/ai-agent">Explore the AI Agent<ArrowRight size={17} aria-hidden="true" /></Link>
+              </article>
+              <article className={`${styles.featuredService} ${styles.schedulingService}`}>
+                <div className={styles.serviceTopline}><span>02 / Schedule</span><CalendarCheck2 size={25} aria-hidden="true" /></div>
+                <h3>Appointment Booking</h3>
+                <p>Turn a conversation into an inspection or estimate visit, with the right details in your calendar and your team ready for the job.</p>
+                <div className={styles.schedulingVisual}><div><span>THU</span><strong>19</strong></div><div><strong>Roof inspection</strong><span>10:00 AM · Appointment confirmed</span></div><Check size={19} aria-hidden="true" /></div>
+                <ul className={styles.featureList}><li><Check size={16} aria-hidden="true" />Your availability, service area, and booking rules</li><li><Check size={16} aria-hidden="true" />Visit confirmations and reminders</li></ul>
+                <Link className={styles.serviceLink} href="#booking-title">See how booking works<ArrowRight size={17} aria-hidden="true" /></Link>
+              </article>
+            </div>
+            <div className={styles.supportingServices}>
+              {supportingServices.map(({ icon: Icon, step, title, text, features, href, link }) => (
+                <article className={styles.supportingService} key={title}>
+                  <div className={styles.serviceTopline}><span>{step}</span><Icon size={24} aria-hidden="true" /></div>
                   <h3>{title}</h3><p>{text}</p>
+                  <ul className={styles.featureList}>{features.map(feature => <li key={feature}><Check size={15} aria-hidden="true" />{feature}</li>)}</ul>
+                  <div className={styles.supportingLinks}><Link className={styles.serviceLink} href={href}>{link}<ArrowRight size={16} aria-hidden="true" /></Link>{href === "/local-seo-ai-search-optimization" && <Link className={styles.serviceLink} href="/services/google-ads">Google Ads<ArrowRight size={16} aria-hidden="true" /></Link>}</div>
                 </article>
               ))}
             </div>
+            <p className={styles.servicesFootnote}><MapPin size={17} aria-hidden="true" />Configured for your roofing services, service area, and sales process.</p>
           </div>
         </section>
 
