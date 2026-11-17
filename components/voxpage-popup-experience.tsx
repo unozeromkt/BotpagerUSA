@@ -8,6 +8,7 @@ import {
   ArrowUp,
   CalendarDays,
   Check,
+  Languages,
   MessageCircleMore,
   Sparkles,
   X,
@@ -402,7 +403,16 @@ export function VoxPagePopupExperience({
                 </div>
               </div>
 
-              <div className={styles.widgetStage}>
+              <div className={`${styles.widgetStage} ${isDrs ? styles.widgetStageWithLanguage : ""}`}>
+                {isDrs ? (
+                  <div className={styles.languageNote}>
+                    <Languages aria-hidden="true" />
+                    <p>
+                      <span lang="en">You can write in English or Spanish.</span>
+                      <span lang="es">Puedes escribir en inglés o en español.</span>
+                    </p>
+                  </div>
+                ) : null}
                 {inlineWidgetId ? (
                   <LeadConnectorInlineWidget widgetId={inlineWidgetId} />
                 ) : (
