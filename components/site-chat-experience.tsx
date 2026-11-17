@@ -17,6 +17,7 @@ export function SiteChatExperience({ mainWidgetId }: SiteChatExperienceProps) {
   if (demo?.widgetId) {
     return (
       <VoxPagePopupExperience
+        key={demo.widgetId}
         inlineWidgetId={demo.widgetId}
         variant={demo.widgetVariant ?? "botpager"}
       />
@@ -31,5 +32,5 @@ export function SiteChatExperience({ mainWidgetId }: SiteChatExperienceProps) {
     return <LeadConnectorWidget widgetId="6ad0de08e0d80451b7509374" />;
   }
 
-  return <VoxPagePopupExperience inlineWidgetId={mainWidgetId} />;
+  return <VoxPagePopupExperience key={mainWidgetId} inlineWidgetId={mainWidgetId} />;
 }
