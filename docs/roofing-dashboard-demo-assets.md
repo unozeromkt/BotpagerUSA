@@ -7,7 +7,9 @@ Created with the built-in image generation/editing tool from user-supplied BotPa
 
 All customer names and bookings are fictional. The contact email uses example.com and the phone uses the reserved fictional 555-01xx range. Both website captions and images identify the data as demo data.
 
-## Prompts
+Current revision: the left navigation shows only Dashboard, Conversations, Calendars, Contacts and Opportunities, matching the simplified feature scope requested for the landing. Other sidebar features and controls were removed from both screenshots using the built-in image editing tool.
+
+## Original creation prompts
 
 Source personal identifiers mentioned solely for removal are omitted from this prompt record.
 
@@ -46,4 +48,24 @@ Agent, 6:47 PM: "You're booked for Thursday at 10:00 AM. I'll send your confirma
 Small system status after messages: "Roof inspection booked · Thu, Nov 19 · 10:00 AM".
 Composer placeholder "Type a message". Do not show chat-ended or inactive warnings.
 Right panel heading "Contact Details", name "Maya Brooks", owner "Roofing Team", tag "Inspection booked". Tabs "All Fields", "DND", "Actions". Fields "First name" Maya, "Last name" Brooks, "Email" maya.brooks@example.com, "Phone" (407) 555-0142, "Lead source" Website chat, "Service" Roof inspection, "Appointment" Thu, Nov 19 · 10:00 AM. This is entirely fictional demo data. No other contact identifiers. Crisp legible UI text, all English, faithful actual panel design, no invented controls or performance claims.
+
+## Latest edit: simplified sidebar
+
+Use case: precise-object-edit.
+Edit target: the supplied English BotPager demo screenshot.
+Make exactly one localized change: simplify ONLY the dark left navigation sidebar. Preserve the image's exact canvas size, crop, proportions and all pixels/content outside that sidebar as closely as possible. Do not redesign or regenerate the main workspace.
+Keep the BotPager logo, "Roofing Demo" account selector, "Demo workspace" subtitle and "Demo data" label in their current positions.
+Below the account selector, show ONLY these FIVE navigation items, with their existing icon style and the same typeface, aligned and evenly spaced:
+"Dashboard"
+"Conversations"
+"Calendars"
+"Contacts"
+"Opportunities"
+Keep the selected item matching the supplied screen: Calendars on the calendar screenshot, Conversations on the conversation screenshot.
+Remove the Search box, Ask AI, Payments, AI Studio/Beta, AI Agents, Marketing, Automation, Sites, Subscriptions, Media Library, Reputation, Reporting, App Marketplace, Settings and every other sidebar item. Also remove the bottom green collapse control. Fill all removed space seamlessly with the original uniform dark slate sidebar background. No replacement features, placeholders, separators, badges or extra links. The sidebar should look clean and deliberately limited to those five product features.
+CRITICAL INVARIANTS: Preserve all content to the right of the sidebar, including top navigation tabs and colored utility icons, all English text, every fictional appointment and its time/name/color, all fictional chat messages and contact details, the booking confirmation, dates, positions and grid lines. Do not add, remove, rewrite or duplicate anything in the calendar or conversations area. Preserve the demo labels and fictional data. No new real personal data. Only the left sidebar changes.
+
+Calendar-specific instruction: This is the CALENDAR image. Calendars must be the only selected sidebar item.
+
+Conversations-specific instruction: This is the CONVERSATIONS image. Conversations must be the only selected sidebar item.
 
