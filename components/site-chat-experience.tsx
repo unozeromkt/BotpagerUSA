@@ -32,5 +32,6 @@ export function SiteChatExperience({ mainWidgetId }: SiteChatExperienceProps) {
     return <LeadConnectorWidget widgetId="6ad0de08e0d80451b7509374" />;
   }
 
-  return <VoxPagePopupExperience key={mainWidgetId} inlineWidgetId={mainWidgetId} />;
+  const roofingGuide = pathname.replace(/\/$/, "") === "/industries/roofing";
+  return <VoxPagePopupExperience key={`${mainWidgetId}-${roofingGuide}`} inlineWidgetId={mainWidgetId} roofingGuide={roofingGuide} />;
 }

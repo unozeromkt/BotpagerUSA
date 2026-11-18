@@ -11,7 +11,7 @@
 }
 
 .shell { inline-size: min(75rem, calc(100% - 3rem)); margin-inline: auto; }
-.page :is(a, summary, h1):focus-visible { outline: 3px solid var(--purple); outline-offset: 5px; }
+.page :is(a, summary, h1, h2, video):focus-visible { outline: 3px solid var(--purple); outline-offset: 5px; }
 .page p { text-wrap: pretty; }
 .page h2 { margin-block: 0 1.5rem; font-family: "Inter", Arial, sans-serif; font-size: clamp(1.9rem, 1.25rem + 1.8vw, 2.75rem); font-weight: 750; line-height: 1.16; letter-spacing: -.045em; text-transform: none; text-wrap: balance; }
 .page h2 span { color: var(--purple); }
@@ -19,7 +19,7 @@
 .section { padding-block: clamp(4rem, 3rem + 3vw, 6.5rem); scroll-margin-block-start: 1.5rem; }
 .sectionLead { max-inline-size: 52ch; margin-block-end: 0; color: var(--roofing-muted); font-size: 1.0625rem; line-height: 1.8; }
 
-/* Keep the roofing photo and the agent together without fixing text heights. */
+/* Keep the hero copy and video in a balanced, responsive composition. */
 .hero { padding-block: 7.5rem 4rem; background: linear-gradient(135deg, #fff 30%, #f5f3fb); }
 .breadcrumbs { display: flex; flex-wrap: wrap; align-items: center; gap: .75rem; margin-block-end: 2rem; color: var(--roofing-muted); font-size: .75rem; }
 .breadcrumbs a { display: inline-flex; align-items: center; min-block-size: 1.75rem; }
@@ -42,34 +42,26 @@
 .heroBenefits li { display: flex; align-items: center; gap: .45rem; }
 .heroBenefits svg { color: var(--roofing-green); flex-shrink: 0; }
 .roofingScene { min-inline-size: 0; margin: 0; isolation: isolate; }
-.photoFrame { position: relative; aspect-ratio: 1.3; margin-inline-start: 1.25rem; border: 1px solid #11284c12; border-radius: 1.75rem; overflow: clip; background: #273b4c; }
-.photoFrame::after { position: absolute; inset: 0; content: ""; pointer-events: none; background: linear-gradient(180deg, #06163d0a 35%, #06163d30 100%); }
-.roofingPhoto { display: block; object-fit: cover; object-position: center 19%; }
-.availabilityBadge { position: absolute; z-index: 1; inset-inline-end: 1.125rem; inset-block-start: 1.125rem; display: flex; flex-direction: column; align-items: center; min-inline-size: 7rem; padding: 1rem; border: 1px solid #ffffff75; border-radius: 1rem; background: var(--roofing-lime); color: #183d25; box-shadow: 0 8px 24px #06163d15; }
-.availabilityLabel { display: flex; align-items: center; gap: .4rem; font-size: .625rem; font-weight: 750; text-transform: uppercase; letter-spacing: .08em; }
-.availabilityBadge > strong { font-family: "Oswald", sans-serif; font-size: 3rem; line-height: 1.3; letter-spacing: -.03em; }
-.availabilityBadge > span:last-child { font-size: .6875rem; font-weight: 650; }
-.onSiteLabel { position: absolute; z-index: 1; inset-block-start: 1.125rem; inset-inline-start: 1.125rem; display: flex; align-items: center; gap: .4rem; max-inline-size: 45%; padding: .5rem .7rem; border: 1px solid #ffffff35; border-radius: 100px; background: #09163fe8; color: #fff; font-size: .6875rem; line-height: 1.5; font-weight: 550; }
-.onSiteLabel > span { inline-size: .3rem; block-size: .3rem; flex-shrink: 0; border-radius: 50%; background: var(--roofing-lime); }
-.agentCard { position: relative; z-index: 2; margin-block-start: -9rem; margin-inline-end: 1.5rem; overflow: clip; border: 1px solid #e2e4ee; border-radius: 1.25rem; background: #fff; box-shadow: 0 20px 48px #14244724, 0 3px 8px #14244708; }
-.agentCardHeader { display: flex; align-items: center; gap: .75rem; padding: 1.125rem 1.25rem; }
-.agentAvatar { position: relative; display: inline-flex; flex-shrink: 0; }
-.agentAvatar img { display: block; border-radius: .8rem; }
-.agentAvatar > span { position: absolute; inset-inline-end: -2px; inset-block-end: -2px; inline-size: .8rem; block-size: .8rem; border: 3px solid #fff; border-radius: 50%; background: #268441; }
-.agentCardHeader strong { display: block; font-size: .875rem; }
-.agentCardHeader div > span { display: block; margin-block-start: .25rem; color: var(--roofing-muted); font-size: .75rem; }
-.online { margin-inline-start: auto; padding: .3rem .6rem; border: 1px solid #dceede; border-radius: 100px; background: #f0f8f1; color: var(--roofing-green); font-size: .6875rem; font-weight: 650; }
-.afterHours { display: flex; align-items: center; gap: .5rem; padding: .625rem 1.25rem; border-block: 1px solid #eeebf8; background: #f8f6ff; color: #58477e; font-size: .75rem; line-height: 1.5; }
-.afterHours svg { flex-shrink: 0; }
-.agentMessages { display: grid; gap: .75rem; padding: 1rem 1.25rem; }
-.homeownerQuestion, .agentAnswer { max-inline-size: 94%; padding: .625rem .875rem; border: 1px solid transparent; border-radius: .75rem; }
-.homeownerQuestion { justify-self: end; background: #f3f5f8; border-end-end-radius: .2rem; }
-.agentAnswer { justify-self: start; background: #f0ecfd; border-end-start-radius: .2rem; }
-.agentMessages span { display: block; color: var(--roofing-muted); font-size: .6875rem; font-weight: 650; }
-.agentAnswer > span { color: #5337a9; }
-.agentMessages p { margin: .25rem 0 0; font-size: .8125rem; line-height: 1.65; }
-.agentServices { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; padding: .875rem 1.25rem; border-block-start: 1px solid #e2eee3; background: #f6fbf5; color: var(--roofing-green); font-size: .75rem; font-weight: 600; }
-.agentServices > span { display: inline-flex; gap: .4rem; align-items: center; }
+.videoCard { overflow: clip; border: 1px solid #283357; border-radius: 1.25rem; background: #0b1636; box-shadow: 0 24px 60px #1f194b24, 0 3px 8px #1f194b0d; }
+.videoTopline { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: .375rem 1rem; padding: 1rem 1.125rem; color: #fff; font-size: .6875rem; line-height: 1.5; }
+.videoTopline > span:first-child { display: inline-flex; align-items: center; gap: .5rem; font-weight: 650; }
+.videoTopline > span:first-child svg { color: #d1fbb9; }
+.videoTopline > span:last-child { color: #b8c1d7; font-size: .625rem; }
+.heroVideo { display: block; inline-size: 100%; block-size: auto; aspect-ratio: 16 / 9; background: #0b1636; }
+.videoOutcomes { display: flex; justify-content: center; flex-wrap: wrap; gap: .625rem 1.5rem; padding: 1rem; border-top: 1px solid #ffffff1f; color: #d1fbb9; font-size: .6875rem; line-height: 1.5; }
+.videoOutcomes > span { display: inline-flex; align-items: center; gap: .5rem; }
+.videoPromise { display: flex; align-items: center; gap: 1.25rem; margin-top: 1.25rem; padding: 1.25rem; border: 1px solid #dfe4dc; border-radius: 1.125rem; background: #fbfff8; }
+.videoAlwaysOn { display: flex; flex-direction: column; align-items: center; flex-shrink: 0; padding: .625rem .875rem; border-radius: .75rem; background: var(--roofing-lime); color: #183d25; font-family: "Oswald", sans-serif; font-size: 2rem; line-height: 1.1; }
+.videoAlwaysOn > span { margin-top: .375rem; font-family: "Inter", sans-serif; font-size: .5rem; line-height: 1.5; font-weight: 750; letter-spacing: .08em; }
+.videoPromise strong { font-size: .875rem; line-height: 1.5; letter-spacing: -.015em; }
+.videoPromise p { margin: .375rem 0 0; color: var(--roofing-muted); font-size: .75rem; line-height: 1.7; }
+.videoTranscript { margin-top: .625rem; color: var(--roofing-muted); font-size: .6875rem; line-height: 1.7; }
+.videoTranscript summary { inline-size: fit-content; min-block-size: 1.75rem; margin-inline: auto; cursor: pointer; text-decoration: underline; text-underline-offset: .2em; }
+.videoTranscript > div { max-block-size: 15rem; overflow-y: auto; margin-top: .75rem; padding: 1rem; border: 1px solid var(--roofing-border); border-radius: .75rem; background: #fff; }
+.videoTranscript p { margin: 0 0 .75rem; }
+.bookingIncluded { display: flex; align-items: flex-start; gap: .5rem; margin-top: 1rem; color: var(--roofing-lime); font-size: .75rem; line-height: 1.7; }
+.bookingIncluded svg { flex-shrink: 0; margin-top: .15rem; }
+.roofingScene, .page h2 { scroll-margin-top: 7rem; }
 .roofingScene figcaption { margin-block-start: 1rem; color: var(--roofing-muted); font-size: .6875rem; line-height: 1.65; text-align: center; }
 
 .valueStrip { border-block: 1px solid var(--roofing-border); background: #fff; }
@@ -247,6 +239,11 @@
   .ctaAction { padding: 1.5rem; }
 }
 @media (max-width: 30rem) {
+  .videoTopline { padding: .875rem; }
+  .videoTopline > span:last-child { display: none; }
+  .videoPromise { gap: .875rem; padding: 1rem; }
+  .videoPromise strong { font-size: .8125rem; }
+  .videoAlwaysOn { padding: .625rem; }
   .shell { inline-size: calc(100% - 2rem); }
   .agentEyebrow { margin-block-end: 1.25rem; }
   .hero h1 { font-size: clamp(2rem, 1.1rem + 5vw, 2.625rem); }
@@ -254,19 +251,6 @@
   .heroActions { align-items: stretch; flex-direction: column; gap: .5rem; }
   .heroActions .textLink { justify-content: center; }
   .heroBenefits { justify-content: center; gap: .625rem 1rem; }
-  .photoFrame { aspect-ratio: 1.02; margin-inline-start: .5rem; border-radius: 1.25rem; }
-  .roofingPhoto { object-position: center 12%; }
-  .availabilityBadge { inset-block-start: .75rem; inset-inline-end: .75rem; min-inline-size: 5.5rem; padding: .75rem; border-radius: .875rem; }
-  .availabilityBadge > strong { font-size: 2.5rem; }
-  .availabilityLabel { font-size: .5625rem; }
-  .onSiteLabel { inset-inline-start: .75rem; inset-block-start: .75rem; max-inline-size: 43%; font-size: .625rem; }
-  .agentCard { margin-inline-end: .5rem; margin-block-start: -3.25rem; border-radius: 1rem; }
-  .agentCardHeader { padding: 1rem; gap: .625rem; flex-wrap: wrap; }
-  .agentAvatar img { inline-size: 2.25rem; block-size: 2.25rem; }
-  .agentCardHeader strong { font-size: .8125rem; }
-  .agentCardHeader div > span { font-size: .6875rem; }
-  .afterHours, .agentMessages, .agentServices { padding-inline: 1rem; }
-  .agentServices { gap: .625rem; font-size: .6875rem; }
   .featuredService, .supportingService, .visitCard, .questionPanel { padding: 1.25rem; }
   .featuredService h3 { font-size: 1.5rem; }
   .questionPanelHeading { gap: .625rem; }
@@ -293,6 +277,5 @@
   :global(html):has(.page) { scroll-behavior: auto; }
 }
 @media (forced-colors: active) {
-  .agentCard, .photoFrame, .featuredService, .supportingService, .visitCard, .questionPanel, .ctaPanel { border-color: CanvasText; }
-  .agentAnswer, .homeownerQuestion, .online, .availabilityBadge { border-color: CanvasText; }
+  .videoCard, .videoPromise, .featuredService, .supportingService, .visitCard, .questionPanel, .ctaPanel { border-color: CanvasText; }
 }

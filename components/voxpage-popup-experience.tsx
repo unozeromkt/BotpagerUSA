@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import type { DemoWidgetVariant } from "@/lib/demos";
+import { RoofingGhostGuide } from "./roofing-ghost-guide";
 import {
   ArrowUp,
   CalendarDays,
@@ -18,6 +19,7 @@ import styles from "./voxpage-popup-experience.module.css";
 type VoxPagePopupExperienceProps = {
   inlineWidgetId?: string;
   variant?: DemoWidgetVariant;
+  roofingGuide?: boolean;
 };
 
 const experienceContent = {
@@ -180,6 +182,7 @@ function LeadConnectorInlineWidget({ widgetId }: { widgetId: string }) {
 export function VoxPagePopupExperience({
   inlineWidgetId,
   variant = "botpager",
+  roofingGuide = false,
 }: VoxPagePopupExperienceProps) {
   const [isOpen, setIsOpen] = useState(false);
   const [hasOpened, setHasOpened] = useState(false);
@@ -188,16 +191,16 @@ export function VoxPagePopupExperience({
   const dialogRef = useRef<HTMLDivElement>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const shouldReduceMotion = useReducedMotion();
-  const content = experienceContent[variant];
+  const content = roofingGuide ? { ...experienceContent.botpager, brandName: "BotPager", title: "Put your next inquiry to work.", description: "Ask how BotPager can answer your customers, book roofing visits, and follow up for your team." } : experienceContent[variant];
   const isExotics = variant === "exotics";
   const isDrs = variant === "drs";
   const themeClass = isExotics ? styles.themeExotics : isDrs ? styles.themeDrs : "";
   const openLabel = isExotics
     ? "Open Energetic Exotics concierge"
-    : isDrs ? "Open DRS Roofing assistant" : "Open VoxPage conversation";
+    : isDrs ? "Open DRS Roofing assistant" : roofingGuide ? "Chat with BotPager" : "Open VoxPage conversation";
   const closeLabel = isExotics
     ? "Close Energetic Exotics concierge"
-    : isDrs ? "Close DRS Roofing assistant" : "Close VoxPage conversation";
+    : isDrs ? "Close DRS Roofing assistant" : roofingGuide ? "Close BotPager conversation" : "Close VoxPage conversation";
 
   const openDialog = () => {
     setHasOpened(true);
@@ -284,7 +287,7 @@ export function VoxPagePopupExperience({
 
   return (
     <>
-      <div className={`${styles.launcherDock} ${themeClass} ${isOpen ? styles.launcherDockOpen : ""}`}>
+      {roofingGuide ? <RoofingGhostGuide launcherRef={launcherRef} isOpen={isOpen} onOpen={openDialog} /> : <div className={`${styles.launcherDock} ${themeClass} ${isOpen ? styles.launcherDockOpen : ""}`}>
         <AnimatePresence>
           {showPrompt && !isOpen ? (
             <motion.div
@@ -345,7 +348,7 @@ export function VoxPagePopupExperience({
             )}
           </AnimatePresence>
         </motion.button>
-      </div>
+      </div>}
 
       {hasOpened ? (
           <motion.div

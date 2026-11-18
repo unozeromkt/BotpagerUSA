@@ -11,7 +11,7 @@ import {
   Globe2,
   House,
   LayoutDashboard,
-  Moon,
+  Play,
   MapPin,
   Search,
   Clock3,
@@ -73,7 +73,7 @@ const customerQuestions = [
 const faqs = [
   {
     question: "Can BotPager actually schedule roofing visits?",
-    answer: "Yes. With a supported calendar connected and your booking rules configured, BotPager can offer available times and schedule inspections or estimate visits. You define the service area, appointment types, and availability. If a request needs your team's approval, it can collect the details for confirmation instead.",
+    answer: "Yes. Appointment booking is included in your BotPager plan. With a supported calendar connected and your booking rules configured, BotPager can offer available times and schedule inspections or estimate visits. You define the service area, appointment types, and availability. If a request needs your team's approval, it can collect the details for confirmation instead.",
   },
   {
     question: "What customer questions can the AI answer?",
@@ -141,11 +141,12 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
 
   return (
     <>
+      <link rel="preload" as="image" href="/images/roofing-video-poster.webp" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
       <a className="skipLink" href="#roofing-title">Skip to main content</a>
       <Header />
       <main className={styles.page} id="main-content">
-        <section className={styles.hero} aria-labelledby="roofing-title">
+        <section className={styles.hero} data-roofing-guide="hero" aria-labelledby="roofing-title">
           <div className={styles.shell}>
             <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
               <Link href="/">Home</Link><span aria-hidden="true">/</span>
@@ -166,30 +167,22 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
                   <li><Check size={16} aria-hidden="true" />Your calendar. Your rules.</li>
                 </ul>
               </div>
-              <figure className={styles.roofingScene} aria-labelledby="roofing-scene-caption">
-                <div className={styles.photoFrame}>
-                  <Image className={styles.roofingPhoto} src="/images/roofing-hero-agent.webp" alt="A roofing professional wearing a safety harness works on asphalt shingles on a residential roof." fill sizes="(max-width: 600px) calc(100vw - 48px), (max-width: 960px) 540px, (max-width: 1280px) 46vw, 552px" loading="eager" fetchPriority="high" />
-                  <div className={styles.availabilityBadge}>
-                    <span className={styles.availabilityLabel}><span aria-hidden="true" />Always on</span>
-                    <strong>24/7</strong>
-                    <span>Your AI agent</span>
-                  </div>
-                  <div className={styles.onSiteLabel}><span aria-hidden="true" />You focus on the roof.</div>
+              <figure className={styles.roofingScene} aria-labelledby="roofing-scene-caption" id="roofing-video" tabIndex={-1}>
+                <div className={styles.videoCard}>
+                  <div className={styles.videoTopline}><span><Play size={13} aria-hidden="true" />See BotPager at work</span><span>60 seconds. A smarter front desk.</span></div>
+                  <video className={styles.heroVideo} controls playsInline preload="metadata" poster="/images/roofing-video-poster.webp" width="1920" height="1080" aria-label="How BotPager helps roofing businesses" aria-describedby="roofing-scene-caption" aria-details="roofing-video-transcript">
+                    <source src="/videos/roofing-orlando.mp4" type="video/mp4" />
+                    <track kind="captions" src="/videos/roofing-orlando.en.vtt" srcLang="en" label="English" />
+                    <a href="/videos/roofing-orlando.mp4">Watch the BotPager roofing video</a>
+                  </video>
+                  <div className={styles.videoOutcomes}><span><MessagesSquare size={16} aria-hidden="true" />Questions answered</span><span><CalendarCheck2 size={16} aria-hidden="true" />Visits booked</span></div>
                 </div>
-                <div className={styles.agentCard}>
-                  <div className={styles.agentCardHeader}>
-                    <span className={styles.agentAvatar}><Image src="/images/botpager-isotype.png" width={44} height={44} alt="" /><span aria-hidden="true" /></span>
-                    <div><strong>Your BotPager agent</strong><span>Your roofing front desk</span></div>
-                    <span className={styles.online}>Online</span>
-                  </div>
-                  <div className={styles.afterHours}><Moon size={14} aria-hidden="true" /><span>9:41 PM. Your office is closed. Your agent is on.</span></div>
-                  <div className={styles.agentMessages}>
-                    <div className={styles.homeownerQuestion}><span>Homeowner</span><p>Do you fix roof leaks? Can I book an inspection?</p></div>
-                    <div className={styles.agentAnswer}><span>BotPager AI</span><p>Yes, we handle leak repairs. I can help book a visit. What’s the property address?</p></div>
-                  </div>
-                  <div className={styles.agentServices}><span><MessagesSquare size={15} aria-hidden="true" />Questions answered</span><span><CalendarCheck2 size={15} aria-hidden="true" />Visits scheduled</span></div>
+                <div className={styles.videoPromise}>
+                  <span className={styles.videoAlwaysOn}>24/7<span>ALWAYS ON</span></span>
+                  <div><strong>Your next inquiry is in good hands.</strong><p>From the first question to a confirmed visit—even after hours.</p></div>
                 </div>
-                <figcaption id="roofing-scene-caption">Example conversation · configured around your services and calendar</figcaption>
+                <figcaption id="roofing-scene-caption">A look at your AI roofing agent in action. Press play to watch with sound.</figcaption>
+                <details className={styles.videoTranscript} id="roofing-video-transcript"><summary>Read video transcript</summary><div><p><strong>Visual description:</strong> A roofer works on a shingle roof. An animated nighttime storm introduces a homeowner’s leak. BotPager appears alongside website chat, incoming calls, customer messages, and a calendar. An example roofing website shows a conversation becoming a confirmed inspection, followed by confirmations, reminders, and estimate follow-ups. The video ends with an invitation to schedule a free audit and demo.</p><p>Hey, roofers! How many jobs did you lose last night?</p><p>A storm rolls through.</p><p>At 11 p.m., a homeowner finds a leak and calls the first roofer who actually answers.</p><p>With BotPager, that roofer is you.</p><p>We specialize in customer service automation for roofing companies.</p><p>Your AI agent is trained on your business, your services, your materials, your service area.</p><p>And it works 24/7 as a chat on your website and as a voice agent that answers your calls when you can&#x27;t.</p><p>It answers homeowners’ questions, qualifies every lead, and books the inspection directly into your calendar.</p><p>Then it sends the confirmations and reminders and follows up on open estimates automatically.</p><p>From, can you come out? To, see you Thursday.</p><p>And when a job needs a real expert, it hands it off to your team.</p><p>You&#x27;re on the roof. Your AI agent is on the job.</p><p>BotPager. Schedule your free audit and demo today.</p></div></details>
               </figure>
             </div>
           </div>
@@ -199,7 +192,7 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
           <div className={styles.shell}><p>Built for the work you do.</p><ul role="list"><li><Wrench size={18} aria-hidden="true" />Roof repairs</li><li><House size={18} aria-hidden="true" />Replacements</li><li><CalendarCheck2 size={18} aria-hidden="true" />Inspections</li><li><CloudLightning size={18} aria-hidden="true" />Storm damage</li></ul></div>
         </section>
 
-        <section className={`${styles.section} ${styles.servicesSection}`} id="roofing-system" aria-labelledby="capabilities-title">
+        <section className={`${styles.section} ${styles.servicesSection}`} id="roofing-system" data-roofing-guide="services" aria-labelledby="capabilities-title">
           <div className={styles.shell}>
             <div className={styles.servicesHeading}>
               <div><p className={styles.eyebrow}>More support for your business</p><h2 id="capabilities-title">The services behind<br /><span>your next booked job.</span></h2></div>
@@ -237,12 +230,12 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
           </div>
         </section>
 
-        <section className={`${styles.section} ${styles.bookingSection}`} aria-labelledby="booking-title">
+        <section className={`${styles.section} ${styles.bookingSection}`} data-roofing-guide="booking" aria-labelledby="booking-title">
           <div className={`${styles.shell} ${styles.bookingGrid}`}>
             <div>
               <p className={styles.eyebrow}>A clear path to a booked visit</p>
-              <h2 id="booking-title">From “Can you come out?” to <span>“See you Thursday.”</span></h2>
-              <p className={styles.sectionLead}>Less phone tag for your office. An easier next step for the homeowner.</p>
+              <h2 id="booking-title" tabIndex={-1}>From “Can you come out?” to <span>“See you Thursday.”</span></h2>
+              <p className={styles.sectionLead}>Less phone tag for your office. An easier next step for the homeowner.</p><p className={styles.bookingIncluded}><Check size={16} aria-hidden="true" />Appointment booking is included in your BotPager plan.</p>
               <ol className={styles.steps} role="list">
                 {bookingSteps.map((step, index) => <li key={step.title}><span className={styles.stepNumber} aria-hidden="true">0{index + 1}</span><div><h3>{step.title}</h3><p>{step.text}</p></div></li>)}
               </ol>
@@ -262,11 +255,11 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
           </div>
         </section>
 
-        <section className={styles.section} aria-labelledby="answers-title">
+        <section className={styles.section} data-roofing-guide="answers" aria-labelledby="answers-title">
           <div className={`${styles.shell} ${styles.answersGrid}`}>
             <div>
               <p className={styles.eyebrow}>Helpful answers, day and night</p>
-              <h2 id="answers-title">Their questions.<br />Your expertise.<br /><span>Always available.</span></h2>
+              <h2 id="answers-title" tabIndex={-1}>Their questions.<br />Your expertise.<br /><span>Always available.</span></h2>
               <p className={styles.sectionLead}>Your AI assistant learns the information you share about your business, so homeowners can get answers while they’re ready to act.</p>
               <p className={styles.handoffNote}><ShieldCheck size={24} aria-hidden="true" /><span><strong>Your team stays in control.</strong> If a question needs an inspection, a custom quote, or a specialist, BotPager collects the details and hands it over.</span></p>
             </div>
@@ -278,9 +271,9 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
           </div>
         </section>
 
-        <section className={`${styles.section} ${styles.faqSection}`} aria-labelledby="roofing-faq-title">
+        <section className={`${styles.section} ${styles.faqSection}`} data-roofing-guide="faq" aria-labelledby="roofing-faq-title">
           <div className={`${styles.shell} ${styles.faqGrid}`}>
-            <div className={styles.faqIntro}><p className={styles.eyebrow}>Your questions, answered</p><h2 id="roofing-faq-title">Built around<br />the way you work.</h2><p>Your services, your calendar, your team. Here’s how BotPager fits in.</p><Link className={styles.textLink} href="/free-growth-audit">Talk through your setup<ArrowRight size={17} aria-hidden="true" /></Link></div>
+            <div className={styles.faqIntro}><p className={styles.eyebrow}>Your questions, answered</p><h2 id="roofing-faq-title" tabIndex={-1}>Built around<br />the way you work.</h2><p>Your services, your calendar, your team. Here’s how BotPager fits in.</p><Link className={styles.textLink} href="/free-growth-audit">Talk through your setup<ArrowRight size={17} aria-hidden="true" /></Link></div>
             <div className={styles.faqList}>
               {faqs.map((faq, index) => <details key={faq.question} id={`roofing-faq-${index + 1}`}><summary><ChevronDown size={19} aria-hidden="true" /><span>{faq.question}</span></summary><p>{faq.answer}</p></details>)}
             </div>
@@ -288,7 +281,7 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
           </div>
         </section>
 
-        <section className={styles.cta} aria-labelledby="roofing-cta-title">
+        <section className={styles.cta} data-roofing-guide="audit" aria-labelledby="roofing-cta-title">
           <div className={`${styles.shell} ${styles.ctaPanel}`}>
             <div className={styles.ctaCopy}>
             <p className={styles.eyebrow}>Put BotPager to work for your roofing business</p>
