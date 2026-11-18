@@ -28,14 +28,6 @@
   .thought { display: block; transition: opacity .25s ease, visibility .25s; }
   .restore { display: grid; }
   .inlineNote { display: none; }
-  .guide[data-travelling="true"] .thought { opacity: 0; visibility: hidden; pointer-events: none; transition-duration: .1s; }
-  @media (prefers-reduced-motion: no-preference) {
-    .guide, .companion { transition: translate 2.4s cubic-bezier(.45, 0, .2, 1); }
-    .guide[data-side="left"] { translate: calc(-100vw + var(--guide-width) + 2rem) 0; }
-    .guide[data-side="left"] .companion { translate: calc(100% - var(--guide-width)) 0; }
-    .guide[data-side="left"] .thought::before { right: auto; left: 2.25rem; }
-    .guide[data-side="left"] .thought::after { right: auto; left: 2rem; }
-  }
 }
 @media (max-width: 104.999rem), (max-height: 41.999rem) {
   .guide[data-video-visible="true"] { display: none; }
@@ -44,8 +36,12 @@
   .chatLabel { font-size: .5625rem; padding-inline: .5rem; }
 }
 @media (prefers-reduced-motion: no-preference) {
-  .mascot { transition: transform .35s ease; }
-  .ghost:hover .mascot { transform: translateY(-2px); }
+  .mascot { animation: mascotFloat 4.5s ease-in-out infinite; }
+  .ghost:is(:hover, :focus-visible) .mascot { animation-play-state: paused; }
+  @keyframes mascotFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
 }
 @media (pointer: coarse) {
   .closeTip, .restore { min-inline-size: 2.75rem; min-block-size: 2.75rem; }

@@ -16,26 +16,10 @@ export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
   const [watching, setWatching] = useState(false);
   const [videoVisible, setVideoVisible] = useState(false);
   const [ready, setReady] = useState(false);
-  const [side, setSide] = useState<"left" | "right">("right");
-  const [travelling, setTravelling] = useState(false);
-  const sideRef = useRef<"left" | "right">("right");
-  const travelTimer = useRef<number | undefined>(undefined);
   const guideRef = useRef<HTMLElement>(null);
   const pendingMoment = useRef<Moment>("hero");
   const content = moments[moment];
   const showThought = tips && moment !== "hero";
-
-  useEffect(() => {
-    const nextSide = moment === "booking" || moment === "faq" ? "left" : "right";
-    if (!tips || sideRef.current === nextSide) return;
-    sideRef.current = nextSide;
-    window.clearTimeout(travelTimer.current);
-    const canTravel = window.matchMedia("(min-width: 105rem) and (min-height: 42rem) and (prefers-reduced-motion: no-preference)").matches;
-    setTravelling(canTravel);
-    setSide(nextSide);
-    // Covers cancelled transitions and a viewport or motion-preference change mid-flight.
-    travelTimer.current = window.setTimeout(() => setTravelling(false), canTravel ? 2600 : 0);
-  }, [moment, tips]);
 
   useEffect(() => {
     try {
@@ -44,7 +28,7 @@ export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
     setReady(true);
 
     let settleTimer: ReturnType<typeof setTimeout>;
-    // Wait for a section to settle before changing the message or choosing a side.
+    // Wait for a section to settle before changing the message.
     const observer = new IntersectionObserver((entries) => {
       const entering = entries.find((entry) => entry.isIntersecting);
       const key = entering?.target.getAttribute("data-roofing-guide") as Moment | undefined;
@@ -72,7 +56,6 @@ export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
 
     return () => {
       clearTimeout(settleTimer);
-      window.clearTimeout(travelTimer.current);
       observer.disconnect();
       videoObserver.disconnect();
       video?.removeEventListener("play", onPlay);
@@ -92,12 +75,11 @@ export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
 
   return (
     <aside ref={guideRef} className={styles.guide} aria-label="Your BotPager guide"
-      data-side={side} data-travelling={travelling} data-video-visible={videoVisible} hidden={!ready || isOpen || watching}
-      onTransitionEnd={(event) => { if (event.target === event.currentTarget && event.propertyName === "translate") setTravelling(false); }}
+      data-video-visible={videoVisible} hidden={!ready || isOpen || watching}
       onPointerLeave={releaseMessage}
       onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setMoment(pendingMoment.current); }}
       onKeyDown={(event) => { if (event.key === "Escape" && showThought) { event.stopPropagation(); toggleTips(); } }}>
-      {showThought && <div className={styles.thought} id="roofing-guide-thought" inert={travelling}>
+      {showThought && <div className={styles.thought} id="roofing-guide-thought">
         <button className={styles.closeTip} type="button" onClick={toggleTips} aria-label="Hide guide tips"><X size={15} aria-hidden="true" /></button>
         <div key={moment} className={styles.message}>
           <span className={styles.label}>{content.label}</span>
