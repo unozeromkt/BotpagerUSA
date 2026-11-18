@@ -1,0 +1,12 @@
+.player { position: relative; min-inline-size: 0; inline-size: 100%; aspect-ratio: 16 / 9; scroll-margin-top: 7rem; }
+.player video { display: block; inline-size: 100%; block-size: 100%; aspect-ratio: 16 / 9; border: 0; border-radius: 1rem; object-fit: cover; background: #f6f3fd; }
+.playButton { position: absolute; inset: 50% auto auto 50%; translate: -50% -50%; display: grid; place-items: center; inline-size: clamp(4.5rem, 7vw, 6.5rem); block-size: clamp(4.5rem, 7vw, 6.5rem); padding: 0; border: 6px solid #ffffff70; border-radius: 50%; background: #562ff4; background-clip: padding-box; color: #fff; box-shadow: 0 8px 30px #25104f45; cursor: pointer; }
+.playButton svg { inline-size: 38%; block-size: 38%; margin-inline-start: 5%; }
+.playButton:hover { background-color: #4320d0; }
+.player :is(video, button):focus-visible { outline: 3px solid #562ff4; outline-offset: 6px; }
+.error { position: absolute; inset: auto 1rem 1rem; margin: 0; padding: .625rem; border-radius: .5rem; background: #fff; color: #142447; font-size: .75rem; text-align: center; }
+@media (prefers-reduced-motion: no-preference) {
+  .playButton { transition: scale .2s ease, background-color .2s ease; }
+  .playButton:hover { scale: 1.06; }
+}
+@media (forced-colors: active) { .playButton { border-color: ButtonText; } }

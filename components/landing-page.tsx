@@ -486,7 +486,7 @@ function SectionCTA({ children, light = false, className = "", href = "/free-gro
   return <Reveal className={`sectionCta ${className}`}><PrimaryButton light={light} href={href}>{children}</PrimaryButton></Reveal>;
 }
 
-export function Header() {
+export function Header({ ctaLabel = "Get Free Growth Audit" }: { ctaLabel?: string } = {}) {
   const [open, setOpen] = useState(false);
   return (
     <header className="siteHeader">
@@ -495,7 +495,7 @@ export function Header() {
         <nav className="desktopNav" aria-label="Main navigation">
           {nav.map(([label, href]) => <a key={label} href={href}>{label}</a>)}
         </nav>
-        <div className="navCta"><PrimaryButton>Get Free Growth Audit</PrimaryButton></div>
+        <div className="navCta"><PrimaryButton>{ctaLabel}</PrimaryButton></div>
         <button className="menuButton" onClick={() => setOpen(!open)} aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open}>
           {open ? <X /> : <Menu />}
         </button>
@@ -504,7 +504,7 @@ export function Header() {
         {open && (
           <motion.nav className="mobileNav" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} aria-label="Mobile navigation">
             {nav.map(([label, href]) => <a key={label} href={href} onClick={() => setOpen(false)}>{label}</a>)}
-            <PrimaryButton>Get Free Growth Audit</PrimaryButton>
+            <PrimaryButton>{ctaLabel}</PrimaryButton>
           </motion.nav>
         )}
       </AnimatePresence>

@@ -17,14 +17,22 @@
 .message a:hover { text-decoration: underline; text-underline-offset: .2em; }
 .companion { display: flex; align-items: center; gap: .5rem; pointer-events: auto; }
 .ghost { display: flex; align-items: center; flex-direction: column; padding: 0; border: 0; border-radius: 2rem; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.ghost svg { display: block; inline-size: 5.5rem; block-size: 5.75rem; overflow: visible; filter: drop-shadow(0 5px 7px #46269424); }
+.mascot { display: block; inline-size: 5.75rem; block-size: 5.75rem; object-fit: contain; filter: drop-shadow(0 5px 7px #46269424); }
 .chatLabel { display: inline-flex; align-items: center; gap: .4rem; margin-top: -.375rem; padding: .375rem .625rem; border: 1px solid #e0d7f4; border-radius: 999px; background: #fff; color: #4c2c97; font-size: .625rem; font-weight: 750; box-shadow: 0 3px 12px #28144f12; }
 .restore { display: grid; place-items: center; min-inline-size: 2rem; min-block-size: 2rem; border: 1px solid #e0d7f4; border-radius: 50%; background: #fff; color: #5830bc; cursor: pointer; }
 
 @media (prefers-reduced-motion: no-preference) {
   .message { animation: thought-in .25s ease-out; }
-  .body { transform-origin: 50% 60%; transition: transform .25s ease; }
-  .ghost:hover .body { transform: translateY(-3px) rotate(-5deg); }
+  @media (min-width: 70rem) and (min-height: 42rem) {
+    .guide { transition: translate 1.4s cubic-bezier(.22, .68, .2, 1); }
+    .companion { transition: translate 1.4s cubic-bezier(.22, .68, .2, 1); }
+    .guide[data-side="left"] { translate: calc(-100vw + 100% + 2.5rem) 0; }
+    .guide[data-side="left"] .companion { translate: calc(100% - 16rem) 0; }
+    .guide[data-side="left"] .thought::before { right: auto; left: 2.2rem; }
+    .guide[data-side="left"] .thought::after { right: auto; left: 1.9rem; }
+  }
+  .mascot { transform-origin: 50% 60%; transition: transform .25s ease; }
+  .ghost:hover .mascot { transform: translateY(-3px) rotate(-5deg); }
   @supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
     @media (min-width: 70rem) and (min-height: 42rem) {
       .guide:not([data-paused="true"]) { animation: guide-journey auto linear both; animation-timeline: scroll(root block); animation-range: 0% 100%; }
@@ -36,11 +44,11 @@
 /* Decorative drift is progressively enhanced; the guide remains usable without a scroll timeline. */
 @keyframes guide-journey {
   0%, 100% { transform: translate(0, 0); }
-  18% { transform: translate(-12px, -10vh); }
-  38% { transform: translate(0, -21vh); }
-  55% { transform: translate(-18px, -9vh); }
-  73% { transform: translate(-6px, -18vh); }
-  90% { transform: translate(-12px, -5vh); }
+  18% { transform: translate(0, -6vh); }
+  38% { transform: translate(0, -12vh); }
+  55% { transform: translate(0, -5vh); }
+  73% { transform: translate(0, -10vh); }
+  90% { transform: translate(0, -3vh); }
 }
 @media (max-width: 69.999rem), (max-height: 41.999rem) {
   .guide[data-video-visible="true"] { display: none; }
@@ -52,7 +60,7 @@
   .label { display: none; }
   .message p { font-size: .75rem; line-height: 1.5; margin-block: .125rem; }
   .message a { font-size: .625rem; }
-  .ghost svg { inline-size: 4.5rem; block-size: 4.75rem; }
+  .mascot { inline-size: 4.5rem; block-size: 4.75rem; }
   .chatLabel { font-size: .5625rem; padding-inline: .5rem; }
 }
 @media (pointer: coarse) {
@@ -61,7 +69,7 @@
   .restore { min-inline-size: 2.75rem; min-block-size: 2.75rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .guide, .message, .body { animation: none !important; transition: none !important; transform: none !important; }
+  .guide, .message, .mascot { animation: none !important; transition: none !important; transform: none !important; }
 }
 @media (forced-colors: active) {
   .thought, .thought::before, .thought::after, .chatLabel, .restore { border-color: CanvasText; }

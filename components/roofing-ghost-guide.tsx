@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, type RefObject } from "react";
+import Image from "next/image";
 import { ArrowUpRight, Pause, Play, Sparkles, X } from "lucide-react";
 import styles from "./roofing-ghost-guide.module.css";
 
@@ -10,7 +11,7 @@ const moments = {
   booking: { label: "No extra booking fee", text: "I can book visits automatically. It’s included in your BotPager plan.", link: "See how I book visits", href: "#booking-title" },
   answers: { label: "Your knowledge. My replies.", text: "Repairs, materials, service areas… I learn your business to help your customers.", link: "Questions I can answer", href: "#answers-title" },
   faq: { label: "You’re still in control", text: "Need an on-site expert? I collect the details and hand them to your team.", link: "See how it works", href: "#roofing-faq-title" },
-  audit: { label: "Let’s put me to work", text: "Let’s find the inquiries you could turn into your next booked job.", link: "Get my free growth audit", href: "/free-growth-audit" },
+  audit: { label: "Let’s put me to work", text: "Let’s find the inquiries you could turn into your next booked job.", link: "Get my free audit", href: "/free-growth-audit" },
 } as const;
 type Moment = keyof typeof moments;
 
@@ -25,9 +26,16 @@ export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
   const [watching, setWatching] = useState(false);
   const [videoVisible, setVideoVisible] = useState(false);
   const [ready, setReady] = useState(false);
+  const [side, setSide] = useState<"left" | "right">("right");
   const guideRef = useRef<HTMLElement>(null);
   const pendingMoment = useRef<Moment>("hero");
   const content = moments[moment];
+  const showThought = tips && moment !== "hero";
+
+  useEffect(() => {
+    if (moment === "hero") setSide("right");
+    else if (!paused && tips) setSide(moment === "booking" || moment === "faq" ? "left" : "right");
+  }, [moment, paused, tips]);
 
   useEffect(() => {
     try {
@@ -88,15 +96,15 @@ export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
 
   return (
     <aside ref={guideRef} className={styles.guide} aria-label="Your BotPager guide"
-      data-paused={paused || !tips} data-video-visible={videoVisible} hidden={!ready || isOpen || watching}
+      data-paused={paused || !tips || moment === "hero"} data-side={side} data-video-visible={videoVisible} hidden={!ready || isOpen || watching}
       onPointerLeave={releaseMessage}
       onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setMoment(pendingMoment.current); }}
-      onKeyDown={(event) => { if (event.key === "Escape" && tips) { event.stopPropagation(); toggleTips(); } }}>
-      {tips && <div className={styles.thought} id="roofing-guide-thought">
+      onKeyDown={(event) => { if (event.key === "Escape" && showThought) { event.stopPropagation(); toggleTips(); } }}>
+      {showThought && <div className={styles.thought} id="roofing-guide-thought">
         <div className={styles.thoughtTop}>
           <span><i aria-hidden="true" />BotPager · 24/7</span>
           <div className={styles.controls}>
-            <button type="button" onClick={toggleMotion} aria-label={paused ? "Resume guide movement" : "Pause guide movement"} aria-pressed={paused}>
+            <button type="button" onClick={toggleMotion} aria-label={paused ? "Resume guide movement" : "Pause guide movement"}>
               {paused ? <Play size={13} aria-hidden="true" /> : <Pause size={13} aria-hidden="true" />}
             </button>
             <button type="button" onClick={toggleTips} aria-label="Hide guide tips"><X size={15} aria-hidden="true" /></button>
@@ -109,22 +117,10 @@ export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
         </div>
       </div>}
       <div className={styles.companion}>
-        {!tips && <button className={styles.restore} type="button" onClick={toggleTips} aria-label="Show guide tips"><Sparkles size={16} aria-hidden="true" /></button>}
+        {!tips && moment !== "hero" && <button className={styles.restore} type="button" onClick={toggleTips} aria-label="Show guide tips"><Sparkles size={16} aria-hidden="true" /></button>}
         <button ref={launcherRef} type="button" className={styles.ghost} onClick={onOpen}
           aria-label="Chat with BotPager" aria-expanded={isOpen} aria-controls="voxpage-conversation-dialog">
-          <svg viewBox="0 0 96 100" fill="none" aria-hidden="true">
-            <ellipse className={styles.shadow} cx="48" cy="92" rx="25" ry="4" fill="#4926A9" opacity=".15" />
-            <g className={styles.body}>
-              <path d="M18 55C13 21 28 8 48 8C69 8 81 25 78 53C77 67 84 70 83 78C75 79 71 73 67 74C62 75 62 82 55 81C48 80 48 74 43 75C38 76 36 82 30 80C24 78 25 72 20 73L10 77C11 69 19 65 18 55Z" fill="white" stroke="#C9BDF1" strokeWidth="2" />
-              <path d="M29 20C35 15 44 13 51 14" stroke="white" strokeWidth="4" strokeLinecap="round" />
-              <rect x="28" y="30" width="40" height="30" rx="15" fill="#152347" />
-              <ellipse cx="40" cy="44" rx="4" ry="7" fill="white" />
-              <ellipse cx="57" cy="44" rx="4" ry="7" fill="white" />
-              <path d="M44 65Q49 69 54 64" stroke="#6741D9" strokeWidth="2.5" strokeLinecap="round" />
-              <path d="M76 49Q88 43 87 54Q86 59 79 60" fill="white" stroke="#C9BDF1" strokeWidth="2" strokeLinecap="round" />
-              <circle cx="72" cy="21" r="6" fill="#D1FBB9" stroke="white" strokeWidth="2" />
-            </g>
-          </svg>
+          <Image className={styles.mascot} src="/images/botpager-mascot-transparent.png" width={96} height={96} alt="" />
           <span className={styles.chatLabel}>Let’s chat <span aria-hidden="true">↗</span></span>
         </button>
       </div>

@@ -11,7 +11,6 @@ import {
   Globe2,
   House,
   LayoutDashboard,
-  Play,
   MapPin,
   Search,
   Clock3,
@@ -20,6 +19,7 @@ import {
   ShieldCheck,
   Wrench,
 } from "lucide-react";
+import { RoofingHeroVideo } from "./roofing-hero-video";
 import { Header, SiteFooter } from "@/components/landing-page";
 import type { ArchitectureItem } from "@/lib/seo/site-architecture";
 import styles from "./roofing-landing-page.module.css";
@@ -97,7 +97,7 @@ const faqs = [
   },
 ];
 
-function AuditLink({ children = "Get My Free Growth Audit" }: { children?: React.ReactNode }) {
+function AuditLink({ children = "Get my free audit" }: { children?: React.ReactNode }) {
   return <Link className={styles.primaryButton} href="/free-growth-audit">{children}<ArrowRight size={18} aria-hidden="true" /></Link>;
 }
 
@@ -141,10 +141,9 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
 
   return (
     <>
-      <link rel="preload" as="image" href="/images/roofing-video-poster.webp" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
       <a className="skipLink" href="#roofing-title">Skip to main content</a>
-      <Header />
+      <Header ctaLabel="Get my free audit" />
       <main className={styles.page} id="main-content">
         <section className={styles.hero} data-roofing-guide="hero" aria-labelledby="roofing-title">
           <div className={styles.shell}>
@@ -155,35 +154,13 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
             </nav>
             <div className={styles.heroGrid}>
               <div className={styles.heroCopy}>
-                <p className={styles.agentEyebrow}><span aria-hidden="true" />Your 24/7 AI roofing agent</p>
-                <h1 id="roofing-title" tabIndex={-1}>You’re on the roof.<br /><span>Your AI agent<br />is on the job.</span></h1>
+                <h1 id="roofing-title" tabIndex={-1}>Your 24/7<br /><span>AI roofing agent</span></h1>
                 <p className={styles.lead}>Give your roofing business an agent that answers homeowners’ questions, books inspections, and follows up on estimates. <strong>On the job or off the clock, you’re covered.</strong></p>
                 <div className={styles.heroActions}>
                   <AuditLink />
-                  <Link className={styles.textLink} href="#roofing-system">See what BotPager can do<ArrowRight size={17} aria-hidden="true" /></Link>
                 </div>
-                <ul className={styles.heroBenefits} role="list">
-                  <li><Check size={16} aria-hidden="true" />Answers day &amp; night</li>
-                  <li><Check size={16} aria-hidden="true" />Your calendar. Your rules.</li>
-                </ul>
               </div>
-              <figure className={styles.roofingScene} aria-labelledby="roofing-scene-caption" id="roofing-video" tabIndex={-1}>
-                <div className={styles.videoCard}>
-                  <div className={styles.videoTopline}><span><Play size={13} aria-hidden="true" />See BotPager at work</span><span>60 seconds. A smarter front desk.</span></div>
-                  <video className={styles.heroVideo} controls playsInline preload="metadata" poster="/images/roofing-video-poster.webp" width="1920" height="1080" aria-label="How BotPager helps roofing businesses" aria-describedby="roofing-scene-caption" aria-details="roofing-video-transcript">
-                    <source src="/videos/roofing-orlando.mp4" type="video/mp4" />
-                    <track kind="captions" src="/videos/roofing-orlando.en.vtt" srcLang="en" label="English" />
-                    <a href="/videos/roofing-orlando.mp4">Watch the BotPager roofing video</a>
-                  </video>
-                  <div className={styles.videoOutcomes}><span><MessagesSquare size={16} aria-hidden="true" />Questions answered</span><span><CalendarCheck2 size={16} aria-hidden="true" />Visits booked</span></div>
-                </div>
-                <div className={styles.videoPromise}>
-                  <span className={styles.videoAlwaysOn}>24/7<span>ALWAYS ON</span></span>
-                  <div><strong>Your next inquiry is in good hands.</strong><p>From the first question to a confirmed visit—even after hours.</p></div>
-                </div>
-                <figcaption id="roofing-scene-caption">A look at your AI roofing agent in action. Press play to watch with sound.</figcaption>
-                <details className={styles.videoTranscript} id="roofing-video-transcript"><summary>Read video transcript</summary><div><p><strong>Visual description:</strong> A roofer works on a shingle roof. An animated nighttime storm introduces a homeowner’s leak. BotPager appears alongside website chat, incoming calls, customer messages, and a calendar. An example roofing website shows a conversation becoming a confirmed inspection, followed by confirmations, reminders, and estimate follow-ups. The video ends with an invitation to schedule a free audit and demo.</p><p>Hey, roofers! How many jobs did you lose last night?</p><p>A storm rolls through.</p><p>At 11 p.m., a homeowner finds a leak and calls the first roofer who actually answers.</p><p>With BotPager, that roofer is you.</p><p>We specialize in customer service automation for roofing companies.</p><p>Your AI agent is trained on your business, your services, your materials, your service area.</p><p>And it works 24/7 as a chat on your website and as a voice agent that answers your calls when you can&#x27;t.</p><p>It answers homeowners’ questions, qualifies every lead, and books the inspection directly into your calendar.</p><p>Then it sends the confirmations and reminders and follows up on open estimates automatically.</p><p>From, can you come out? To, see you Thursday.</p><p>And when a job needs a real expert, it hands it off to your team.</p><p>You&#x27;re on the roof. Your AI agent is on the job.</p><p>BotPager. Schedule your free audit and demo today.</p></div></details>
-              </figure>
+              <RoofingHeroVideo />
             </div>
           </div>
         </section>
