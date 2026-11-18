@@ -20,6 +20,7 @@ import {
   Wrench,
 } from "lucide-react";
 import { RoofingHeroVideo } from "./roofing-hero-video";
+import { RoofingGuideNote } from "./roofing-guide-note";
 import { Header, SiteFooter } from "@/components/landing-page";
 import type { ArchitectureItem } from "@/lib/seo/site-architecture";
 import styles from "./roofing-landing-page.module.css";
@@ -154,7 +155,7 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
             </nav>
             <div className={styles.heroGrid}>
               <div className={styles.heroCopy}>
-                <h1 id="roofing-title" tabIndex={-1}>Your 24/7<br /><span>AI roofing agent</span></h1>
+                <h1 id="roofing-title" tabIndex={-1}><span className={styles.heroAgentTitle}>Your 24/7 AI roofing agent.</span>{" "}<span className={styles.heroPromise}>Never miss a lead again.</span></h1>
                 <p className={styles.lead}>Give your roofing business an agent that answers homeowners’ questions, books inspections, and follows up on estimates. <strong>On the job or off the clock, you’re covered.</strong></p>
                 <div className={styles.heroActions}>
                   <AuditLink />
@@ -175,6 +176,7 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
               <div><p className={styles.eyebrow}>More support for your business</p><h2 id="capabilities-title">The services behind<br /><span>your next booked job.</span></h2></div>
               <p>Connect the way homeowners find you, get answers, and book a visit. Build the right combination for your roofing business.</p>
             </div>
+            <RoofingGuideNote moment="services" />
             <div className={styles.featuredServices}>
               <article className={`${styles.featuredService} ${styles.aiService}`}>
                 <div className={styles.serviceTopline}><span>01 / Respond</span><MessagesSquare size={25} aria-hidden="true" /></div>
@@ -213,6 +215,7 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
               <p className={styles.eyebrow}>A clear path to a booked visit</p>
               <h2 id="booking-title" tabIndex={-1}>From “Can you come out?” to <span>“See you Thursday.”</span></h2>
               <p className={styles.sectionLead}>Less phone tag for your office. An easier next step for the homeowner.</p><p className={styles.bookingIncluded}><Check size={16} aria-hidden="true" />Appointment booking is included in your BotPager plan.</p>
+              <RoofingGuideNote moment="booking" />
               <ol className={styles.steps} role="list">
                 {bookingSteps.map((step, index) => <li key={step.title}><span className={styles.stepNumber} aria-hidden="true">0{index + 1}</span><div><h3>{step.title}</h3><p>{step.text}</p></div></li>)}
               </ol>
@@ -238,6 +241,7 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
               <p className={styles.eyebrow}>Helpful answers, day and night</p>
               <h2 id="answers-title" tabIndex={-1}>Their questions.<br />Your expertise.<br /><span>Always available.</span></h2>
               <p className={styles.sectionLead}>Your AI assistant learns the information you share about your business, so homeowners can get answers while they’re ready to act.</p>
+              <RoofingGuideNote moment="answers" />
               <p className={styles.handoffNote}><ShieldCheck size={24} aria-hidden="true" /><span><strong>Your team stays in control.</strong> If a question needs an inspection, a custom quote, or a specialist, BotPager collects the details and hands it over.</span></p>
             </div>
             <div className={styles.questionPanel}>
@@ -250,7 +254,7 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
 
         <section className={`${styles.section} ${styles.faqSection}`} data-roofing-guide="faq" aria-labelledby="roofing-faq-title">
           <div className={`${styles.shell} ${styles.faqGrid}`}>
-            <div className={styles.faqIntro}><p className={styles.eyebrow}>Your questions, answered</p><h2 id="roofing-faq-title" tabIndex={-1}>Built around<br />the way you work.</h2><p>Your services, your calendar, your team. Here’s how BotPager fits in.</p><Link className={styles.textLink} href="/free-growth-audit">Talk through your setup<ArrowRight size={17} aria-hidden="true" /></Link></div>
+            <div className={styles.faqIntro}><p className={styles.eyebrow}>Your questions, answered</p><h2 id="roofing-faq-title" tabIndex={-1}>Built around<br />the way you work.</h2><p>Your services, your calendar, your team. Here’s how BotPager fits in.</p><RoofingGuideNote moment="faq" /><Link className={styles.textLink} href="/free-growth-audit">Talk through your setup<ArrowRight size={17} aria-hidden="true" /></Link></div>
             <div className={styles.faqList}>
               {faqs.map((faq, index) => <details key={faq.question} id={`roofing-faq-${index + 1}`}><summary><ChevronDown size={19} aria-hidden="true" /><span>{faq.question}</span></summary><p>{faq.answer}</p></details>)}
             </div>
@@ -264,6 +268,7 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
             <p className={styles.eyebrow}>Put BotPager to work for your roofing business</p>
             <h2 id="roofing-cta-title">More answered questions.<br /><span>More opportunities to book.</span></h2>
             <p>Find out where customer inquiries get stuck—and how your website, AI assistant, and follow-up can work together to move them forward.</p>
+            <RoofingGuideNote moment="audit" />
             </div>
             <div className={styles.ctaAction}>
             <div className={styles.ctaAgent}><Image src="/images/botpager-isotype.png" width={52} height={52} alt="" /><span>Your next step<strong>A free growth audit</strong></span></div>

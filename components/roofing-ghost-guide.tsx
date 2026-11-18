@@ -2,18 +2,9 @@
 
 import { useEffect, useRef, useState, type RefObject } from "react";
 import Image from "next/image";
-import { ArrowUpRight, Pause, Play, Sparkles, X } from "lucide-react";
+import { ArrowUpRight, Sparkles, X } from "lucide-react";
+import { roofingGuideMoments as moments, type RoofingGuideMoment as Moment } from "@/lib/roofing-guide";
 import styles from "./roofing-ghost-guide.module.css";
-
-const moments = {
-  hero: { label: "Your always-on teammate", text: "You handle the roof. I’ll handle the next inquiry, 24/7.", link: "See me at work", href: "#roofing-video" },
-  services: { label: "A little extra help", text: "I answer homeowners’ questions while your crew is on the job.", link: "Explore your AI agent", href: "/services/ai-agent" },
-  booking: { label: "No extra booking fee", text: "I can book visits automatically. It’s included in your BotPager plan.", link: "See how I book visits", href: "#booking-title" },
-  answers: { label: "Your knowledge. My replies.", text: "Repairs, materials, service areas… I learn your business to help your customers.", link: "Questions I can answer", href: "#answers-title" },
-  faq: { label: "You’re still in control", text: "Need an on-site expert? I collect the details and hand them to your team.", link: "See how it works", href: "#roofing-faq-title" },
-  audit: { label: "Let’s put me to work", text: "Let’s find the inquiries you could turn into your next booked job.", link: "Get my free audit", href: "/free-growth-audit" },
-} as const;
-type Moment = keyof typeof moments;
 
 export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
   launcherRef: RefObject<HTMLButtonElement | null>;
@@ -22,30 +13,38 @@ export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
 }) {
   const [moment, setMoment] = useState<Moment>("hero");
   const [tips, setTips] = useState(true);
-  const [paused, setPaused] = useState(false);
   const [watching, setWatching] = useState(false);
   const [videoVisible, setVideoVisible] = useState(false);
   const [ready, setReady] = useState(false);
   const [side, setSide] = useState<"left" | "right">("right");
+  const [travelling, setTravelling] = useState(false);
+  const sideRef = useRef<"left" | "right">("right");
+  const travelTimer = useRef<number | undefined>(undefined);
   const guideRef = useRef<HTMLElement>(null);
   const pendingMoment = useRef<Moment>("hero");
   const content = moments[moment];
   const showThought = tips && moment !== "hero";
 
   useEffect(() => {
-    if (moment === "hero") setSide("right");
-    else if (!paused && tips) setSide(moment === "booking" || moment === "faq" ? "left" : "right");
-  }, [moment, paused, tips]);
+    const nextSide = moment === "booking" || moment === "faq" ? "left" : "right";
+    if (!tips || sideRef.current === nextSide) return;
+    sideRef.current = nextSide;
+    window.clearTimeout(travelTimer.current);
+    const canTravel = window.matchMedia("(min-width: 105rem) and (min-height: 42rem) and (prefers-reduced-motion: no-preference)").matches;
+    setTravelling(canTravel);
+    setSide(nextSide);
+    // Covers cancelled transitions and a viewport or motion-preference change mid-flight.
+    travelTimer.current = window.setTimeout(() => setTravelling(false), canTravel ? 2600 : 0);
+  }, [moment, tips]);
 
   useEffect(() => {
     try {
       setTips(sessionStorage.getItem("roofing-guide-tips") !== "hidden");
-      setPaused(sessionStorage.getItem("roofing-guide-motion") === "paused");
     } catch { /* The guide also works when browser storage is unavailable. */ }
     setReady(true);
 
     let settleTimer: ReturnType<typeof setTimeout>;
-    // IntersectionObserver changes the message, not the animation's scroll position.
+    // Wait for a section to settle before changing the message or choosing a side.
     const observer = new IntersectionObserver((entries) => {
       const entering = entries.find((entry) => entry.isIntersecting);
       const key = entering?.target.getAttribute("data-roofing-guide") as Moment | undefined;
@@ -54,7 +53,7 @@ export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
       clearTimeout(settleTimer);
       settleTimer = setTimeout(() => {
         if (!guideRef.current?.matches(":hover, :has(:focus-visible)")) setMoment(key);
-      }, 180);
+      }, 350);
     }, { rootMargin: "-20% 0px -55% 0px", threshold: 0 });
     document.querySelectorAll("[data-roofing-guide]").forEach((section) => observer.observe(section));
 
@@ -73,6 +72,7 @@ export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
 
     return () => {
       clearTimeout(settleTimer);
+      window.clearTimeout(travelTimer.current);
       observer.disconnect();
       videoObserver.disconnect();
       video?.removeEventListener("play", onPlay);
@@ -86,34 +86,23 @@ export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
     setTips(!tips);
     try { sessionStorage.setItem("roofing-guide-tips", tips ? "hidden" : "shown"); } catch {}
   };
-  const toggleMotion = () => {
-    setPaused(!paused);
-    try { sessionStorage.setItem("roofing-guide-motion", paused ? "playing" : "paused"); } catch {}
-  };
   const releaseMessage = () => {
     if (!guideRef.current?.matches(":hover, :has(:focus-visible)")) setMoment(pendingMoment.current);
   };
 
   return (
     <aside ref={guideRef} className={styles.guide} aria-label="Your BotPager guide"
-      data-paused={paused || !tips || moment === "hero"} data-side={side} data-video-visible={videoVisible} hidden={!ready || isOpen || watching}
+      data-side={side} data-travelling={travelling} data-video-visible={videoVisible} hidden={!ready || isOpen || watching}
+      onTransitionEnd={(event) => { if (event.target === event.currentTarget && event.propertyName === "translate") setTravelling(false); }}
       onPointerLeave={releaseMessage}
       onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setMoment(pendingMoment.current); }}
       onKeyDown={(event) => { if (event.key === "Escape" && showThought) { event.stopPropagation(); toggleTips(); } }}>
-      {showThought && <div className={styles.thought} id="roofing-guide-thought">
-        <div className={styles.thoughtTop}>
-          <span><i aria-hidden="true" />BotPager · 24/7</span>
-          <div className={styles.controls}>
-            <button type="button" onClick={toggleMotion} aria-label={paused ? "Resume guide movement" : "Pause guide movement"}>
-              {paused ? <Play size={13} aria-hidden="true" /> : <Pause size={13} aria-hidden="true" />}
-            </button>
-            <button type="button" onClick={toggleTips} aria-label="Hide guide tips"><X size={15} aria-hidden="true" /></button>
-          </div>
-        </div>
+      {showThought && <div className={styles.thought} id="roofing-guide-thought" inert={travelling}>
+        <button className={styles.closeTip} type="button" onClick={toggleTips} aria-label="Hide guide tips"><X size={15} aria-hidden="true" /></button>
         <div key={moment} className={styles.message}>
           <span className={styles.label}>{content.label}</span>
           <p>{content.text}</p>
-          <a href={content.href}>{content.link}<ArrowUpRight size={15} aria-hidden="true" /></a>
+          {content.href && <a href={content.href}>{content.link}<ArrowUpRight size={15} aria-hidden="true" /></a>}
         </div>
       </div>}
       <div className={styles.companion}>

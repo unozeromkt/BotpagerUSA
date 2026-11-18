@@ -1,76 +1,57 @@
-.guide { position: fixed; z-index: 1200; right: max(1.25rem, env(safe-area-inset-right)); bottom: max(1rem, env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: flex-end; gap: 1rem; inline-size: 16rem; pointer-events: none; color: #142447; font-family: "Inter", Arial, sans-serif; }
+.guide { position: fixed; z-index: 1200; right: max(1rem, env(safe-area-inset-right)); bottom: max(1.25rem, env(safe-area-inset-bottom)); display: flex; flex-direction: column; align-items: flex-end; gap: 1.25rem; inline-size: 5rem; pointer-events: none; color: #142447; font-family: "Inter", Arial, sans-serif; }
 .guide[hidden] { display: none; }
 .guide :is(a, button):focus-visible { outline: 3px solid #6840dd; outline-offset: 4px; }
-.thought { position: relative; inline-size: 100%; padding: .875rem 1rem 1rem; border: 1px solid #ddd5f2; border-radius: 1.75rem 1.75rem 1.25rem 1.75rem; background: #fff; box-shadow: 0 10px 40px #28144f1c, 0 2px 5px #28144f08; pointer-events: auto; }
+.thought { display: none; position: relative; inline-size: 100%; padding: 1rem; border: 1px solid #ddd5f2; border-radius: 1.5rem; background: #fff; box-shadow: 0 8px 28px #28144f12; pointer-events: auto; }
 .thought::before, .thought::after { position: absolute; content: ""; border: 1px solid #ddd5f2; border-radius: 50%; background: #fff; pointer-events: none; }
-.thought::before { inline-size: .875rem; block-size: .875rem; right: 2.2rem; bottom: -1rem; }
-.thought::after { inline-size: .375rem; block-size: .375rem; right: 1.9rem; bottom: -1.6rem; }
-.thoughtTop { display: flex; align-items: center; justify-content: space-between; gap: .25rem; margin-bottom: .5rem; }
-.thoughtTop > span { display: inline-flex; align-items: center; gap: .375rem; color: #62429f; font-size: .625rem; font-weight: 750; letter-spacing: .04em; }
-.thoughtTop i { inline-size: .375rem; block-size: .375rem; border-radius: 50%; background: #3a8b4b; }
-.controls { display: flex; gap: .125rem; }
-.controls button { display: grid; place-items: center; min-inline-size: 1.75rem; min-block-size: 1.75rem; border: 0; border-radius: 50%; background: #f5f2fb; color: #665876; cursor: pointer; }
-.controls button:hover { background: #ebe3ff; color: #4826a3; }
-.label { display: block; color: #746386; font-size: .625rem; line-height: 1.5; font-weight: 650; }
-.message p { margin: .35rem 0 .5rem; font-size: .875rem; font-weight: 600; line-height: 1.6; text-wrap: pretty; }
-.message a { display: inline-flex; align-items: center; gap: .375rem; min-block-size: 1.75rem; color: #5830bc; font-size: .6875rem; font-weight: 750; }
+.thought::before { inline-size: .75rem; block-size: .75rem; right: 2.25rem; bottom: -.95rem; }
+.thought::after { inline-size: .3rem; block-size: .3rem; right: 2rem; bottom: -1.5rem; }
+.closeTip { position: absolute; inset: .5rem .5rem auto auto; display: grid; place-items: center; min-inline-size: 1.75rem; min-block-size: 1.75rem; padding: 0; border: 0; border-radius: 50%; background: transparent; color: #665876; cursor: pointer; }
+.closeTip:hover { background: #f2edfc; color: #4826a3; }
+.label { display: block; padding-right: 1.5rem; color: #746386; font-size: .6875rem; line-height: 1.5; font-weight: 650; }
+.message p { margin: .625rem 0 .5rem; font-size: .8125rem; font-weight: 550; line-height: 1.65; text-wrap: pretty; }
+.message a { display: inline-flex; align-items: center; gap: .375rem; min-block-size: 1.75rem; color: #5830bc; font-size: .6875rem; font-weight: 700; }
 .message a:hover { text-decoration: underline; text-underline-offset: .2em; }
 .companion { display: flex; align-items: center; gap: .5rem; pointer-events: auto; }
 .ghost { display: flex; align-items: center; flex-direction: column; padding: 0; border: 0; border-radius: 2rem; background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-.mascot { display: block; inline-size: 5.75rem; block-size: 5.75rem; object-fit: contain; filter: drop-shadow(0 5px 7px #46269424); }
-.chatLabel { display: inline-flex; align-items: center; gap: .4rem; margin-top: -.375rem; padding: .375rem .625rem; border: 1px solid #e0d7f4; border-radius: 999px; background: #fff; color: #4c2c97; font-size: .625rem; font-weight: 750; box-shadow: 0 3px 12px #28144f12; }
-.restore { display: grid; place-items: center; min-inline-size: 2rem; min-block-size: 2rem; border: 1px solid #e0d7f4; border-radius: 50%; background: #fff; color: #5830bc; cursor: pointer; }
+.mascot { display: block; inline-size: 5rem; block-size: 5rem; object-fit: contain; filter: drop-shadow(0 5px 7px #46269420); }
+.chatLabel { display: inline-flex; align-items: center; gap: .4rem; margin-top: -.25rem; padding: .375rem .625rem; border: 1px solid #e0d7f4; border-radius: 999px; background: #fff; color: #4c2c97; font-size: .625rem; font-weight: 750; white-space: nowrap; box-shadow: 0 3px 12px #28144f12; }
+.restore { display: none; place-items: center; min-inline-size: 2rem; min-block-size: 2rem; border: 1px solid #e0d7f4; border-radius: 50%; background: #fff; color: #5830bc; cursor: pointer; }
+.inlineNote { display: flex; align-items: flex-start; gap: .875rem; max-inline-size: 36rem; margin-block: 1.5rem; padding: 1rem; border: 1px solid #e4ddf2; border-radius: 1.125rem; background: #faf8ff; color: #142447; }
+.inlineNote img { flex-shrink: 0; object-fit: contain; }
+.inlineNote > div { min-inline-size: 0; }
+.inlineNote span { display: block; color: #6b558f; font-size: .6875rem; line-height: 1.5; font-weight: 650; }
+.inlineNote p { margin: .25rem 0 0; font-size: .8125rem; line-height: 1.65; text-wrap: pretty; }
 
-@media (prefers-reduced-motion: no-preference) {
-  .message { animation: thought-in .25s ease-out; }
-  @media (min-width: 70rem) and (min-height: 42rem) {
-    .guide { transition: translate 1.4s cubic-bezier(.22, .68, .2, 1); }
-    .companion { transition: translate 1.4s cubic-bezier(.22, .68, .2, 1); }
-    .guide[data-side="left"] { translate: calc(-100vw + 100% + 2.5rem) 0; }
-    .guide[data-side="left"] .companion { translate: calc(100% - 16rem) 0; }
-    .guide[data-side="left"] .thought::before { right: auto; left: 2.2rem; }
-    .guide[data-side="left"] .thought::after { right: auto; left: 1.9rem; }
-  }
-  .mascot { transform-origin: 50% 60%; transition: transform .25s ease; }
-  .ghost:hover .mascot { transform: translateY(-3px) rotate(-5deg); }
-  @supports ((animation-timeline: scroll()) and (animation-range: 0% 100%)) {
-    @media (min-width: 70rem) and (min-height: 42rem) {
-      .guide:not([data-paused="true"]) { animation: guide-journey auto linear both; animation-timeline: scroll(root block); animation-range: 0% 100%; }
-      .guide:hover, .guide:has(:focus-visible) { animation-play-state: paused; }
-    }
+/* A floating thought must fit entirely outside the 75rem reading column, with a 1rem gap. */
+@media (min-width: 105rem) and (min-height: 42rem) {
+  .guide { --guide-width: min(14.5rem, calc((100vw - 75rem) / 2 - 2rem)); inline-size: var(--guide-width); }
+  .thought { display: block; transition: opacity .25s ease, visibility .25s; }
+  .restore { display: grid; }
+  .inlineNote { display: none; }
+  .guide[data-travelling="true"] .thought { opacity: 0; visibility: hidden; pointer-events: none; transition-duration: .1s; }
+  @media (prefers-reduced-motion: no-preference) {
+    .guide, .companion { transition: translate 2.4s cubic-bezier(.45, 0, .2, 1); }
+    .guide[data-side="left"] { translate: calc(-100vw + var(--guide-width) + 2rem) 0; }
+    .guide[data-side="left"] .companion { translate: calc(100% - var(--guide-width)) 0; }
+    .guide[data-side="left"] .thought::before { right: auto; left: 2.25rem; }
+    .guide[data-side="left"] .thought::after { right: auto; left: 2rem; }
   }
 }
-@keyframes thought-in { from { opacity: .3; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
-/* Decorative drift is progressively enhanced; the guide remains usable without a scroll timeline. */
-@keyframes guide-journey {
-  0%, 100% { transform: translate(0, 0); }
-  18% { transform: translate(0, -6vh); }
-  38% { transform: translate(0, -12vh); }
-  55% { transform: translate(0, -5vh); }
-  73% { transform: translate(0, -10vh); }
-  90% { transform: translate(0, -3vh); }
-}
-@media (max-width: 69.999rem), (max-height: 41.999rem) {
+@media (max-width: 104.999rem), (max-height: 41.999rem) {
   .guide[data-video-visible="true"] { display: none; }
-  .guide { right: max(.75rem, env(safe-area-inset-right)); bottom: max(.75rem, env(safe-area-inset-bottom)); inline-size: min(22rem, calc(100vw - 1.5rem)); flex-direction: row; align-items: flex-end; justify-content: flex-end; gap: .625rem; }
-  .thought { inline-size: auto; flex: 1; padding: .625rem .875rem; border-radius: 1.25rem; }
-  .thought::before { right: -.5rem; bottom: 2rem; inline-size: .5rem; block-size: .5rem; }
-  .thought::after { right: -.85rem; bottom: 1.6rem; inline-size: .25rem; block-size: .25rem; }
-  .thoughtTop { margin-bottom: .125rem; }
-  .label { display: none; }
-  .message p { font-size: .75rem; line-height: 1.5; margin-block: .125rem; }
-  .message a { font-size: .625rem; }
-  .mascot { inline-size: 4.5rem; block-size: 4.75rem; }
+  .guide { right: max(.75rem, env(safe-area-inset-right)); bottom: max(.75rem, env(safe-area-inset-bottom)); inline-size: 4.5rem; }
+  .mascot { inline-size: 4.5rem; block-size: 4.5rem; }
   .chatLabel { font-size: .5625rem; padding-inline: .5rem; }
 }
-@media (pointer: coarse) {
-  .controls button { min-inline-size: 2rem; min-block-size: 2rem; }
-  .message a { min-block-size: 2rem; }
-  .restore { min-inline-size: 2.75rem; min-block-size: 2.75rem; }
+@media (prefers-reduced-motion: no-preference) {
+  .mascot { transition: transform .35s ease; }
+  .ghost:hover .mascot { transform: translateY(-2px); }
 }
-@media (prefers-reduced-motion: reduce) {
-  .guide, .message, .mascot { animation: none !important; transition: none !important; transform: none !important; }
+@media (pointer: coarse) {
+  .closeTip, .restore { min-inline-size: 2.75rem; min-block-size: 2.75rem; }
+  .message a { min-block-size: 2.75rem; }
+  .label { padding-right: 2rem; }
 }
 @media (forced-colors: active) {
-  .thought, .thought::before, .thought::after, .chatLabel, .restore { border-color: CanvasText; }
+  .thought, .thought::before, .thought::after, .chatLabel, .restore, .inlineNote { border-color: CanvasText; }
 }
