@@ -2,18 +2,15 @@ import Link from "next/link";
 import Image from "next/image";
 import {
   ArrowRight,
-  BellRing,
   CalendarCheck2,
   Check,
   ChevronDown,
-  ClipboardCheck,
   CloudLightning,
   Globe2,
   House,
   LayoutDashboard,
   MapPin,
   Search,
-  Clock3,
   MessageCircleMore,
   MessagesSquare,
   ShieldCheck,
@@ -21,6 +18,9 @@ import {
 } from "lucide-react";
 import { RoofingHeroVideo } from "./roofing-hero-video";
 import { RoofingGuideNote } from "./roofing-guide-note";
+import { RoofingProductScreenshot } from "./roofing-product-screenshot";
+import calendarDemo from "@/public/images/roofing-calendar-demo.png";
+import conversationsDemo from "@/public/images/roofing-conversations-demo.png";
 import { Header, SiteFooter } from "@/components/landing-page";
 import type { ArchitectureItem } from "@/lib/seo/site-architecture";
 import styles from "./roofing-landing-page.module.css";
@@ -216,22 +216,14 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
               <h2 id="booking-title" tabIndex={-1}>From “Can you come out?” to <span>“See you Thursday.”</span></h2>
               <p className={styles.sectionLead}>Less phone tag for your office. An easier next step for the homeowner.</p><p className={styles.bookingIncluded}><Check size={16} aria-hidden="true" />Appointment booking is included in your BotPager plan.</p>
               <RoofingGuideNote moment="booking" />
-              <ol className={styles.steps} role="list">
-                {bookingSteps.map((step, index) => <li key={step.title}><span className={styles.stepNumber} aria-hidden="true">0{index + 1}</span><div><h3>{step.title}</h3><p>{step.text}</p></div></li>)}
-              </ol>
             </div>
-            <div className={styles.visitCard}>
-              <div className={styles.visitCardHeading}><span><Check size={16} aria-hidden="true" />Inspection confirmed</span><CalendarCheck2 size={23} aria-hidden="true" /></div>
-              <p className={styles.exampleLabel}>Example appointment summary</p>
-              <div className={styles.visitAppointment}><div className={styles.visitDay}><span>THU</span><strong>19</strong></div><div><h3>Roof inspection</h3><p className={styles.visitTime}><Clock3 size={17} aria-hidden="true" />Thursday, 10:00 AM</p></div></div>
-              <dl>
-                <div><dt><MapPin size={17} aria-hidden="true" />Customer &amp; property</dt><dd>Contact details and service address saved</dd></div>
-                <div><dt><MessageCircleMore size={17} aria-hidden="true" />Reason for the visit</dt><dd>Homeowner reported a roof leak</dd></div>
-                <div><dt><BellRing size={17} aria-hidden="true" />Before the visit</dt><dd>Confirmation sent · reminder scheduled</dd></div>
-                <div><dt><ClipboardCheck size={17} aria-hidden="true" />For your estimator</dt><dd>Conversation and request details in one place</dd></div>
-              </dl>
-              <p className={styles.bookingNote}>Scheduling follows your connected calendar, service area, and availability. Requests that need approval go to your team.</p>
-            </div>
+            <ol className={styles.steps} role="list">
+              {bookingSteps.map((step, index) => <li key={step.title}><span className={styles.stepNumber} aria-hidden="true">0{index + 1}</span><div><h3>{step.title}</h3><p>{step.text}</p></div></li>)}
+            </ol>
+            <RoofingProductScreenshot image={calendarDemo} title="Your roofing calendar, in one place"
+              alt="BotPager calendar demonstration for November 15–21: roof inspections, leak assessments, storm-damage visits and estimates across the week. Maya’s inspection is booked for Thursday at 10 AM. All appointments are fictional."
+              caption="Inspections, repair visits, and estimates follow your connected calendar and availability. Requests that need approval go to your team."
+              dark />
           </div>
         </section>
 
@@ -249,6 +241,9 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
               <ul role="list">{customerQuestions.map((question) => <li key={question}><MessageCircleMore size={18} aria-hidden="true" /><span>{question}</span></li>)}</ul>
               <p>Answers reflect the services, policies, and options your company actually offers.</p>
             </div>
+            <RoofingProductScreenshot image={conversationsDemo} title="From a roofing question to a booked inspection"
+              alt="BotPager conversations demonstration: fictional homeowner Maya Brooks asks about a roof leak. The AI answers, offers Thursday at 10 AM, confirms her inspection, and keeps the conversation and booking details together in the team inbox."
+              caption="See the inquiry, your AI agent’s replies, and the customer’s next step together in your team inbox." />
           </div>
         </section>
 

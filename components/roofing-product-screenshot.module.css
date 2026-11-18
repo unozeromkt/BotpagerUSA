@@ -1,0 +1,35 @@
+.figure { grid-column: 1 / -1; min-inline-size: 0; margin: 0; color: #142447; }
+.preview { display: block; inline-size: 100%; padding: 0; border: 1px solid #d9deea; border-radius: 1rem; background: #f6f7fb; cursor: zoom-in; box-shadow: 0 18px 48px #14244712; }
+.image { display: block; inline-size: 100%; block-size: auto; border-radius: inherit; }
+.caption { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem 2rem; padding-block-start: 1.25rem; }
+.caption > div { max-inline-size: 52rem; }
+.caption strong { display: block; font-size: .9375rem; font-weight: 650; line-height: 1.5; }
+.caption p { margin: .375rem 0 0; color: #536078; font-size: .75rem; line-height: 1.75; }
+.caption button { display: inline-flex; flex-shrink: 0; align-items: center; justify-content: center; gap: .5rem; min-block-size: 2.75rem; padding: .5rem .875rem; border: 1px solid #ded7f1; border-radius: .625rem; color: #5830bc; background: #f8f5ff; font-size: .75rem; font-weight: 650; cursor: pointer; }
+.figure[data-dark="true"] { color: #fff; }
+.figure[data-dark="true"] .preview { border-color: #ffffff30; }
+.figure[data-dark="true"] .caption p { color: #c6d0e1; }
+.figure[data-dark="true"] .caption button { border-color: #ffffff30; background: #ffffff08; color: #d1fbb9; }
+.figure :is(button, [tabindex]):focus-visible { outline: 3px solid #8a6be8; outline-offset: 4px; }
+.dialog { inline-size: min(110rem, calc(100vw - 2rem)); max-inline-size: none; max-block-size: calc(100dvh - 2rem); padding: 0; border: 1px solid #d9deea; border-radius: 1rem; background: #fff; color: #142447; box-shadow: 0 24px 100px #0005; }
+.dialog:modal { overscroll-behavior: contain; }
+.dialog::backdrop { background: #061127c9; overflow: hidden; overscroll-behavior: contain; }
+.toolbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .875rem 1.25rem; border-bottom: 1px solid #e2e6ee; }
+.toolbar h3 { margin: 0; font-family: "Inter", Arial, sans-serif; font-size: 1rem; font-weight: 650; line-height: 1.5; text-transform: none; }
+.toolbar p { margin: .25rem 0 0; color: #536078; font-size: .75rem; line-height: 1.5; }
+.toolbar form { flex-shrink: 0; }
+.toolbar button { display: flex; align-items: center; gap: .5rem; min-block-size: 2.75rem; padding: .5rem .75rem; border: 1px solid #dfe4ec; border-radius: .625rem; background: #fff; color: #142447; font-size: .8125rem; cursor: pointer; }
+.imageViewport { max-block-size: calc(100dvh - 8rem); overflow: auto; overscroll-behavior: contain; background: #f6f7fb; }
+.expandedImage { display: block; inline-size: 100%; min-inline-size: 70rem; max-inline-size: none; block-size: auto; }
+.scrollHint { display: none; }
+@media (max-width: 72rem) { .scrollHint { display: inline; } }
+@media (max-width: 47rem) {
+  .caption { flex-direction: column; gap: .75rem; }
+  .dialog { inline-size: calc(100vw - 1rem); max-block-size: calc(100dvh - 1rem); border-radius: .75rem; }
+  .toolbar { padding: .75rem; gap: .625rem; }
+  .toolbar h3 { font-size: .875rem; }
+  .toolbar p { font-size: .6875rem; }
+  .toolbar button { min-inline-size: 2.75rem; padding: .5rem; }
+  .toolbar button > span { display: none; }
+}
+@media (forced-colors: active) { .preview, .dialog, .caption button, .toolbar button { border-color: CanvasText; } }

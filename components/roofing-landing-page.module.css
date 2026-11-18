@@ -111,38 +111,21 @@
   .schedulingVisual > div:nth-child(2) strong { font-size: .8125rem; }
 }
 
-/* A vertical sequence, with the confirmed appointment beside it. */
+/* Explain the booking flow, then show the calendar at a readable full width. */
 .bookingSection { background: #0b1935; color: #fff; }
 .bookingSection .eyebrow { color: #bba8ff; }
 .bookingSection h2 span { color: var(--roofing-lime); }
 .bookingSection .sectionLead { color: #c6d0e1; }
-.bookingGrid { display: grid; grid-template-columns: 1.1fr 1fr; align-items: center; gap: clamp(2.5rem, 6vw, 6rem); }
-.steps { display: grid; gap: 0; padding: 0; margin-block: 2.25rem 0; list-style: none; }
+.bookingGrid { display: grid; grid-template-columns: 1.1fr 1fr; align-items: start; gap: 3rem clamp(2.5rem, 6vw, 6rem); }
+.steps { display: grid; gap: 0; padding: 0; margin: 0; list-style: none; }
 .steps li { position: relative; display: flex; align-items: flex-start; gap: 1.25rem; padding-block-end: 1.75rem; }
 .steps li:not(:last-child)::before { content: ""; position: absolute; inset-inline-start: 1.15rem; inset-block: 2.5rem 0; inline-size: 1px; background: #41506b; }
 .steps li:last-child { padding-block-end: 0; }
 .stepNumber { display: grid; place-items: center; min-inline-size: 2.375rem; min-block-size: 2.375rem; flex-shrink: 0; border: 1px solid #53627e; border-radius: .75rem; background: #14233f; color: var(--roofing-lime); font-size: .75rem; font-variant-numeric: tabular-nums; font-weight: 650; }
 .steps h3 { margin: .1rem 0 .4rem; font-size: 1rem; font-weight: 600; }
 .steps p { max-inline-size: 45ch; margin: 0; color: #c6d0e1; font-size: .875rem; line-height: 1.75; }
-.visitCard { padding: 2rem; border: 1px solid #ffffff40; border-radius: var(--roofing-radius); background: #fff; color: var(--ink); box-shadow: 0 20px 60px #0002; }
-.visitCardHeading { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-block-end: 2rem; color: var(--purple); }
-.visitCardHeading > span { display: inline-flex; align-items: center; gap: .45rem; padding: .5rem .75rem; border: 1px solid #d3e8d6; border-radius: 100px; background: #f0f8ef; color: var(--roofing-green); font-size: .75rem; font-weight: 650; }
-.exampleLabel { margin-block-end: .875rem; color: var(--roofing-muted); font-size: .75rem; }
-.visitAppointment { display: flex; align-items: center; gap: 1rem; }
-.visitDay { flex-shrink: 0; min-inline-size: 4rem; padding: .875rem; border: 1px solid #e2dbf6; border-radius: .875rem; background: #f4f1fc; color: var(--purple); text-align: center; }
-.visitDay span { display: block; font-size: .6875rem; font-weight: 750; letter-spacing: .06em; }
-.visitDay strong { display: block; font-size: 1.875rem; line-height: 1.25; }
-.visitCard h3 { margin-block-end: .45rem; font-size: clamp(1.25rem, 1rem + .5vw, 1.625rem); letter-spacing: -.035em; }
-.visitTime { display: flex; align-items: center; gap: .5rem; margin: 0; font-size: .8125rem; color: var(--roofing-muted); }
-.visitTime svg { flex-shrink: 0; }
-.visitCard dl { margin-block: 1.75rem; }
-.visitCard dl > div { padding-block: 1rem; border-block-start: 1px solid var(--roofing-border); }
-.visitCard dt { display: flex; align-items: center; gap: .625rem; margin-block-end: .4rem; color: var(--roofing-muted); font-size: .75rem; }
-.visitCard dt svg { flex-shrink: 0; color: #7d729c; }
-.visitCard dd { margin: 0; padding-inline-start: 1.7rem; font-size: .8125rem; font-weight: 550; line-height: 1.65; }
-.bookingNote { margin: 0; border: 1px solid var(--roofing-border); border-radius: .75rem; padding: .875rem; background: #f8f9fc; color: var(--roofing-muted); font-size: .75rem; line-height: 1.7; }
 
-.answersGrid { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2.5rem, 6vw, 6rem); align-items: center; }
+.answersGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem clamp(2.5rem, 6vw, 6rem); align-items: center; }
 .handoffNote { display: flex; align-items: flex-start; gap: 1rem; margin-block: 2rem 0; padding: 1.375rem; border: 1px solid var(--roofing-border); border-radius: 1rem; background: #fafbfc; color: var(--roofing-muted); font-size: .875rem; line-height: 1.75; }
 .handoffNote > svg { flex-shrink: 0; color: var(--purple); margin-block-start: .15rem; }
 .handoffNote strong { display: block; color: var(--ink); margin-block-end: .35rem; font-weight: 650; }
@@ -211,7 +194,6 @@
   .supportingLinks .serviceLink { font-size: .8125rem; }
   .valueStrip ul { gap: 1rem; display: grid; grid-template-columns: 1fr 1fr; inline-size: 100%; }
   .valueStrip p { font-size: .875rem; }
-  .visitCard { max-inline-size: 34rem; inline-size: 100%; margin-inline: auto; }
   .cta { padding-block: 3rem; }
   .ctaPanel { padding: 2rem; }
   .ctaAction { padding: 1.5rem; }
@@ -221,7 +203,7 @@
   .hero h1 { font-size: clamp(2rem, 1.1rem + 5vw, 2.625rem); }
   .lead { font-size: 1rem; }
   .heroActions { align-items: stretch; flex-direction: column; gap: .5rem; }
-  .featuredService, .supportingService, .visitCard, .questionPanel { padding: 1.25rem; }
+  .featuredService, .supportingService, .questionPanel { padding: 1.25rem; }
   .featuredService h3 { font-size: 1.5rem; }
   .questionPanelHeading { gap: .625rem; }
   .questionPanel h3 { font-size: .875rem; }
@@ -247,5 +229,5 @@
   :global(html):has(.page) { scroll-behavior: auto; }
 }
 @media (forced-colors: active) {
-  .featuredService, .supportingService, .visitCard, .questionPanel, .ctaPanel { border-color: CanvasText; }
+  .featuredService, .supportingService, .questionPanel, .ctaPanel { border-color: CanvasText; }
 }
