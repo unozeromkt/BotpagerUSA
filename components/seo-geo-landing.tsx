@@ -180,6 +180,7 @@ function AuditButton({
     <Link
       className={`${styles.button} ${secondary ? styles.buttonSecondary : ""}`}
       href={visibilityAuditUrl}
+      data-meta-event="Contact"
     >
       {children}
       <ArrowRight aria-hidden="true" />

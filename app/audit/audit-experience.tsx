@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { trackEvent } from "@/lib/metaPixel";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
@@ -193,6 +194,7 @@ export function AuditExperience() {
         throw new Error(payload.message || "We could not finish your audit.");
       }
 
+      trackEvent("Lead");
       setReport(payload.report);
       setDelivery(payload.delivery);
       setMessage(payload.message ?? "Your personalized audit is ready.");
@@ -306,7 +308,7 @@ export function AuditExperience() {
               </div>
               <div className="auditUnlockBand">
                 <div><Mail /><span><b>Get your personalized action plan</b><small>See the complete explanation and receive a copy by email.</small></span></div>
-                <button className="auditPrimaryButton" type="button" onClick={() => setStage("contact")}>Show my full report <ArrowRight /></button>
+                <button data-meta-event="Contact" className="auditPrimaryButton" type="button" onClick={() => setStage("contact")}>Show my full report <ArrowRight /></button>
               </div>
             </motion.div>
           )}
@@ -423,7 +425,7 @@ export function AuditExperience() {
                     <span><Check /> Automated follow-up</span>
                   </div>
                 </div>
-                <a className="auditPrimaryButton" href={`mailto:info@botpager.com?subject=${encodeURIComponent(`Questions about ${contact.businessName}'s audit`)}`}>Ask BotPager a question <ArrowRight /></a>
+                <a data-meta-event="Contact" className="auditPrimaryButton" href={`mailto:info@botpager.com?subject=${encodeURIComponent(`Questions about ${contact.businessName}'s audit`)}`}>Ask BotPager a question <ArrowRight /></a>
               </section>
 
               <div className="auditReportFooter"><Brand /><span>Built to help local service businesses grow with confidence.</span></div>

@@ -7,6 +7,7 @@ import "@fontsource/oswald/500.css";
 import "@fontsource/oswald/600.css";
 import "@fontsource/oswald/700.css";
 import { SiteChatExperience } from "@/components/site-chat-experience";
+import { MetaPixel } from "@/components/MetaPixel";
 import "./globals.css";
 
 const siteUrl = "https://botpager.com";
@@ -67,6 +68,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
       <body>
         {children}
         <SiteChatExperience mainWidgetId={mainWidgetId} />
+        <MetaPixel />
       </body>
     </html>
   );

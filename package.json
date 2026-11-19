@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
+    "test:meta-pixel": "node --test tests/meta-pixel.test.cjs",
     "test:effix": "node --test app/es/experienciaEffix/tests/*.test.cjs app/es/AuditoríaEffix/tests/*.test.cjs app/es/feriaEffix2026/tests/flow.test.cjs",
     "dev": "next dev",
     "build": "next build",
