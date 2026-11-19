@@ -37,8 +37,7 @@ export function RoofingHeroVideo() {
 
   return (
     <div className={styles.player} id="roofing-video">
-      <link rel="preload" as="image" href={cover.src} />
-      <video ref={videoRef} controls={!enhanced || started} playsInline preload="metadata"
+      <video ref={videoRef} controls={!enhanced || started} playsInline preload="none"
         poster={cover.src} width="1920" height="1080" tabIndex={0}
         aria-label="How BotPager helps roofing businesses"
         onEnded={() => { setStarted(false); videoRef.current?.load(); }}>

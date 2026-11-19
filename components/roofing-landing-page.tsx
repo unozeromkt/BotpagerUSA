@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image, { getImageProps } from "next/image";
+import Image from "next/image";
 import {
   ArrowRight,
   CalendarCheck2,
@@ -21,19 +21,10 @@ import { RoofingGuideNote } from "./roofing-guide-note";
 import { RoofingProductScreenshot } from "./roofing-product-screenshot";
 import calendarDemo from "@/public/images/roofing-calendar-demo.png";
 import conversationsDemo from "@/public/images/roofing-conversations-demo.png";
+import heroComposition from "@/public/images/roofing-hero-composition-v2.png";
 import { Header, SiteFooter } from "@/components/landing-page";
 import type { ArchitectureItem } from "@/lib/seo/site-architecture";
 import styles from "./roofing-landing-page.module.css";
-
-const { props: mobileRoofingPhoto } = getImageProps({
-  src: "/images/roofing-hero-agent.webp",
-  alt: "Roofing contractor repairing shingles on a residential roof",
-  width: 1120,
-  height: 1400,
-  sizes: "(max-width: 30rem) calc(100vw - 2rem), calc(100vw - 2.5rem)",
-  loading: "eager",
-  fetchPriority: "high",
-});
 
 const supportingServices = [
   {
@@ -158,31 +149,28 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
       <main className={styles.page} id="main-content">
         <section className={styles.hero} data-roofing-guide="hero" aria-labelledby="roofing-title">
           <div className={styles.shell}>
-            <nav className={styles.breadcrumbs} aria-label="Breadcrumb">
-              <Link href="/">Home</Link><span aria-hidden="true">/</span>
-              <Link href="/industries">Industries</Link><span aria-hidden="true">/</span>
-              <span aria-current="page">Roofing</span>
-            </nav>
             <div className={styles.heroGrid}>
-              <div className={styles.heroCopy}>
-                <picture className={styles.mobileRoofingPhoto}>
-                  <source media="(max-width: 47rem)" srcSet={mobileRoofingPhoto.srcSet} sizes={mobileRoofingPhoto.sizes} />
-                  {/* The media source loads the optimized photo only on mobile. Desktop uses an inline empty image. */}
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    alt={mobileRoofingPhoto.alt}
-                    width={1120}
-                    height={1400}
-                    loading="eager"
-                    fetchPriority="high"
-                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
-                  />
-                </picture>
-                <h1 id="roofing-title" tabIndex={-1}><span className={styles.heroAgentTitle}>Your 24/7 AI roofing agent.</span>{" "}<span className={styles.heroPromise}>Never miss a lead again.</span></h1>
-                <p className={styles.lead}>Give your roofing business an agent that answers homeowners’ questions, books inspections, and follows up on estimates. <strong>On the job or off the clock, you’re covered.</strong></p>
+              <div className={styles.heroHeading}>
+                <p className={styles.heroEyebrow}><House size={18} aria-hidden="true" />Built for roofing companies</p>
+                <h1 id="roofing-title" tabIndex={-1}>Get more customers for your <span>roofing business.</span></h1>
+              </div>
+              <div className={styles.heroVisual}>
+                <Image src={heroComposition} loading="eager" fetchPriority="high"
+                  sizes="(max-width: 47rem) calc(100vw - 2rem), (max-width: 60rem) 38rem, 42rem"
+                  alt="A roofing contractor at work, connected to a BotPager calendar of inspections and a homeowner chat. The 24/7 AI agent answers questions and books a Thursday inspection. Illustrative demo." />
+              </div>
+              <div className={styles.heroDetails}>
+                <p className={styles.lead}><strong>How do we do it?</strong>{" "}Your 24/7 AI roofing agent answers homeowners’ questions, books inspections, and follows up on estimates—while you focus on the job.</p>
                 <div className={styles.heroActions}>
                   <AuditLink />
                 </div>
+                <p className={styles.heroReassurance}><Check size={17} aria-hidden="true" />Never miss a lead again.</p>
+              </div>
+            </div>
+            <div className={styles.heroDemo}>
+              <div className={styles.heroDemoCopy}>
+                <h2>You’re on the roof.<br /><span>Your AI agent is on the job.</span></h2>
+                <p>From a homeowner’s first question to a booked inspection. See how it works.</p>
               </div>
               <RoofingHeroVideo />
             </div>
