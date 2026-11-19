@@ -1,5 +1,6 @@
 import { auditQuestions, type AuditQuestion } from "./questions";
 import { roofingAuditQuestions, roofingServices } from "./roofing-questions";
+import { normalizeAuditPhone } from "./phone";
 import type { AuditSubmission, AuditVariant, BusinessContext, ContactDetails, TrackingContext } from "./types";
 
 class AuditValidationError extends Error {}
@@ -117,6 +118,14 @@ export function parseAuditSubmission(value: unknown): AuditSubmission {
     contact: parseContact(record.contact),
     tracking: parseTracking(record.tracking),
   };
+  if (variant === "roofing") {
+    const phone = normalizeAuditPhone(shared.contact.phone);
+    if ((shared.contact.smsNonMarketingConsent || shared.contact.smsMarketingConsent) && !phone) {
+      throw new AuditValidationError("Enter a valid phone number when selecting SMS consent.");
+    }
+    shared.contact.phone = phone ?? "";
+    shared.business.state = shared.business.state.toUpperCase();
+  }
   return variant === "roofing"
     ? { ...shared, variant, answers: parseAnswers(record.answers, roofingAuditQuestions) }
     : { ...shared, variant, answers: parseAnswers(record.answers, auditQuestions) };

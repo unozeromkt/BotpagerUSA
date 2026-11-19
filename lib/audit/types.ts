@@ -64,6 +64,6 @@ export type AuditReport = {
 export type AuditApiResponse = {
   ok: boolean;
   report?: AuditReport;
-  delivery?: "queued" | "crm_saved" | "preview" | "failed";
+  delivery?: "queued" | "crm_saved" | "preview" | "failed" | "processing";
   message?: string;
 };

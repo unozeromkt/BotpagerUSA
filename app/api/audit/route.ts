@@ -1,4 +1,7 @@
+import { after } from "next/server";
 import { generateAuditReport } from "@/lib/ai/generate-audit";
+import { captureAuditEvidence } from "@/lib/ghl/auditMapping";
+import { syncRoofingAudit } from "@/lib/ghl/syncRoofingAudit";
 import { getValidationMessage, parseAuditSubmission } from "@/lib/audit/validation";
 import {
   completeAuditContact,
@@ -9,6 +12,7 @@ import {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 300;
 
 export async function POST(request: Request) {
   const contentLength = Number(request.headers.get("content-length") ?? 0);
@@ -25,6 +29,15 @@ export async function POST(request: Request) {
 
   if (submission.contact.websiteTrap) {
     return Response.json({ ok: true, delivery: "preview", message: "Your audit is ready." });
+  }
+
+  if (submission.variant === "roofing") {
+    const evidence = captureAuditEvidence(request);
+    const { report } = await generateAuditReport(submission.business, submission.answers);
+    const job = { submission, report, evidence };
+    after(async () => { await syncRoofingAudit(job); });
+    return Response.json({ ok: true, report, delivery: "processing", message: "Your personalized roofing audit is ready." },
+      { headers: { "Cache-Control": "no-store" } });
   }
 
   let contact = null;
