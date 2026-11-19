@@ -454,7 +454,7 @@ function Logo({ light = false }: { light?: boolean }) {
 }
 
 function PrimaryButton({ children, href = "/free-growth-audit", light = false }: { children: React.ReactNode; href?: string; light?: boolean }) {
-  return <a className={`button buttonPrimary ${light ? "buttonLime" : ""}`} href={href}>{children}<ArrowRight size={17} /></a>;
+  return <a data-meta-event={href === "/free-growth-audit" ? "Contact" : undefined} className={`button buttonPrimary ${light ? "buttonLime" : ""}`} href={href}>{children}<ArrowRight size={17} /></a>;
 }
 
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
@@ -1123,7 +1123,7 @@ function Pricing() {
                   ))}
                 </div>
               </details>
-              <a className="button priceButton" href="/free-growth-audit">Book a Strategy Call <ArrowRight size={16} /></a>
+              <a data-meta-event="Contact" className="button priceButton" href="/free-growth-audit">Book a Strategy Call <ArrowRight size={16} /></a>
               <p className="priceFinePrint">{plan.note}</p>
             </Reveal>
           ))}

@@ -100,7 +100,7 @@ const faqs = [
 ];
 
 function AuditLink({ children = "Get my free audit" }: { children?: React.ReactNode }) {
-  return <Link className={styles.primaryButton} href="/free-growth-audit">{children}<ArrowRight size={18} aria-hidden="true" /></Link>;
+  return <Link data-meta-event="Contact" className={styles.primaryButton} href="/free-growth-audit">{children}<ArrowRight size={18} aria-hidden="true" /></Link>;
 }
 
 function FeatureList({ items }: { items: string[] }) {
@@ -260,7 +260,7 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
 
         <section className={`${styles.section} ${styles.faqSection}`} data-roofing-guide="faq" aria-labelledby="roofing-faq-title">
           <div className={`${styles.shell} ${styles.faqGrid}`}>
-            <div className={styles.faqIntro}><p className={styles.eyebrow}>Your questions, answered</p><h2 id="roofing-faq-title" tabIndex={-1}>Built around<br />the way you work.</h2><p>Your services, your calendar, your team. Here’s how BotPager fits in.</p><RoofingGuideNote moment="faq" /><Link className={styles.textLink} href="/free-growth-audit">Talk through your setup<ArrowRight size={17} aria-hidden="true" /></Link></div>
+            <div className={styles.faqIntro}><p className={styles.eyebrow}>Your questions, answered</p><h2 id="roofing-faq-title" tabIndex={-1}>Built around<br />the way you work.</h2><p>Your services, your calendar, your team. Here’s how BotPager fits in.</p><RoofingGuideNote moment="faq" /><Link data-meta-event="Contact" className={styles.textLink} href="/free-growth-audit">Talk through your setup<ArrowRight size={17} aria-hidden="true" /></Link></div>
             <div className={styles.faqList}>
               {faqs.map((faq, index) => <details key={faq.question} id={`roofing-faq-${index + 1}`}><summary><ChevronDown size={19} aria-hidden="true" /><span>{faq.question}</span></summary><p>{faq.answer}</p></details>)}
             </div>

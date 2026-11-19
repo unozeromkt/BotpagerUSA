@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { trackEvent } from "@/lib/metaPixel";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
@@ -118,7 +119,7 @@ function Reveal({ children, className = "", delay = 0 }: { children: React.React
 }
 
 function PrimaryLink({ href, children, light = false }: { href: string; children: React.ReactNode; light?: boolean }) {
-  return <Link className={`${styles.button} ${styles.primaryButton} ${light ? styles.lightButton : ""}`} href={href}>{children}<ArrowRight /></Link>;
+  return <Link data-meta-event={href === "#diagnostico" ? "Contact" : undefined} className={`${styles.button} ${styles.primaryButton} ${light ? styles.lightButton : ""}`} href={href}>{children}<ArrowRight /></Link>;
 }
 
 function SectionHeading({ eyebrow, title, text, light = false, id }: { eyebrow: string; title: React.ReactNode; text?: string; light?: boolean; id?: string }) {
@@ -190,6 +191,7 @@ function LatamLeadForm({ defaultInterest = "" }: { defaultInterest?: LatamServic
       });
       const result = await response.json() as { ok?: boolean; message?: string };
       if (!response.ok || !result.ok) throw new Error(result.message || "No pudimos enviar tus datos.");
+      trackEvent("Lead");
       setStatus("success");
       setMessage(result.message || "Recibimos tu solicitud. Te contactaremos pronto.");
       form.reset();

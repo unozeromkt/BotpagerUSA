@@ -130,7 +130,7 @@ export function IndustryDetailPage({ industry }: { industry: IndustryPageContent
             <h1 id="page-title">{industry.title}</h1>
             <p className={styles.lead}>{industry.description}</p>
             <div className={styles.heroActions}>
-              <Link className={styles.button} href="/free-growth-audit">Get Your Free Growth Audit</Link>
+              <Link data-meta-event="Contact" className={styles.button} href="/free-growth-audit">Get Your Free Growth Audit</Link>
               <Link className={styles.secondaryButton} href="#plumbing-system">Explore the system</Link>
             </div>
           </div>
@@ -281,7 +281,7 @@ export function ServiceDetailPage({ service }: { service: ServicePageContent }) 
             <h1 id="page-title">{service.title}</h1>
             <p className={styles.lead}>{service.description}</p>
             <div className={styles.heroActions}>
-              <Link className={styles.button} href="/free-growth-audit">Get Your Free Growth Audit</Link>
+              <Link data-meta-event="Contact" className={styles.button} href="/free-growth-audit">Get Your Free Growth Audit</Link>
               <Link className={styles.secondaryButton} href="#how-it-works">See how it works</Link>
             </div>
           </div>
@@ -448,7 +448,7 @@ function CallToAction() {
     <section className={styles.cta} aria-labelledby="architecture-cta-title">
       <div className={`${styles.shell} ${styles.ctaInner}`}>
         <div><h2 id="architecture-cta-title">See where your business can grow next</h2><p>Get a practical look at your website, response time, follow-up, and local visibility.</p></div>
-        <Link className={styles.button} href="/free-growth-audit">Get Your Free Growth Audit</Link>
+        <Link data-meta-event="Contact" className={styles.button} href="/free-growth-audit">Get Your Free Growth Audit</Link>
       </div>
     </section>
   );

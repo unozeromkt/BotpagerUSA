@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { trackEvent } from "@/lib/metaPixel";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
@@ -203,6 +204,7 @@ export function GrowthGameExperience() {
       if (!response.ok || !payload.ok || !payload.result) {
         throw new Error(payload.message || "We could not prepare your growth plan.");
       }
+      trackEvent("Lead");
       setResult(payload.result);
       setDelivery(payload.delivery);
       setMessage(payload.message ?? "Your growth plan is ready.");
@@ -362,7 +364,7 @@ export function GrowthGameExperience() {
             <section className="growthUnlockPanel">
               <div className="growthUnlockIcon"><LockKeyhole /></div>
               <div><p className="growthEyebrow"><Sparkles /> Your next-level plan is ready</p><h2>See the package, what is included and your starting price.</h2><p>We matched the next move to your current level — no technical jargon and no guesswork.</p></div>
-              <button className="growthPrimaryButton growthLimeButton growthUnlockPulseButton" type="button" onClick={() => setStage("contact")}>Unlock my plan <ArrowRight /></button>
+              <button data-meta-event="Contact" className="growthPrimaryButton growthLimeButton growthUnlockPulseButton" type="button" onClick={() => setStage("contact")}>Unlock my plan <ArrowRight /></button>
             </section>
           </motion.section>
         )}
@@ -435,7 +437,7 @@ export function GrowthGameExperience() {
                 <span className="growthPriceLabel">Your starting level</span>
                 <div className="growthPrice"><sup>$</sup><strong>{result.level.package.price.toLocaleString("en-US")}</strong><span>/ month</span></div>
                 <p>Starting price based on your current level. Final scope is confirmed with you before anything begins.</p>
-                <a className="growthPrimaryButton growthLimeButton" href={`mailto:info@botpager.com?subject=${encodeURIComponent(`${contact.businessName} — ${result.level.package.name}`)}&body=${encodeURIComponent(`Hi BotPager, I completed the Growth Game with a score of ${result.score}/100. I'd like to discuss starting with the ${result.level.package.name}.`)}`}>Start this level <ArrowRight /></a>
+                <a data-meta-event="Contact" className="growthPrimaryButton growthLimeButton" href={`mailto:info@botpager.com?subject=${encodeURIComponent(`${contact.businessName} — ${result.level.package.name}`)}&body=${encodeURIComponent(`Hi BotPager, I completed the Growth Game with a score of ${result.score}/100. I'd like to discuss starting with the ${result.level.package.name}.`)}`}>Start this level <ArrowRight /></a>
                 <Link className="growthOfferLink" href="/services">Explore the complete BotPager system <ChevronRight /></Link>
                 <small><ShieldCheck /> Clear scope before you commit</small>
               </div>

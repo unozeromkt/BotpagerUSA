@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { trackEvent } from "@/lib/metaPixel";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { ArrowRight, ArrowLeft, Check, CheckCircle2, ChevronRight, Clock3, CalendarDays, MessageCircle, Sparkles, ShieldCheck, Globe2, BriefcaseBusiness, ShoppingBag, Heart, Building2, Palmtree, Shapes, LoaderCircle, Copy, ExternalLink, Radio } from "lucide-react";
 import { campaign, campaignOpen, countries, goals, sectors, type Booking, type CampaignSettings, type GoalId, type SavedLead, type SectorId } from "./_lib/config";
@@ -87,6 +88,7 @@ export function EffixExperience({ settings }: { settings: CampaignSettings }) {
     try {
       const data = await api("lead", { ...fields, sector, goal, operationId: operation.current, tracking: tracking.current });
       if (!data.lead?.receipt || data.lead.benefit !== true) throw new Error("No pudimos confirmar la activación. Intenta de nuevo.");
+      trackEvent("Lead");
       setEmail(data.lead.email || fields.email); setSaved(data.lead); event("lead_submitted", operation.current); event("benefit_activated", operation.current); setStep("benefit");
     } catch (reason) { setError(reason instanceof Error ? reason.message : "No pudimos registrar tus datos. Intenta de nuevo."); }
     finally { setBusy(false); }
@@ -106,6 +108,7 @@ export function EffixExperience({ settings }: { settings: CampaignSettings }) {
     try {
       const data = await api("booking", { receipt: saved.receipt, startTime: selected, timezone, email, website });
       if (!data.booking?.id) throw new Error("No pudimos confirmar la reserva. Intenta de nuevo.");
+      trackEvent("Schedule");
       setBooking(data.booking); event("booking_confirmed", data.booking.id); setStep("confirmed");
     } catch (reason) { setError(reason instanceof Error ? reason.message : "No pudimos reservar ese horario. Actualiza la agenda e intenta de nuevo."); }
     finally { setBusy(false); }
@@ -170,7 +173,7 @@ export function EffixExperience({ settings }: { settings: CampaignSettings }) {
               <div className={styles.chatBody}><p className={styles.visitor}>{currentGoal.question}. Me interesa {currentSector.example}.</p><p className={styles.assistant}>¡Hola! Podemos orientarte sobre {currentSector.detail}. {currentGoal.prompt}</p>{!answer ? <div className={styles.quickReplies}>{currentGoal.options.map(option => <button key={option} onClick={() => { setAnswer(option); event("demo_interaction"); }}>{option}<ArrowRight size={13} /></button>)}</div> : <><p className={styles.visitor}>{answer}</p><p className={styles.assistant}>{currentGoal.response}</p></>}</div>
             </div>
             {answer && <div className={styles.result} aria-live="polite"><CheckCircle2 size={20} /><div><b>{currentGoal.result}</b><p>{currentGoal.detail}</p></div></div>}
-            <button className={styles.primary} disabled={!answer} onClick={() => setStep("lead")}>Quiero esto para mi negocio <ArrowRight size={18} /></button>
+            <button data-meta-event="Contact" className={styles.primary} disabled={!answer} onClick={() => setStep("lead")}>Quiero esto para mi negocio <ArrowRight size={18} /></button>
             <p className={styles.small}>Un ejemplo ilustrativo. Las capacidades finales dependen de las integraciones contratadas.</p>
           </div>}
 
@@ -195,7 +198,7 @@ export function EffixExperience({ settings }: { settings: CampaignSettings }) {
           {step === "benefit" && saved && <div className={`${styles.content} ${styles.success}`}>
             <span className={styles.successIcon}><CheckCircle2 size={32} /></span><span className={styles.cardEyebrow}>REGISTRO CONFIRMADO</span><h2>Tu beneficio EFFIX está activo.</h2><p>Ahora veamos cómo funcionaría BotPager con <strong>{saved.business}</strong>.</p>
             <p className={styles.small}>{saved?.confirmationEmail === "requested" ? `Solicitamos el envío de la confirmación a ${saved.email}. Revisa también la carpeta de spam.` : "Tu cupón está guardado. La confirmación por correo está pendiente; el equipo puede ayudarte."}</p><div className={styles.activatedCoupon}><span>IMPLEMENTACIÓN INICIAL</span><b>50<span>% OFF</span></b><button className={styles.copyCode} onClick={async () => { try { await navigator.clipboard.writeText(campaign.code); setCopied(true); } catch { setError(`Tu código es ${campaign.code}. Puedes copiarlo manualmente.`); } }}>{copied ? <Check size={14} /> : <Copy size={14} />}{copied ? "Código copiado" : campaign.code}</button><small>Contratación del 14 al 30 de octubre de 2026.<br />Cierre: 23:59, hora de Colombia.</small></div>
-            <button className={styles.primary} disabled={busy} onClick={() => { event("booking_opened"); setStep("booking"); if (settings.bookingEnabled) void loadSlots(); }}>Reservar mi demo de 15 minutos <ArrowRight size={18} /></button>
+            <button data-meta-event="Contact" className={styles.primary} disabled={busy} onClick={() => { event("booking_opened"); setStep("booking"); if (settings.bookingEnabled) void loadSlots(); }}>Reservar mi demo de 15 minutos <ArrowRight size={18} /></button>
             <button className={styles.textButton} disabled={busy} onClick={coordinate}>{busy ? "Registrando solicitud…" : "Prefiero coordinar por WhatsApp"}<MessageCircle size={16} /></button>
             <p className={styles.small}>Tu beneficio permanece disponible aunque no reserves una demo.</p>
           </div>}
