@@ -145,6 +145,7 @@ function handler(file, name, globals) {
 
 const fixtures = [
   { file: 'app/audit/audit-experience.tsx', name: 'submitAudit', event: 'Lead', payload: { ok: true, report: {} } },
+  { file: 'app/audit/audit-experience.tsx', name: 'submitAudit', variant: 'roofing', event: 'Lead', payload: { ok: true, report: {} } },
   { file: 'app/growth-game/growth-game-experience.tsx', name: 'submitLead', event: 'Lead', payload: { ok: true, result: {} } },
   { file: 'app/visibility-audit/visibility-audit-experience.tsx', name: 'unlockReport', event: 'Lead', payload: { ok: true } },
   { file: 'components/latam-pages.tsx', name: 'submit', event: 'Lead', payload: { ok: true } },
@@ -154,7 +155,7 @@ const fixtures = [
   { file: 'app/es/experienciaEffix/contact.tsx', name: 'reserve', event: 'Schedule', payload: { booking: { id: 'demo-booking' } } },
 ];
 for (const fixture of fixtures) {
-  test(`${fixture.file}: ${fixture.event} only after confirmed ${fixture.name}`, async () => {
+  test(`${fixture.file}: ${fixture.event} only after confirmed ${fixture.name}${fixture.variant ? ` (${fixture.variant})` : ''}`, async () => {
     for (const outcome of ['success', 'http-error', 'missing-confirmation', 'network-error']) {
       const calls = [], pending = [], errors = [];
       const response = outcome === 'missing-confirmation' ? {} : fixture.payload;
@@ -171,7 +172,7 @@ for (const fixture of fixtures) {
         run: action => { const task = action().catch(error => errors.push(error)); pending.push(task); return task; },
         contact: { name: 'Demo', firstName: 'Demo', businessName: 'Demo Roofing', email: 'demo@example.com', consent: true, phone: '' },
         fields: { business: 'Demo Roofing', email: 'demo@example.com' },
-        business: {}, answers: {}, completedAnswers: {}, tracking: { current: {} },
+        variant: fixture.variant ?? 'general', business: {}, answers: {}, completedAnswers: {}, tracking: { current: {} },
         report: { sitePreview: {} }, lead: { consent: true }, reduceMotion: true,
         settings: { live: true }, reportGate: false, onComplete: noop,
         operation: { current: 'demo-operation' }, jointExperience: { origin: 'demo' }, sector: 'roofing', goal: 'book',

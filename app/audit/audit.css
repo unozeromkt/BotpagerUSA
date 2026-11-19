@@ -1,3 +1,15 @@
+.auditVisuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
 .auditPage {
   min-height: 100vh;
   overflow: hidden;
@@ -422,6 +434,17 @@
 .auditOptionCheck { color: #9aa2b3; }
 .auditOptionCheck svg { width: 17px; height: 17px; }
 .auditOptionSelected .auditOptionCheck { color: var(--purple); }
+
+.auditRoofingChoices { margin: 0; padding: 0; border: 0; min-width: 0; }
+.auditRoofingChoices .auditOption { position: relative; cursor: pointer; }
+.auditRoofingChoices .auditOption:has(input:focus-visible) { outline: 3px solid var(--purple); outline-offset: 3px; }
+.auditRoofingChoices .auditOption b { font-size: 15px; line-height: 1.4; }
+.auditRoofingChoices .auditOption small { font-size: 13px; line-height: 1.5; color: #56617a; }
+.auditRoofingContinue { margin-top: 24px; }
+.auditPageRoofing .auditContextForm input,
+.auditPageRoofing .auditContextForm select,
+.auditPageRoofing .auditLeadForm input:not([type="checkbox"]) { font-size: 16px; min-height: 48px; }
+.auditPageRoofing .auditRoofingScope { margin: 18px 0 0; font-size: 13px; line-height: 1.6; color: #56617a; }
 
 .auditPreviewPanel { padding-top: 31px; }
 .auditPreviewHeading { max-width: 680px; margin: 0 auto 28px; text-align: center; }

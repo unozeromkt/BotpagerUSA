@@ -1,5 +1,6 @@
-import { auditQuestions } from "./questions";
-import type { AuditAnswers, AuditSubmission, BusinessContext, ContactDetails, TrackingContext } from "./types";
+import { auditQuestions, type AuditQuestion } from "./questions";
+import { roofingAuditQuestions, roofingServices } from "./roofing-questions";
+import type { AuditSubmission, AuditVariant, BusinessContext, ContactDetails, TrackingContext } from "./types";
 
 class AuditValidationError extends Error {}
 
@@ -36,19 +37,27 @@ function cleanWebsite(value: unknown) {
   }
 }
 
-function parseBusiness(value: unknown): BusinessContext {
+function parseBusiness(value: unknown, variant: AuditVariant): BusinessContext {
   const record = asRecord(value, "Business information");
+  let roofingService: string | undefined;
+  if (variant === "roofing") {
+    roofingService = cleanString(record.roofingService, "Roofing service", 40);
+    if (!roofingServices.some(service => service.value === roofingService)) {
+      throw new AuditValidationError("Select a valid roofing service.");
+    }
+  }
   return {
-    industry: cleanString(record.industry, "Business type", 100),
+    industry: variant === "roofing" ? "Roofing" : cleanString(record.industry, "Business type", 100),
     city: cleanString(record.city, "City", 80),
     state: cleanString(record.state, "State", 40),
     website: cleanWebsite(record.website),
+    ...(roofingService ? { roofingService } : {}),
   };
 }
 
-function parseAnswers(value: unknown): AuditAnswers {
+function parseAnswers<Key extends string>(value: unknown, questions: AuditQuestion<Key>[]): Record<Key, string> {
   const record = asRecord(value, "Answers");
-  const entries = auditQuestions.map((question) => {
+  const entries = questions.map((question) => {
     const answer = cleanString(record[question.key], question.question, 80);
     if (!question.options.some((option) => option.value === answer)) {
       throw new AuditValidationError("One of the selected answers is invalid.");
@@ -56,7 +65,7 @@ function parseAnswers(value: unknown): AuditAnswers {
     return [question.key, answer];
   });
 
-  return Object.fromEntries(entries) as AuditAnswers;
+  return Object.fromEntries(entries) as Record<Key, string>;
 }
 
 function parseContact(value: unknown): ContactDetails {
@@ -101,12 +110,16 @@ function parseTracking(value: unknown): TrackingContext | undefined {
 
 export function parseAuditSubmission(value: unknown): AuditSubmission {
   const record = asRecord(value, "Request");
-  return {
-    business: parseBusiness(record.business),
-    answers: parseAnswers(record.answers),
+  const variant = record.variant ?? "general";
+  if (variant !== "general" && variant !== "roofing") throw new AuditValidationError("Select a valid audit type.");
+  const shared = {
+    business: parseBusiness(record.business, variant),
     contact: parseContact(record.contact),
     tracking: parseTracking(record.tracking),
   };
+  return variant === "roofing"
+    ? { ...shared, variant, answers: parseAnswers(record.answers, roofingAuditQuestions) }
+    : { ...shared, variant, answers: parseAnswers(record.answers, auditQuestions) };
 }
 
 export function getValidationMessage(reason: unknown) {

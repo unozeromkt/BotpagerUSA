@@ -50,6 +50,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
       priority: 0.85,
     },
+    {
+      url: "https://botpager.com/free-growth-audit/roofing",
+      lastModified: new Date(),
+      changeFrequency: "monthly",
+      priority: 0.8,
+    },
     ...servicePages.map(({ href }) => ({
       url: `https://botpager.com${href}`,
       lastModified: new Date(),
