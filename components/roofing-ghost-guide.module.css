@@ -35,6 +35,10 @@
   .mascot { inline-size: 4.5rem; block-size: 4.5rem; }
   .chatLabel { font-size: .5625rem; padding-inline: .5rem; }
 }
+/* Keep the mobile hero's copy and audit button clear before the guide begins. */
+@media (max-width: 47rem) {
+  .guide[data-moment="hero"] { display: none; }
+}
 @media (prefers-reduced-motion: no-preference) {
   .mascot { animation: mascotFloat 4.5s ease-in-out infinite; }
   .ghost:is(:hover, :focus-visible) .mascot { animation-play-state: paused; }

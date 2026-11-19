@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import {
   ArrowRight,
   CalendarCheck2,
@@ -24,6 +24,16 @@ import conversationsDemo from "@/public/images/roofing-conversations-demo.png";
 import { Header, SiteFooter } from "@/components/landing-page";
 import type { ArchitectureItem } from "@/lib/seo/site-architecture";
 import styles from "./roofing-landing-page.module.css";
+
+const { props: mobileRoofingPhoto } = getImageProps({
+  src: "/images/roofing-hero-agent.webp",
+  alt: "Roofing contractor repairing shingles on a residential roof",
+  width: 1120,
+  height: 1400,
+  sizes: "(max-width: 30rem) calc(100vw - 2rem), calc(100vw - 2.5rem)",
+  loading: "eager",
+  fetchPriority: "high",
+});
 
 const supportingServices = [
   {
@@ -155,6 +165,19 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
             </nav>
             <div className={styles.heroGrid}>
               <div className={styles.heroCopy}>
+                <picture className={styles.mobileRoofingPhoto}>
+                  <source media="(max-width: 47rem)" srcSet={mobileRoofingPhoto.srcSet} sizes={mobileRoofingPhoto.sizes} />
+                  {/* The media source loads the optimized photo only on mobile. Desktop uses an inline empty image. */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    alt={mobileRoofingPhoto.alt}
+                    width={1120}
+                    height={1400}
+                    loading="eager"
+                    fetchPriority="high"
+                    src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+                  />
+                </picture>
                 <h1 id="roofing-title" tabIndex={-1}><span className={styles.heroAgentTitle}>Your 24/7 AI roofing agent.</span>{" "}<span className={styles.heroPromise}>Never miss a lead again.</span></h1>
                 <p className={styles.lead}>Give your roofing business an agent that answers homeowners’ questions, books inspections, and follows up on estimates. <strong>On the job or off the clock, you’re covered.</strong></p>
                 <div className={styles.heroActions}>

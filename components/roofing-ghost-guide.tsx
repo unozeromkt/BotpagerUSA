@@ -75,7 +75,7 @@ export function RoofingGhostGuide({ launcherRef, isOpen, onOpen }: {
 
   return (
     <aside ref={guideRef} className={styles.guide} aria-label="Your BotPager guide"
-      data-video-visible={videoVisible} hidden={!ready || isOpen || watching}
+      data-moment={moment} data-video-visible={videoVisible} hidden={!ready || isOpen || watching}
       onPointerLeave={releaseMessage}
       onBlur={(event) => { if (!event.currentTarget.contains(event.relatedTarget)) setMoment(pendingMoment.current); }}
       onKeyDown={(event) => { if (event.key === "Escape" && showThought) { event.stopPropagation(); toggleTips(); } }}>
