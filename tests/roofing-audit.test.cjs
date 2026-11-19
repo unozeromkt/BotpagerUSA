@@ -15,7 +15,9 @@ Module._resolveFilename = function(request, ...args) {
   return originalResolve.call(this, request.startsWith('@/') ? path.join(root, request.slice(2)) : request, ...args);
 };
 const originalLoad = Module._load;
+const afterTasks = [];
 Module._load = function(request, ...args) {
+  if (request === 'next/server') return { after: callback => afterTasks.push(callback) };
   return request === 'server-only' ? {} : originalLoad.call(this, request, ...args);
 };
 
@@ -39,6 +41,7 @@ const originalFetch = global.fetch;
 const environment = { ...process.env };
 const fieldKeys = ['GHL_FIELD_AUDIT_SUMMARY', 'GHL_FIELD_OPPORTUNITY_1', 'GHL_FIELD_OPPORTUNITY_2', 'GHL_FIELD_OPPORTUNITY_3', 'GHL_FIELD_RECOMMENDED_SYSTEM', 'GHL_FIELD_AUDIT_COMPLETED_AT'];
 test.beforeEach(() => {
+  afterTasks.length = 0;
   for (const key of Object.keys(process.env)) if (/^(GHL_|OPENAI_)/.test(key)) delete process.env[key];
   global.fetch = async () => { throw new Error('Unexpected external request'); };
 });
@@ -219,7 +222,7 @@ test('real API returns personalized reports for both variants without external s
     const response = await submit(input), result = await response.json();
     assert.equal(response.status, 200);
     assert.equal(response.headers.get('Cache-Control'), 'no-store');
-    assert.equal(result.delivery, 'preview');
+    assert.equal(result.delivery, input.variant === 'roofing' ? 'processing' : 'preview');
     assert.equal(result.ok, true);
     assert.deepEqual(result.report, buildFallbackReport(input.business, input.answers));
   }
@@ -232,23 +235,13 @@ test('API rejects incomplete roofing input before CRM/AI work', async () => {
   assert.equal(calls.length, 0);
 });
 
-test('roofing CRM stores its service, five answers and report before triggering existing delivery', async () => {
+test('roofing schedules the new sync after returning the report without invoking the old email integration', async () => {
   const calls = configureCrm();
   const response = await submit(roofing), result = await response.json();
-  assert.equal(result.delivery, 'queued');
-  assert.equal(calls[0].body.source, 'BotPager Roofing Growth Audit');
-  assert.equal(calls[0].body.email, 'demo@example.com');
-  assert.equal(calls[0].body.phone, undefined);
-  assert.deepEqual(calls[1].body.tags, ['botpager-audit-submitted', 'botpager-roofing-audit']);
-  const note = calls.find(call => call.url.endsWith('/notes'));
-  assert.match(note.body.title, /Roofing Growth Audit/);
-  assert.match(note.body.body, /Priority roofing service: Roof replacements/);
-  assert.match(note.body.body, /inspection booking: We coordinate by text or email/);
-  assert.match(note.body.body, /estimate follow up: We usually wait for them/);
-  assert.match(note.body.body, /SMS marketing consent: No/);
-  const savedIndex = calls.findIndex(call => call.body.customFields?.length === 6);
-  const triggerIndex = calls.findIndex(call => call.method === 'POST' && call.body.tags?.includes('botpager-audit-ready'));
-  assert.ok(savedIndex > 0 && triggerIndex > savedIndex);
+  assert.equal(result.delivery, 'processing');
+  assert.equal(result.report.opportunities.length, 3);
+  assert.equal(calls.length, 0);
+  assert.equal(afterTasks.length, 1);
 });
 
 test('general CRM retains its original source, tags, questions and report delivery', async () => {

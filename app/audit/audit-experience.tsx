@@ -28,6 +28,8 @@ import {
 } from "lucide-react";
 import { getAuditQuestions } from "@/lib/audit/questions";
 import { roofingServices } from "@/lib/audit/roofing-questions";
+import { auditConsent } from "@/lib/audit/consent";
+import { normalizeAuditPhone } from "@/lib/audit/phone";
 import { getPreliminaryOpportunities } from "@/lib/audit/recommendations";
 import type {
   AnyAuditAnswers,
@@ -200,6 +202,10 @@ export function AuditExperience({ variant = "general" }: { variant?: AuditVarian
     }
     if ((contact.smsNonMarketingConsent || contact.smsMarketingConsent) && !contact.phone.trim()) {
       setError("Enter a phone number when selecting SMS consent, or leave both SMS options unchecked.");
+      return;
+    }
+    if (variant === "roofing" && (contact.smsNonMarketingConsent || contact.smsMarketingConsent) && !normalizeAuditPhone(contact.phone)) {
+      setError("Enter a valid phone number when selecting SMS consent, or leave both SMS options unchecked.");
       return;
     }
 
@@ -376,15 +382,15 @@ export function AuditExperience({ variant = "general" }: { variant?: AuditVarian
                   <label className="auditHoneypot" aria-hidden="true"><span>Leave this field empty</span><input tabIndex={-1} autoComplete="off" value={contact.websiteTrap} onChange={(event) => setContact({ ...contact, websiteTrap: event.target.value })} /></label>
                   <label className="auditConsent">
                     <input type="checkbox" checked={contact.consent} onChange={(event) => setContact({ ...contact, consent: event.target.checked })} />
-                    <span>I agree that BotPager may use this information to prepare and email my audit. I can unsubscribe from marketing emails at any time.</span>
+                    <span>{auditConsent.email}</span>
                   </label>
                   <label className="auditConsent">
                     <input type="checkbox" checked={contact.smsNonMarketingConsent} onChange={(event) => setContact({ ...contact, smsNonMarketingConsent: event.target.checked })} />
-                    <span>I consent to receive non-marketing text messages from BotPager, operated by Uno Zero Marketing LLC, about my Growth Audit, appointment reminders, and follow-up related to my request. Message frequency may vary. Message and data rates may apply. Text HELP for assistance, reply STOP to opt out.</span>
+                    <span>{auditConsent.smsTransactional}</span>
                   </label>
                   <label className="auditConsent">
                     <input type="checkbox" checked={contact.smsMarketingConsent} onChange={(event) => setContact({ ...contact, smsMarketingConsent: event.target.checked })} />
-                    <span>I consent to receive promotional and marketing SMS messages from BotPager, operated by Uno Zero Marketing LLC, about special offers, discounts, and service updates. Message frequency varies. Message and data rates may apply. Reply STOP to opt out or HELP for help. Consent is not a condition of purchase.</span>
+                    <span>{auditConsent.smsMarketing}</span>
                   </label>
                   <p className="auditLegalLinks">SMS consent is optional and is not required to submit this form. Review our <Link href="/privacy">Privacy Policy</Link> and <Link href="/terms">Terms &amp; Conditions</Link>.</p>
                   {error && <p className="auditError" role="alert">{error}</p>}
