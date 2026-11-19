@@ -1,6 +1,7 @@
 import "server-only";
 
 import { getAnswerLabel } from "@/lib/audit/questions";
+import { getRoofingServiceLabel } from "@/lib/audit/roofing-questions";
 import type { AuditReport, AuditSubmission } from "@/lib/audit/types";
 import { getGrowthAnswerLabel } from "@/lib/growth-game/config";
 import type { GrowthResult, GrowthSubmission } from "@/lib/growth-game/types";
@@ -87,7 +88,7 @@ function formatOpportunity(opportunity: AuditReport["opportunities"][number]) {
 
 function buildNote(submission: AuditSubmission, report: AuditReport) {
   const answerLines = Object.entries(submission.answers).map(([key, value]) =>
-    `${key.replaceAll("_", " ")}: ${getAnswerLabel(key as keyof typeof submission.answers, value)}`
+    `${key.replaceAll("_", " ")}: ${getAnswerLabel(key, value, submission.variant)}`
   );
   const trackingLines = submission.tracking
     ? Object.entries(submission.tracking)
@@ -99,6 +100,7 @@ function buildNote(submission: AuditSubmission, report: AuditReport) {
     "BUSINESS CONTEXT",
     `Business: ${submission.contact.businessName}`,
     `Type: ${submission.business.industry}`,
+    ...(submission.variant === "roofing" ? [`Priority roofing service: ${getRoofingServiceLabel(submission.business.roofingService)}`] : []),
     `Location: ${submission.business.city}, ${submission.business.state}`,
     `Website: ${submission.business.website || "Not provided"}`,
     "",
@@ -417,7 +419,7 @@ export async function upsertAuditContact(submission: AuditSubmission): Promise<H
       city: submission.business.city,
       state: submission.business.state,
       country: "US",
-      source: "BotPager Local Growth Audit",
+      source: submission.variant === "roofing" ? "BotPager Roofing Growth Audit" : "BotPager Local Growth Audit",
       locationId: config.locationId,
       createNewIfDuplicateAllowed: false,
     }),
@@ -431,6 +433,7 @@ export async function upsertAuditContact(submission: AuditSubmission): Promise<H
   try {
     const tags = [
       AUDIT_SUBMITTED_TAG,
+      ...(submission.variant === "roofing" ? ["botpager-roofing-audit"] : []),
       ...(submission.contact.smsNonMarketingConsent ? [AUDIT_SMS_NON_MARKETING_TAG] : []),
       ...(submission.contact.smsMarketingConsent ? [AUDIT_SMS_MARKETING_TAG] : []),
     ];
@@ -484,7 +487,7 @@ export async function completeAuditContact(
         method: "POST",
         body: JSON.stringify({
           userId: config.userId,
-          title: "BotPager Local Growth Audit",
+          title: submission.variant === "roofing" ? "BotPager Roofing Growth Audit" : "BotPager Local Growth Audit",
           body: buildNote(submission, report),
           color: "#562ff4",
           pinned: false,

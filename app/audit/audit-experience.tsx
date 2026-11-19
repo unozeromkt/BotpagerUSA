@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { trackEvent } from "@/lib/metaPixel";
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import {
   ArrowLeft,
@@ -26,10 +26,14 @@ import {
   Target,
   TrendingUp,
 } from "lucide-react";
-import { auditQuestions } from "@/lib/audit/questions";
+import { getAuditQuestions } from "@/lib/audit/questions";
+import { roofingServices } from "@/lib/audit/roofing-questions";
 import { getPreliminaryOpportunities } from "@/lib/audit/recommendations";
 import type {
-  AuditAnswers,
+  AnyAuditAnswers,
+  AuditAnswerKey,
+  RoofingAuditAnswerKey,
+  AuditVariant,
   AuditApiResponse,
   AuditReport,
   BusinessContext,
@@ -94,36 +98,41 @@ function Progress({ stage, questionIndex }: { stage: Stage; questionIndex: numbe
   );
 }
 
-export function AuditExperience() {
+export function AuditExperience({ variant = "general" }: { variant?: AuditVariant } = {}) {
+  const isRoofing = variant === "roofing";
+  const questions = getAuditQuestions(variant);
   const reduceMotion = useReducedMotion();
   const [stage, setStage] = useState<Stage>("context");
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [business, setBusiness] = useState<BusinessContext>(emptyBusiness);
-  const [answers, setAnswers] = useState<Partial<AuditAnswers>>({});
+  const [business, setBusiness] = useState<BusinessContext>(() => isRoofing ? { ...emptyBusiness, industry: "Roofing", roofingService: "" } : emptyBusiness);
+  const [answers, setAnswers] = useState<Partial<Record<AuditAnswerKey | RoofingAuditAnswerKey, string>>>({});
   const [contact, setContact] = useState<ContactDetails>(emptyContact);
-  const [tracking, setTracking] = useState<TrackingContext>({});
+  const tracking = useRef<TrackingContext>({});
   const [report, setReport] = useState<AuditReport | null>(null);
   const [delivery, setDelivery] = useState<AuditApiResponse["delivery"]>();
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const focusHeading = useCallback((node: HTMLHeadingElement | null) => {
+    if (isRoofing && node) node.focus();
+  }, [isRoofing]);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    setTracking({
+    tracking.current = {
       source: document.referrer || "direct",
       utmSource: params.get("utm_source") ?? "",
       utmMedium: params.get("utm_medium") ?? "",
       utmCampaign: params.get("utm_campaign") ?? "",
-    });
+    };
   }, []);
 
-  const completedAnswers = answers as AuditAnswers;
+  const completedAnswers = answers as AnyAuditAnswers;
   const previewOpportunities = useMemo(() => {
-    if (Object.keys(answers).length !== auditQuestions.length) return [];
-    return getPreliminaryOpportunities(completedAnswers);
-  }, [answers, completedAnswers]);
+    if (!questions.every(question => answers[question.key])) return [];
+    return getPreliminaryOpportunities(completedAnswers, business);
+  }, [answers, completedAnswers, questions, business]);
 
-  const currentQuestion = auditQuestions[questionIndex];
+  const currentQuestion = questions[questionIndex];
 
   function updateBusiness(field: keyof BusinessContext, value: string) {
     setBusiness((current) => ({ ...current, [field]: value }));
@@ -132,6 +141,10 @@ export function AuditExperience() {
   function startQuestions(event: FormEvent) {
     event.preventDefault();
     setError("");
+    if (isRoofing && !business.roofingService) {
+      setError("Choose the roofing service you want more inquiries for.");
+      return;
+    }
     if (!business.industry || !business.city.trim() || !business.state.trim()) {
       setError("Tell us your business type and location to begin.");
       return;
@@ -143,14 +156,22 @@ export function AuditExperience() {
     const nextAnswers = { ...answers, [currentQuestion.key]: value };
     setAnswers(nextAnswers);
     setError("");
+    if (isRoofing) return;
 
     window.setTimeout(() => {
-      if (questionIndex < auditQuestions.length - 1) {
+      if (questionIndex < questions.length - 1) {
         setQuestionIndex((current) => current + 1);
       } else {
         setStage("preview");
       }
     }, reduceMotion ? 0 : 180);
+  }
+
+  function nextRoofingQuestion(event: FormEvent) {
+    event.preventDefault();
+    if (!answers[currentQuestion.key]) return;
+    if (questionIndex < questions.length - 1) setQuestionIndex(current => current + 1);
+    else setStage("preview");
   }
 
   function goBack() {
@@ -159,7 +180,7 @@ export function AuditExperience() {
       if (questionIndex === 0) setStage("context");
       else setQuestionIndex((current) => current - 1);
     } else if (stage === "preview") {
-      setQuestionIndex(auditQuestions.length - 1);
+      setQuestionIndex(questions.length - 1);
       setStage("questions");
     } else if (stage === "contact") {
       setStage("preview");
@@ -187,7 +208,7 @@ export function AuditExperience() {
       const response = await fetch("/api/audit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ business, answers: completedAnswers, contact, tracking }),
+        body: JSON.stringify({ variant, business, answers: completedAnswers, contact, tracking: tracking.current }),
       });
       const payload = (await response.json()) as AuditApiResponse;
       if (!response.ok || !payload.ok || !payload.report) {
@@ -207,7 +228,7 @@ export function AuditExperience() {
   }
 
   return (
-    <main className="auditPage">
+    <main className={`auditPage${isRoofing ? " auditPageRoofing" : ""}`}>
       <header className="auditTopbar">
         <Brand />
         <div className="auditTrust"><ShieldCheck /><span><b>Free & confidential</b><small>No obligation</small></span></div>
@@ -223,33 +244,40 @@ export function AuditExperience() {
           {stage === "context" && (
             <motion.div className="auditPanel auditIntroPanel" key="context" {...panelMotion(reduceMotion)}>
               <div className="auditPanelCopy">
-                <p className="auditEyebrow"><Sparkles /> Free Local Growth Audit</p>
-                <h1>Discover where your business can <span>grow next</span></h1>
-                <p className="auditLead">Answer five quick questions and receive three practical opportunities tailored to how your business attracts, responds to and follows up with customers.</p>
+                <p className="auditEyebrow"><Sparkles /> {isRoofing ? "Free Roofing Growth Audit" : "Free Local Growth Audit"}</p>
+                <h1 ref={focusHeading} tabIndex={isRoofing ? -1 : undefined}>{isRoofing ? <>Turn more roofing inquiries into <span>booked inspections</span></> : <>Discover where your business can <span>grow next</span></>}</h1>
+                <p className="auditLead">{isRoofing ? "Answer five quick questions to get three practical recommendations for answering roofing leads, booking inspections and following up on open estimates." : "Answer five quick questions and receive three practical opportunities tailored to how your business attracts, responds to and follows up with customers."}</p>
                 <div className="auditBenefits">
                   <span><Clock3 /> About 2 minutes</span>
                   <span><Target /> 3 focused opportunities</span>
-                  <span><BadgeCheck /> Built for local services</span>
+                  <span><BadgeCheck /> {isRoofing ? "Built for roofing companies" : "Built for local services"}</span>
                 </div>
+                {isRoofing && <p className="auditRoofingScope">Based on your answers. This audit does not scan your website or Google profile.</p>}
               </div>
 
               <form className="auditContextForm" onSubmit={startQuestions}>
                 <div className="auditFormHeading">
                   <span><Globe2 /></span>
-                  <div><h2>First, tell us about the business</h2><p>No contact information yet.</p></div>
+                  <div><h2>{isRoofing ? "Your roofing business" : "First, tell us about the business"}</h2><p>No contact information yet.</p></div>
                 </div>
-                <label>
+                {isRoofing ? <label>
+                  <span>Which roofing services would you like more inquiries for?</span>
+                  <select name="roofingService" value={business.roofingService} onChange={event => updateBusiness("roofingService", event.target.value)} required>
+                    <option value="">Select your priority service</option>
+                    {roofingServices.map(service => <option key={service.value} value={service.value}>{service.label}</option>)}
+                  </select>
+                </label> : <label>
                   <span>Business type</span>
                   <select value={business.industry} onChange={(event) => updateBusiness("industry", event.target.value)} required>
                     <option value="">Select your industry</option>
                     {industries.map((industry) => <option key={industry}>{industry}</option>)}
                   </select>
-                </label>
+                </label>}
                 <div className="auditFieldRow">
-                  <label><span>City</span><input value={business.city} onChange={(event) => updateBusiness("city", event.target.value)} placeholder="Austin" required /></label>
-                  <label><span>State</span><input value={business.state} onChange={(event) => updateBusiness("state", event.target.value)} placeholder="TX" required /></label>
+                  <label><span>{isRoofing ? "Primary service city" : "City"}</span><input name="city" autoComplete={isRoofing ? "address-level2" : undefined} maxLength={80} value={business.city} onChange={(event) => updateBusiness("city", event.target.value)} placeholder={isRoofing ? "Orlando" : "Austin"} required /></label>
+                  <label><span>State</span><input name="state" autoComplete={isRoofing ? "address-level1" : undefined} maxLength={40} value={business.state} onChange={(event) => updateBusiness("state", event.target.value)} placeholder={isRoofing ? "FL" : "TX"} required /></label>
                 </div>
-                <label><span>Website <small>Optional</small></span><input type="text" inputMode="url" value={business.website} onChange={(event) => updateBusiness("website", event.target.value)} placeholder="yourbusiness.com" /></label>
+                <label><span>Website <small>Optional</small></span><input name="website" type="text" inputMode="url" autoCapitalize="none" spellCheck={false} maxLength={240} value={business.website} onChange={(event) => updateBusiness("website", event.target.value)} placeholder={isRoofing ? "yourroofingcompany.com" : "yourbusiness.com"} /></label>
                 {error && <p className="auditError" role="alert">{error}</p>}
                 <button className="auditPrimaryButton" type="submit">Start my free audit <ArrowRight /></button>
                 <p className="auditMicrocopy"><LockKeyhole /> Your answers are used only to prepare this audit.</p>
@@ -262,10 +290,21 @@ export function AuditExperience() {
               <button className="auditBackButton" type="button" onClick={goBack}><ArrowLeft /> Back</button>
               <div className="auditQuestionHead">
                 <p className="auditEyebrow"><MessageCircleMore /> {currentQuestion.eyebrow}</p>
-                <h1>{currentQuestion.question}</h1>
+                <h1 id="audit-question-title" ref={focusHeading} tabIndex={isRoofing ? -1 : undefined}>{currentQuestion.question}</h1>
                 <p>{currentQuestion.helper}</p>
               </div>
-              <div className="auditOptions" role="radiogroup" aria-label={currentQuestion.question}>
+              {isRoofing ? <form onSubmit={nextRoofingQuestion} aria-labelledby="audit-question-title">
+                <fieldset className="auditOptions auditRoofingChoices">
+                  <legend className="auditVisuallyHidden">{currentQuestion.question}</legend>
+                  {currentQuestion.options.map((option, index) => <label className={`auditOption${answers[currentQuestion.key] === option.value ? " auditOptionSelected" : ""}`} key={option.value}>
+                    <input className="auditVisuallyHidden" type="radio" name={currentQuestion.key} value={option.value} checked={answers[currentQuestion.key] === option.value} onChange={() => selectAnswer(option.value)} required />
+                    <span className="auditOptionIndex" aria-hidden="true">{String.fromCharCode(65 + index)}</span>
+                    <span><b>{option.label}</b><small>{option.description}</small></span>
+                    <span className="auditOptionCheck" aria-hidden="true">{answers[currentQuestion.key] === option.value ? <Check /> : <ArrowRight />}</span>
+                  </label>)}
+                </fieldset>
+                <button type="submit" className="auditPrimaryButton auditRoofingContinue">{questionIndex === questions.length - 1 ? "See my opportunities" : "Continue"}<ArrowRight /></button>
+              </form> : <div className="auditOptions" role="radiogroup" aria-label={currentQuestion.question}>
                 {currentQuestion.options.map((option, index) => {
                   const selected = answers[currentQuestion.key] === option.value;
                   return (
@@ -283,7 +322,7 @@ export function AuditExperience() {
                     </button>
                   );
                 })}
-              </div>
+              </div>}
             </motion.div>
           )}
 
@@ -293,8 +332,8 @@ export function AuditExperience() {
               <div className="auditPreviewHeading">
                 <span className="auditSuccessIcon"><CheckCircle2 /></span>
                 <p className="auditEyebrow"><Sparkles /> Initial analysis complete</p>
-                <h1>We found <span>3 growth opportunities</span></h1>
-                <p>Based on how your business currently attracts and handles new customer inquiries.</p>
+                <h1 ref={focusHeading} tabIndex={isRoofing ? -1 : undefined}>{isRoofing ? <>Your <span>3 roofing priorities</span></> : <>We found <span>3 growth opportunities</span></>}</h1>
+                <p>{isRoofing ? "Based on your answers about roofing inquiries, inspections and estimate follow-up. Existing processes are taken into account." : "Based on how your business currently attracts and handles new customer inquiries."}</p>
               </div>
               <div className="auditPreviewGrid">
                 {previewOpportunities.map((opportunity, index) => (
@@ -319,7 +358,7 @@ export function AuditExperience() {
               <div className="auditContactGrid">
                 <div className="auditContactCopy">
                   <p className="auditEyebrow"><Mail /> Your personalized report</p>
-                  <h1>Where should we send your <span>action plan?</span></h1>
+                  <h1 ref={focusHeading} tabIndex={isRoofing ? -1 : undefined}>Where should we send your <span>{isRoofing ? "roofing action plan?" : "action plan?"}</span></h1>
                   <p>We’ll personalize the recommendations, show the complete report here and email you a copy for later.</p>
                   <div className="auditContactProof">
                     <span><CheckCircle2 /><b>Three focused opportunities</b></span>
@@ -330,7 +369,7 @@ export function AuditExperience() {
                 <form className="auditLeadForm" onSubmit={submitAudit}>
                   <div className="auditFieldRow">
                     <label><span>First name</span><input autoComplete="given-name" value={contact.firstName} onChange={(event) => setContact({ ...contact, firstName: event.target.value })} placeholder="John" required /></label>
-                    <label><span>Business name</span><input autoComplete="organization" value={contact.businessName} onChange={(event) => setContact({ ...contact, businessName: event.target.value })} placeholder="John's Plumbing" required /></label>
+                    <label><span>Business name</span><input autoComplete="organization" value={contact.businessName} onChange={(event) => setContact({ ...contact, businessName: event.target.value })} placeholder={isRoofing ? "Your Roofing Company" : "John's Plumbing"} required /></label>
                   </div>
                   <label><span>Email</span><input type="email" autoComplete="email" value={contact.email} onChange={(event) => setContact({ ...contact, email: event.target.value })} placeholder="john@yourbusiness.com" required /></label>
                   <label><span>Phone <small>Optional unless you choose SMS</small></span><input type="tel" autoComplete="tel" value={contact.phone} onChange={(event) => setContact({ ...contact, phone: event.target.value })} placeholder="(555) 123-4567" /></label>
@@ -360,7 +399,7 @@ export function AuditExperience() {
             <motion.div className="auditPanel auditLoadingPanel" key="submitting" {...panelMotion(reduceMotion)}>
               <div className="auditLoader"><LoaderCircle /></div>
               <p className="auditEyebrow"><Bot /> BotPager Growth Advisor</p>
-              <h1>Preparing your personalized audit</h1>
+              <h1 ref={focusHeading} tabIndex={isRoofing ? -1 : undefined}>Preparing your personalized {isRoofing ? "roofing audit" : "audit"}</h1>
               <p>Connecting your answers, prioritizing the strongest opportunities and building your action plan.</p>
               <div className="auditLoadingSteps">
                 <span><Check /> Understanding your lead flow</span>
@@ -374,10 +413,11 @@ export function AuditExperience() {
             <motion.div className="auditReport" key="report" {...panelMotion(reduceMotion)}>
               <div className="auditReportHero">
                 <div>
-                  <p className="auditEyebrow"><BadgeCheck /> Personalized Local Growth Audit</p>
-                  <h1>{contact.businessName}</h1>
+                  <p className="auditEyebrow"><BadgeCheck /> {isRoofing ? "Personalized Roofing Growth Audit" : "Personalized Local Growth Audit"}</p>
+                  <h1 ref={focusHeading} tabIndex={isRoofing ? -1 : undefined}>{contact.businessName}</h1>
                   <p>{report.businessSummary}</p>
-                  <div className={`auditDelivery auditDelivery${delivery === "queued" ? "Success" : "Notice"}`}>
+                  {isRoofing && <p className="auditRoofingScope">Recommendations reflect your answers. Website, Google profile and revenue performance have not been independently verified.</p>}
+                  <div role={isRoofing ? "status" : undefined} className={`auditDelivery auditDelivery${delivery === "queued" ? "Success" : "Notice"}`}>
                     {delivery === "queued" ? <Mail /> : <ShieldCheck />}
                     <span><b>{message}</b><small>{delivery === "queued" ? `Sent to ${contact.email}` : "Your report is available below."}</small></span>
                   </div>
@@ -421,14 +461,14 @@ export function AuditExperience() {
                   <p>{report.recommendationReason}</p>
                   <div className="auditRecommendationFeatures">
                     <span><Check /> Faster lead response</span>
-                    <span><Check /> Simple lead management</span>
-                    <span><Check /> Automated follow-up</span>
+                    <span><Check /> {isRoofing ? "Inspection scheduling" : "Simple lead management"}</span>
+                    <span><Check /> {isRoofing ? "Estimate follow-up" : "Automated follow-up"}</span>
                   </div>
                 </div>
                 <a data-meta-event="Contact" className="auditPrimaryButton" href={`mailto:info@botpager.com?subject=${encodeURIComponent(`Questions about ${contact.businessName}'s audit`)}`}>Ask BotPager a question <ArrowRight /></a>
               </section>
 
-              <div className="auditReportFooter"><Brand /><span>Built to help local service businesses grow with confidence.</span></div>
+              <div className="auditReportFooter"><Brand /><span>{isRoofing ? "Built to help roofing teams turn inquiries into booked work." : "Built to help local service businesses grow with confidence."}</span></div>
             </motion.div>
           )}
         </AnimatePresence>
@@ -437,7 +477,7 @@ export function AuditExperience() {
       {stage !== "report" && (
         <footer className="auditFooter">
           <span><ShieldCheck /> Secure experience</span>
-          <span><MapPin /> Built for US local service businesses</span>
+          <span><MapPin /> {isRoofing ? "Built for US roofing companies" : "Built for US local service businesses"}</span>
         </footer>
       )}
     </main>

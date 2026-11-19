@@ -1,4 +1,5 @@
-import type { AuditAnswers, AuditOpportunity, AuditReport, BusinessContext } from "./types";
+import type { AnyAuditAnswers, AuditOpportunity, AuditReport, BusinessContext } from "./types";
+import { buildRoofingReport, getRoofingOpportunities } from "./roofing-recommendations";
 
 type RankedOpportunity = AuditOpportunity & { rank: number };
 
@@ -114,7 +115,8 @@ function trackingOpportunity(volume: string): RankedOpportunity {
   };
 }
 
-export function getPreliminaryOpportunities(answers: AuditAnswers): AuditOpportunity[] {
+export function getPreliminaryOpportunities(answers: AnyAuditAnswers, business: BusinessContext = { industry: "Roofing", city: "", state: "", website: "" }): AuditOpportunity[] {
+  if ("inspection_booking" in answers) return getRoofingOpportunities(business, answers);
   const candidates = [
     responseOpportunity(answers.missed_inquiry_handling),
     followUpOpportunity(answers.crm_follow_up),
@@ -130,7 +132,8 @@ export function getPreliminaryOpportunities(answers: AuditAnswers): AuditOpportu
     .map(({ rank: _rank, ...opportunity }) => opportunity);
 }
 
-export function buildFallbackReport(business: BusinessContext, answers: AuditAnswers): AuditReport {
+export function buildFallbackReport(business: BusinessContext, answers: AnyAuditAnswers): AuditReport {
+  if ("inspection_booking" in answers) return buildRoofingReport(business, answers);
   const opportunities = getPreliminaryOpportunities(answers);
   const location = [business.city, business.state].filter(Boolean).join(", ");
   const businessType = business.industry || "local service business";

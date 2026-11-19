@@ -2,7 +2,8 @@ import "server-only";
 
 import { getAnswerLabel } from "@/lib/audit/questions";
 import { buildFallbackReport } from "@/lib/audit/recommendations";
-import type { AuditAnswers, AuditReport, BusinessContext } from "@/lib/audit/types";
+import { getRoofingServiceLabel } from "@/lib/audit/roofing-questions";
+import type { AnyAuditAnswers, AuditReport, BusinessContext } from "@/lib/audit/types";
 
 const reportSchema = {
   type: "object",
@@ -85,19 +86,20 @@ function getOutputText(value: unknown) {
   return "";
 }
 
-export async function generateAuditReport(business: BusinessContext, answers: AuditAnswers) {
+export async function generateAuditReport(business: BusinessContext, answers: AnyAuditAnswers) {
   const apiKey = process.env.OPENAI_API_KEY;
   const model = process.env.OPENAI_MODEL;
   const fallback = buildFallbackReport(business, answers);
+  const variant = "inspection_booking" in answers ? "roofing" : "general";
 
   if (!apiKey || !model) {
     return { report: fallback, source: "rules" as const };
   }
 
   const safeInput = {
-    business,
+    business: variant === "roofing" ? { ...business, roofingService: getRoofingServiceLabel(business.roofingService) } : business,
     answers: Object.fromEntries(
-      Object.entries(answers).map(([key, value]) => [key, getAnswerLabel(key as keyof AuditAnswers, value)])
+      Object.entries(answers).map(([key, value]) => [key, getAnswerLabel(key, value, variant)])
     ),
     preliminaryPriorities: fallback.opportunities.map((item) => ({
       id: item.id,
@@ -127,6 +129,12 @@ export async function generateAuditReport(business: BusinessContext, answers: Au
           "Do not invent facts. Frame uncertain points as opportunities, not verified deficiencies.",
           "Select exactly three priorities that BotPager can directly address.",
           "Use plain US English and a consultative, confidence-building tone.",
+          ...(variant === "roofing" ? [
+            "This is a Roofing Growth Audit. Tailor every opportunity to the selected roofing service and service area, with concrete actions for inquiries, inspections and open estimates.",
+            "Preserve the three supplied priority IDs. Acknowledge existing live coverage, online booking or automated follow-up; never describe a process the customer already has as missing.",
+            "Do not invent lost revenue, conversion rates, rankings or site defects. Describe reported gaps or refinements. Explain that conclusions are based on the answers, not a website or Google inspection.",
+            "Booking is included in the BotPager plan. Scheduling must respect availability, service area and visit approval rules. Roof diagnosis, final estimates and specialist questions go to the roofing team.",
+          ] : []),
         ].join("\n"),
         input: JSON.stringify(safeInput),
         text: {
@@ -145,7 +153,10 @@ export async function generateAuditReport(business: BusinessContext, answers: Au
     const payload: unknown = await response.json();
     const outputText = getOutputText(payload);
     const parsed: unknown = outputText ? JSON.parse(outputText) : null;
-    return isReport(parsed)
+    const validPriorities = isReport(parsed) && (variant !== "roofing" ||
+      new Set(parsed.opportunities.map(item => item.id)).size === 3 &&
+      parsed.opportunities.every(item => fallback.opportunities.some(priority => priority.id === item.id)));
+    return validPriorities
       ? { report: parsed, source: "openai" as const }
       : { report: fallback, source: "rules" as const };
   } catch {

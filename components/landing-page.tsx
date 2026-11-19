@@ -454,7 +454,7 @@ function Logo({ light = false }: { light?: boolean }) {
 }
 
 function PrimaryButton({ children, href = "/free-growth-audit", light = false }: { children: React.ReactNode; href?: string; light?: boolean }) {
-  return <a data-meta-event={href === "/free-growth-audit" ? "Contact" : undefined} className={`button buttonPrimary ${light ? "buttonLime" : ""}`} href={href}>{children}<ArrowRight size={17} /></a>;
+  return <a data-meta-event={href === "/free-growth-audit" || href === "/free-growth-audit/roofing" ? "Contact" : undefined} className={`button buttonPrimary ${light ? "buttonLime" : ""}`} href={href}>{children}<ArrowRight size={17} /></a>;
 }
 
 function Reveal({ children, className = "", delay = 0 }: { children: React.ReactNode; className?: string; delay?: number }) {
@@ -486,7 +486,7 @@ function SectionCTA({ children, light = false, className = "", href = "/free-gro
   return <Reveal className={`sectionCta ${className}`}><PrimaryButton light={light} href={href}>{children}</PrimaryButton></Reveal>;
 }
 
-export function Header({ ctaLabel = "Get Free Growth Audit" }: { ctaLabel?: string } = {}) {
+export function Header({ ctaLabel = "Get Free Growth Audit", ctaHref = "/free-growth-audit" }: { ctaLabel?: string; ctaHref?: string } = {}) {
   const [open, setOpen] = useState(false);
   return (
     <header className="siteHeader">
@@ -495,7 +495,7 @@ export function Header({ ctaLabel = "Get Free Growth Audit" }: { ctaLabel?: stri
         <nav className="desktopNav" aria-label="Main navigation">
           {nav.map(([label, href]) => <a key={label} href={href}>{label}</a>)}
         </nav>
-        <div className="navCta"><PrimaryButton>{ctaLabel}</PrimaryButton></div>
+        <div className="navCta"><PrimaryButton href={ctaHref}>{ctaLabel}</PrimaryButton></div>
         <button className="menuButton" onClick={() => setOpen(!open)} aria-label={open ? "Close menu" : "Open menu"} aria-expanded={open}>
           {open ? <X /> : <Menu />}
         </button>
@@ -504,7 +504,7 @@ export function Header({ ctaLabel = "Get Free Growth Audit" }: { ctaLabel?: stri
         {open && (
           <motion.nav className="mobileNav" initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} exit={{ opacity: 0, height: 0 }} aria-label="Mobile navigation">
             {nav.map(([label, href]) => <a key={label} href={href} onClick={() => setOpen(false)}>{label}</a>)}
-            <PrimaryButton>{ctaLabel}</PrimaryButton>
+            <PrimaryButton href={ctaHref}>{ctaLabel}</PrimaryButton>
           </motion.nav>
         )}
       </AnimatePresence>

@@ -7,11 +7,17 @@ export type AuditAnswerKey =
 
 export type AuditAnswers = Record<AuditAnswerKey, string>;
 
+export type AuditVariant = "general" | "roofing";
+export type RoofingAuditAnswerKey = "lead_source" | "monthly_inquiries" | "missed_inquiry_handling" | "inspection_booking" | "estimate_follow_up";
+export type RoofingAuditAnswers = Record<RoofingAuditAnswerKey, string>;
+export type AnyAuditAnswers = AuditAnswers | RoofingAuditAnswers;
+
 export type BusinessContext = {
   industry: string;
   city: string;
   state: string;
   website: string;
+  roofingService?: string;
 };
 
 export type ContactDetails = {
@@ -34,10 +40,9 @@ export type TrackingContext = {
 
 export type AuditSubmission = {
   business: BusinessContext;
-  answers: AuditAnswers;
   contact: ContactDetails;
   tracking?: TrackingContext;
-};
+} & ({ variant?: "general"; answers: AuditAnswers } | { variant: "roofing"; answers: RoofingAuditAnswers });
 
 export type AuditOpportunity = {
   id: string;

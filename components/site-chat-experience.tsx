@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import { demoConfigs } from "@/lib/demos";
+import { ROOFING_AUDIT_HREF } from "@/lib/audit/roofing-questions";
 import { LeadConnectorWidget } from "@/components/leadconnector-widget";
 import { VoxPagePopupExperience } from "@/components/voxpage-popup-experience";
 
@@ -11,6 +12,8 @@ type SiteChatExperienceProps = {
 
 export function SiteChatExperience({ mainWidgetId }: SiteChatExperienceProps) {
   const pathname = usePathname();
+  // Keep floating chat prompts from covering audit answers on small screens.
+  if (pathname.replace(/\/$/, "") === ROOFING_AUDIT_HREF) return null;
   const topLevelSlug = pathname.replace(/^\//, "").replace(/\/$/, "");
   const demo = demoConfigs[topLevelSlug];
 

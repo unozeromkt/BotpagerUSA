@@ -1,7 +1,8 @@
-import type { AuditAnswerKey } from "./types";
+import type { AuditAnswerKey, AuditVariant, RoofingAuditAnswerKey } from "./types";
+import { roofingAuditQuestions } from "./roofing-questions";
 
-export type AuditQuestion = {
-  key: AuditAnswerKey;
+export type AuditQuestion<Key extends string = AuditAnswerKey> = {
+  key: Key;
   eyebrow: string;
   question: string;
   helper: string;
@@ -83,7 +84,11 @@ export const auditQuestions: AuditQuestion[] = [
   },
 ];
 
-export function getAnswerLabel(key: AuditAnswerKey, value: string) {
-  const question = auditQuestions.find((item) => item.key === key);
+export function getAuditQuestions(variant: AuditVariant): AuditQuestion<AuditAnswerKey | RoofingAuditAnswerKey>[] {
+  return variant === "roofing" ? roofingAuditQuestions : auditQuestions;
+}
+
+export function getAnswerLabel(key: string, value: string, variant: AuditVariant = "general") {
+  const question = getAuditQuestions(variant).find((item) => item.key === key);
   return question?.options.find((option) => option.value === value)?.label ?? value;
 }

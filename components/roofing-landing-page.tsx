@@ -24,6 +24,7 @@ import conversationsDemo from "@/public/images/roofing-conversations-demo.png";
 import heroComposition from "@/public/images/roofing-hero-composition-v2.png";
 import { Header, SiteFooter } from "@/components/landing-page";
 import type { ArchitectureItem } from "@/lib/seo/site-architecture";
+import { ROOFING_AUDIT_HREF } from "@/lib/audit/roofing-questions";
 import styles from "./roofing-landing-page.module.css";
 
 const supportingServices = [
@@ -100,7 +101,7 @@ const faqs = [
 ];
 
 function AuditLink({ children = "Get my free audit" }: { children?: React.ReactNode }) {
-  return <Link data-meta-event="Contact" className={styles.primaryButton} href="/free-growth-audit">{children}<ArrowRight size={18} aria-hidden="true" /></Link>;
+  return <Link data-meta-event="Contact" className={styles.primaryButton} href={ROOFING_AUDIT_HREF}>{children}<ArrowRight size={18} aria-hidden="true" /></Link>;
 }
 
 function FeatureList({ items }: { items: string[] }) {
@@ -145,7 +146,7 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData).replace(/</g, "\\u003c") }} />
       <a className="skipLink" href="#roofing-title">Skip to main content</a>
-      <Header ctaLabel="Get my free audit" />
+      <Header ctaLabel="Get my free audit" ctaHref={ROOFING_AUDIT_HREF} />
       <main className={styles.page} id="main-content">
         <section className={styles.hero} data-roofing-guide="hero" aria-labelledby="roofing-title">
           <div className={styles.shell}>
@@ -260,7 +261,7 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
 
         <section className={`${styles.section} ${styles.faqSection}`} data-roofing-guide="faq" aria-labelledby="roofing-faq-title">
           <div className={`${styles.shell} ${styles.faqGrid}`}>
-            <div className={styles.faqIntro}><p className={styles.eyebrow}>Your questions, answered</p><h2 id="roofing-faq-title" tabIndex={-1}>Built around<br />the way you work.</h2><p>Your services, your calendar, your team. Here’s how BotPager fits in.</p><RoofingGuideNote moment="faq" /><Link data-meta-event="Contact" className={styles.textLink} href="/free-growth-audit">Talk through your setup<ArrowRight size={17} aria-hidden="true" /></Link></div>
+            <div className={styles.faqIntro}><p className={styles.eyebrow}>Your questions, answered</p><h2 id="roofing-faq-title" tabIndex={-1}>Built around<br />the way you work.</h2><p>Your services, your calendar, your team. Here’s how BotPager fits in.</p><RoofingGuideNote moment="faq" /><Link data-meta-event="Contact" className={styles.textLink} href={ROOFING_AUDIT_HREF}>Talk through your setup<ArrowRight size={17} aria-hidden="true" /></Link></div>
             <div className={styles.faqList}>
               {faqs.map((faq, index) => <details key={faq.question} id={`roofing-faq-${index + 1}`}><summary><ChevronDown size={19} aria-hidden="true" /><span>{faq.question}</span></summary><p>{faq.answer}</p></details>)}
             </div>
@@ -278,7 +279,7 @@ export function RoofingLandingPage({ industry }: { industry: ArchitectureItem })
             </div>
             <div className={styles.ctaAction}>
             <div className={styles.ctaAgent}><Image src="/images/botpager-isotype.png" width={52} height={52} alt="" /><span>Your next step<strong>A free growth audit</strong></span></div>
-            <p>A clear look at your website, lead response, and follow-up.</p>
+            <p>Five questions. Three priorities for roofing leads, inspections, and estimate follow-up.</p>
             <AuditLink />
             </div>
           </div>
