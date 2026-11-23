@@ -16,7 +16,7 @@ Module._load = function(request, ...args) {
   return load.call(this, request, ...args);
 };
 
-const { auditOptionLabels, auditFieldIds, buildAuditCustomFields, buildRoofingContact, buildAuditConsentEvidence, captureAuditEvidence, completionDate } = require('../lib/ghl/auditMapping.ts');
+const { auditOptionLabels, auditFieldIds, buildAuditCustomFields, buildRoofingContact, buildRoofingEmailReport, buildAuditConsentEvidence, captureAuditEvidence, completionDate } = require('../lib/ghl/auditMapping.ts');
 const { auditGhlRequest, getAuditGhlConfig, retryAfterMs } = require('../lib/ghl/auditHttp.ts');
 const { encryptAuditReplay, decryptAuditReplay } = require('../lib/ghl/auditReplay.ts');
 const { syncRoofingAudit } = require('../lib/ghl/syncRoofingAudit.ts');
@@ -86,6 +86,26 @@ async function mockFetch(url, init) {
   throw new Error('Unexpected endpoint or method');
 }
 const sync = value => syncRoofingAudit(value??job(), {runtime,log:record=>logs.push(record)});
+
+test('email report includes all personalized recommendations without internal consent evidence', () => {
+  const value=job();
+  const text=buildRoofingEmailReport(value);
+  for(const item of value.report.opportunities) {
+    for(const field of ['title','problem','whyItMatters','recommendedAction','relatedBotpagerCapability']) assert.ok(text.includes(item[field]),field);
+  }
+  assert.ok(text.includes(value.report.recommendationReason));
+  assert.doesNotMatch(text,/192\.0\.2\.1|test-request-1|User-Agent|Consent timestamp|cli-test-key/);
+});
+
+test('full report field is opt-in and supplements the existing 23 GHL fields', () => {
+  const original=buildAuditCustomFields(job());
+  assert.equal(original.length,23);
+  process.env.GHL_FIELD_ROOFING_FULL_REPORT='full-report-field';
+  const configured=buildAuditCustomFields(job());
+  assert.equal(configured.length,24);
+  assert.deepEqual(configured.slice(0,23),original);
+  assert.deepEqual(configured.at(-1),{id:'full-report-field',field_value:buildRoofingEmailReport(job())});
+});
 
 test('operator CLI validates encrypted exports without printing PII or making requests, and rejects missing chunks', () => {
   const directory=fs.mkdtempSync(path.join(os.tmpdir(),'roofing-replay-'));

@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { trackEvent } from "@/lib/metaPixel";
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
@@ -30,6 +31,8 @@ import { getAuditQuestions } from "@/lib/audit/questions";
 import { roofingServices } from "@/lib/audit/roofing-questions";
 import { auditConsent } from "@/lib/audit/consent";
 import { normalizeAuditPhone } from "@/lib/audit/phone";
+import { roofingAuditHref } from "@/lib/audit/navigation";
+import { useAuditHandoff } from "./audit-navigation";
 import { getPreliminaryOpportunities } from "@/lib/audit/recommendations";
 import type {
   AnyAuditAnswers,
@@ -102,14 +105,18 @@ function Progress({ stage, questionIndex }: { stage: Stage; questionIndex: numbe
 
 export function AuditExperience({ variant = "general" }: { variant?: AuditVariant } = {}) {
   const isRoofing = variant === "roofing";
+  const router = useRouter();
+  const { handoff, setHandoff } = useAuditHandoff();
+  const [initialHandoff] = useState(isRoofing ? handoff : null);
   const questions = getAuditQuestions(variant);
   const reduceMotion = useReducedMotion();
   const [stage, setStage] = useState<Stage>("context");
   const [questionIndex, setQuestionIndex] = useState(0);
-  const [business, setBusiness] = useState<BusinessContext>(() => isRoofing ? { ...emptyBusiness, industry: "Roofing", roofingService: "" } : emptyBusiness);
+  const [business, setBusiness] = useState<BusinessContext>(() => isRoofing ? { ...emptyBusiness, ...initialHandoff?.business, industry: "Roofing", roofingService: "" } : emptyBusiness);
+  const continueToRoofing = !isRoofing && business.industry === "Roofing";
   const [answers, setAnswers] = useState<Partial<Record<AuditAnswerKey | RoofingAuditAnswerKey, string>>>({});
   const [contact, setContact] = useState<ContactDetails>(emptyContact);
-  const tracking = useRef<TrackingContext>({});
+  const tracking = useRef<TrackingContext>(initialHandoff?.tracking ?? {});
   const [report, setReport] = useState<AuditReport | null>(null);
   const [delivery, setDelivery] = useState<AuditApiResponse["delivery"]>();
   const [message, setMessage] = useState("");
@@ -119,6 +126,10 @@ export function AuditExperience({ variant = "general" }: { variant?: AuditVarian
   }, [isRoofing]);
 
   useEffect(() => {
+    if (initialHandoff) {
+      setHandoff(null);
+      return;
+    }
     const params = new URLSearchParams(window.location.search);
     tracking.current = {
       source: document.referrer || "direct",
@@ -126,7 +137,7 @@ export function AuditExperience({ variant = "general" }: { variant?: AuditVarian
       utmMedium: params.get("utm_medium") ?? "",
       utmCampaign: params.get("utm_campaign") ?? "",
     };
-  }, []);
+  }, [initialHandoff, setHandoff]);
 
   const completedAnswers = answers as AnyAuditAnswers;
   const previewOpportunities = useMemo(() => {
@@ -143,6 +154,11 @@ export function AuditExperience({ variant = "general" }: { variant?: AuditVarian
   function startQuestions(event: FormEvent) {
     event.preventDefault();
     setError("");
+    if (continueToRoofing) {
+      setHandoff({ business: { ...business }, tracking: { ...tracking.current } });
+      router.push(roofingAuditHref(window.location.search));
+      return;
+    }
     if (isRoofing && !business.roofingService) {
       setError("Choose the roofing service you want more inquiries for.");
       return;
@@ -274,18 +290,19 @@ export function AuditExperience({ variant = "general" }: { variant?: AuditVarian
                   </select>
                 </label> : <label>
                   <span>Business type</span>
-                  <select value={business.industry} onChange={(event) => updateBusiness("industry", event.target.value)} required>
+                  <select name="industry" value={business.industry} onChange={(event) => updateBusiness("industry", event.target.value)} aria-describedby={continueToRoofing ? "roofing-audit-navigation-hint" : undefined} required>
                     <option value="">Select your industry</option>
                     {industries.map((industry) => <option key={industry}>{industry}</option>)}
                   </select>
                 </label>}
+                {continueToRoofing && <p id="roofing-audit-navigation-hint" className="auditMicrocopy" role="status">We have an audit built for roofing companies. Continue to get recommendations for roofing leads, inspections and estimates.</p>}
                 <div className="auditFieldRow">
-                  <label><span>{isRoofing ? "Primary service city" : "City"}</span><input name="city" autoComplete={isRoofing ? "address-level2" : undefined} maxLength={80} value={business.city} onChange={(event) => updateBusiness("city", event.target.value)} placeholder={isRoofing ? "Orlando" : "Austin"} required /></label>
-                  <label><span>State</span><input name="state" autoComplete={isRoofing ? "address-level1" : undefined} maxLength={40} value={business.state} onChange={(event) => updateBusiness("state", event.target.value)} placeholder={isRoofing ? "FL" : "TX"} required /></label>
+                  <label><span>{isRoofing ? "Primary service city" : "City"}</span><input name="city" autoComplete={isRoofing ? "address-level2" : undefined} maxLength={80} value={business.city} onChange={(event) => updateBusiness("city", event.target.value)} placeholder={isRoofing ? "Orlando" : "Austin"} required={!continueToRoofing} /></label>
+                  <label><span>State</span><input name="state" autoComplete={isRoofing ? "address-level1" : undefined} maxLength={40} value={business.state} onChange={(event) => updateBusiness("state", event.target.value)} placeholder={isRoofing ? "FL" : "TX"} required={!continueToRoofing} /></label>
                 </div>
                 <label><span>Website <small>Optional</small></span><input name="website" type="text" inputMode="url" autoCapitalize="none" spellCheck={false} maxLength={240} value={business.website} onChange={(event) => updateBusiness("website", event.target.value)} placeholder={isRoofing ? "yourroofingcompany.com" : "yourbusiness.com"} /></label>
                 {error && <p className="auditError" role="alert">{error}</p>}
-                <button className="auditPrimaryButton" type="submit">Start my free audit <ArrowRight /></button>
+                <button className="auditPrimaryButton" type="submit">{continueToRoofing ? "Continue to roofing audit" : "Start my free audit"} <ArrowRight /></button>
                 <p className="auditMicrocopy"><LockKeyhole /> Your answers are used only to prepare this audit.</p>
               </form>
             </motion.div>

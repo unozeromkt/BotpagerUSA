@@ -86,7 +86,26 @@ export function buildAuditCustomFields(job: RoofingSyncJob) {
     [auditFieldIds.recommendedSystem, [...new Set(report.opportunities.map(item => item.relatedBotpagerCapability))].join(" | ")],
     [auditFieldIds.completedAt, completionDate(evidence.submittedAt)],
   ];
+  const fullReportFieldId = process.env.GHL_FIELD_ROOFING_FULL_REPORT?.trim();
+  if (fullReportFieldId) values.push([fullReportFieldId, buildRoofingEmailReport(job)]);
   return values.filter((entry): entry is [string, string] => Boolean(entry[1])).map(([id, field_value]) => ({ id, field_value }));
+}
+
+// Client-facing text for a GHL multiline custom field. Consent evidence, IP,
+// user agent, internal request IDs and workflow instructions stay out of email.
+export function buildRoofingEmailReport({ report }: RoofingSyncJob) {
+  return [
+    "YOUR PERSONALIZED ROOFING GROWTH AUDIT", "", report.businessSummary,
+    ...report.opportunities.flatMap((item, index) => [
+      "", `${index + 1}. ${item.title}`, `Priority: ${item.severity}`,
+      "", "What we identified", item.problem,
+      "", "Why it matters", item.whyItMatters,
+      "", "Recommended action", item.recommendedAction,
+      `BotPager capability: ${item.relatedBotpagerCapability}`,
+    ]),
+    "", "YOUR RECOMMENDED NEXT STEP", report.recommendationReason,
+    "", "These recommendations are based on your answers. Your website, Google profile and revenue performance have not been independently verified.",
+  ].join("\n");
 }
 
 export function buildRoofingContact(job: RoofingSyncJob, locationId: string) {

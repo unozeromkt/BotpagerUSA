@@ -28,6 +28,20 @@ const { getPreliminaryOpportunities, buildFallbackReport } = require('../lib/aud
 const { getRoofingOpportunities } = require('../lib/audit/roofing-recommendations.ts');
 const { generateAuditReport } = require('../lib/ai/generate-audit.ts');
 const { POST } = require('../app/api/audit/route.ts');
+const { roofingAuditHref } = require('../lib/audit/navigation.ts');
+
+test('roofing navigation preserves campaign attribution without copying business data into the URL', () => {
+  const href=roofingAuditHref('?utm_source=google&utm_medium=cpc&utm_campaign=roof%20repairs&utm_content=ad-a&utm_term=roofing&gclid=click-id&fbclid=meta-id&city=Orlando&website=private.example&email=owner%40example.com&next=https%3A%2F%2Fevil.example');
+  const url=new URL(href,'https://www.botpager.com');
+  assert.equal(url.pathname,'/free-growth-audit/roofing');
+  assert.equal(url.origin,'https://www.botpager.com');
+  assert.deepEqual(Object.fromEntries(url.searchParams),{utm_source:'google',utm_medium:'cpc',utm_campaign:'roof repairs',utm_term:'roofing',utm_content:'ad-a',gclid:'click-id',fbclid:'meta-id'});
+});
+
+test('direct roofing navigation uses a fixed destination and drops unknown or empty parameters', () => {
+  assert.equal(roofingAuditHref(''),'/free-growth-audit/roofing');
+  assert.equal(roofingAuditHref('?utm_source=&redirect=javascript:alert(1)'),'/free-growth-audit/roofing');
+});
 
 const contact = { firstName: 'Demo', businessName: 'Demo Roofing', email: 'DEMO@example.com', consent: true };
 const business = { industry: 'Roofing', roofingService: 'replacements', city: 'Orlando', state: 'FL', website: '' };
